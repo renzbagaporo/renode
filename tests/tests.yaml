@@ -343,3 +343,5 @@
 - tests/unit-tests/rp2350-rcp.robot
 - tests/unit-tests/rp2350-qmi.robot
 - tests/unit-tests/rp2350-crypto.robot
+- tests/unit-tests/rp2350-boot.robot
+- tests/unit-tests/rp2350-sio.robot
