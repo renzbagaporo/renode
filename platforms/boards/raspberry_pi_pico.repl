@@ -1,0 +1,15 @@
+using "platforms/cpus/rp2040.repl"
+
+flashMemory: Memory.MappedMemory
+    size: 0x200000
+
+flash: SPI.WinbondW25QFlash @ ssi 0
+    underlyingMemory: flashMemory
+
+xip: MemoryControllers.RP2040_XIP @ sysbus 0x14000000
+    ssi: ssi
+    flash: flash
+
+xipMemory: Memory.RP2040_XIPMemory @ { sysbus 0x10000000; sysbus 0x11000000; sysbus 0x12000000; sysbus 0x13000000 }
+    flash: flash
+    xip: xip

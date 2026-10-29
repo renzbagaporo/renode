@@ -1,0 +1,84 @@
+// RP2040 processor with shared SRAM, two Cortex-M0+ cores and peripheral reset domains.
+
+cpu0: CPU.CortexM @ sysbus
+    cpuType: "cortex-m0+"
+    nvic: nvic0
+    cpuId: 0
+    PerformanceInMips: 125
+    InitVectorTableOffset: 0
+cpu1: CPU.CortexM @ sysbus
+    cpuType: "cortex-m0+"
+    nvic: nvic1
+    cpuId: 1
+    PerformanceInMips: 125
+    InitVectorTableOffset: 0
+nvic0: IRQControllers.NVIC @ sysbus new Bus.BusPointRegistration { address: 0xe000e000; cpu: cpu0 }
+    -> cpu0@0
+    priorityMask: 0xc0
+nvic1: IRQControllers.NVIC @ sysbus new Bus.BusPointRegistration { address: 0xe000e000; cpu: cpu1 }
+    -> cpu1@0
+    priorityMask: 0xc0
+rom: Memory.MappedMemory @ sysbus 0
+    size: 0x4000
+sram: Memory.MappedMemory @ sysbus 0x20000000
+    size: 0x42000
+sio: Miscellaneous.RP2040_SIO @ sysbus 0xd0000000
+    Core0IRQ -> nvic0@15
+    Core1IRQ -> nvic1@16
+psm: Miscellaneous.RP2040_PSM @ sysbus 0x40010000
+    core0: cpu0
+    core1: cpu1
+    nvic0: nvic0
+    nvic1: nvic1
+resets: Miscellaneous.RP2_Resets @ sysbus 0x4000c000
+rosc: Miscellaneous.RP2040_ROSC @ sysbus 0x40060000
+xosc: Miscellaneous.RP2_XOSC @ sysbus 0x40024000
+pll_sys: Miscellaneous.RP2_PLL @ { sysbus 0x40028000; resets 12 }
+    xosc: xosc
+pll_usb: Miscellaneous.RP2_PLL @ { sysbus 0x4002c000; resets 13 }
+    xosc: xosc
+clocks: Miscellaneous.RP2040_Clocks @ sysbus 0x40008000
+    rosc: rosc
+    xosc: xosc
+    pllSys: pll_sys
+    pllUsb: pll_usb
+    nvic0: nvic0
+    nvic1: nvic1
+    sio: sio
+timer: Timers.RP2_Timer @ { sysbus 0x40054000; resets 21 }
+    clocked: true
+    0 -> nvic0@0
+    1 -> nvic0@1
+    2 -> nvic0@2
+    3 -> nvic0@3
+watchdog: Miscellaneous.RP2040_Watchdog @ sysbus 0x40058000
+    clocks: clocks
+    timer: timer
+gpio: GPIOPort.RP2_GPIOBank0 @ { sysbus 0x40014000; resets 5 }
+    sio: sio
+    Core0IRQ -> nvic0@13
+    Core1IRQ -> nvic1@13
+pads: GPIOPort.RP2_PadsBank0 @ { sysbus 0x4001c000; resets 8 }
+    gpio: gpio
+dpram: USB.RP2_USB_DPRAM @ sysbus 0x50100000
+usb: USB.RP2_USB @ { sysbus 0x50110000; resets 24 }
+    dpram: dpram
+    clockSource: clocks
+    IRQ -> nvic0@5
+
+ssi: SPI.RP2040_SSI @ sysbus 0x18000000
+
+qspi: GPIOPort.RP2040_QSPI @ { sysbus 0x40018000; resets 6 }
+    sio: sio
+    ssi: ssi
+    Core0IRQ -> nvic0@14
+    Core1IRQ -> nvic1@14
+
+qpads: GPIOPort.RP2040_PadsQSPI @ { sysbus 0x40020000; resets 9 }
+    gpio: qspi
+
+sysinfo: Miscellaneous.RP2040_SYSINFO @ sysbus 0x40000000
+
+rtc: Timers.RP2040_RTC @ { sysbus 0x4005c000; resets 15 }
+    clocks: clocks
+    IRQ -> nvic0@25
