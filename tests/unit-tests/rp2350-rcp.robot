@@ -273,7 +273,7 @@ Should Fault Invalid Non Secure Instruction Without RCP NMI
     Execute Command                 cpu1 Step
     RCP Register Should Equal       PC  0x5002  cpu1
 
-Should Clear Local Salt And Fault On Reset
+Should Clear CoreZero Salt And Fault On Reset
     Create RCP Machine
     Seed RCP
     Issue RCP Instruction           0xfc410770
@@ -407,3 +407,53 @@ Should Publish Salt And Fault To AContinuouslyExecutingPeer
     [Tags]                          rcp_concurrency
     Create RCP Concurrency Tester
     Execute Command                 rcpConcurrency LivePeerPublicationAndFault
+
+Should InvalidateBothSaltsOnCoreZeroWarmReset
+    Create RCP Machine
+    Seed RCP
+    Seed RCP                        1
+    Issue RCP Instruction           0xfe300710  cpu1
+    RCP Register Should Equal       R0  0xa500a500  cpu1
+    Execute Command                 cpu0 Reset
+    Execute Command                 sysbus WriteDoubleWord 0xe000ed88 0xc000 context=cpu0
+    Issue RCP Instruction           0xfe300710  cpu1
+    RCP Register Should Equal       R0  0x00c300c3  cpu1
+    Issue RCP Instruction           0xfe300710
+    RCP Register Should Equal       R0  0x00c300c3
+    Seed RCP
+    Seed RCP                        1
+    Issue RCP Instruction           0xfe300710  cpu1
+    RCP Register Should Equal       R0  0xa500a500  cpu1
+    RCP Register Should Equal       PC  0x1004  cpu1
+
+Should PreserveBothSaltsAndClearLocalCountOnCoreOneWarmReset
+    Create RCP Machine
+    Seed RCP
+    Seed RCP                        1
+    Issue RCP Instruction           0xfe830714  cpu1
+    Execute Command                 cpu1 Reset
+    Execute Command                 sysbus WriteDoubleWord 0xe000ed88 0xc000 context=cpu1
+    Issue RCP Instruction           0xfe300710  cpu1
+    RCP Register Should Equal       R0  0xa500a500  cpu1
+    Issue RCP Instruction           0xfe300710
+    RCP Register Should Equal       R0  0xa500a500
+    Issue RCP Instruction           0xfea00730  cpu1
+    RCP Register Should Equal       PC  0x1004  cpu1
+    # A local reset is not permission to replace the core 1 salt.
+    Seed RCP                        1
+    RCP Should Enter NMI
+
+Should PreserveCoreOnePRNGAcrossCoreOneWarmReset
+    Create RCP Machine
+    Seed RCP                        1
+    Issue RCP Instruction           0xfe500710  cpu1
+    RCP Register Should Equal       R0  0x7b  cpu1
+    Execute Command                 cpu1 Reset
+    Execute Command                 sysbus WriteDoubleWord 0xe000ed88 0xc000 context=cpu1
+    Issue RCP Instruction           0xfe500710  cpu1
+    RCP Register Should Equal       R0  0xfe  cpu1
+
+Should InvalidateAndReseedSaltWhilePeerContinuesExecuting
+    [Tags]                          rcp_concurrency
+    Create RCP Concurrency Tester
+    Execute Command                 rcpConcurrency LivePeerSaltInvalidationAndReseed

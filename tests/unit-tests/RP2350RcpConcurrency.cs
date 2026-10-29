@@ -78,7 +78,7 @@ namespace Antmicro.Renode.Peripherals.Miscellaneous
                 }
                 finally { release.Set(); field.SetValue(cpu1, original); }
             }
-            AssertState(cpu1, false, false);
+            AssertState(cpu1, false, true);
         }
 
         public void ResetThenSalt()
@@ -168,7 +168,59 @@ namespace Antmicro.Renode.Peripherals.Miscellaneous
                 }
                 Assert(Nmi(cpu1), "Live peer lost its fault NMI");
                 cpu1.Reset();
-                AssertState(cpu1, false, false);
+                AssertState(cpu1, false, true);
+            }
+        }
+
+        public void LivePeerSaltInvalidationAndReseed()
+        {
+            using(var running = new ManualResetEventSlim())
+            using(var valid = new ManualResetEventSlim())
+            using(var invalid = new ManualResetEventSlim())
+            {
+                Assert(Salt(1) == 1, "Initial peer salt failed");
+                machine.SystemBus.WriteDoubleWord(0x5000, 0x2710fe30); // canary_status r2, no delay
+                machine.SystemBus.WriteWord(0x5004, 0x601a); // str r2, [r3]
+                machine.SystemBus.WriteWord(0x5006, 0x3401); // adds r4, #1
+                machine.SystemBus.WriteWord(0x5008, 0xe7fa); // b 0x5000
+                cpu1.CPACR = 0xc000;
+                cpu1.SP = 0x8000;
+                cpu1.PC = 0x5000;
+                cpu1.SetRegister(3, 0x6000);
+                cpu1.ClearTranslationCache();
+                cpu0.IsHalted = true;
+                var completedBlocks = 0;
+                cpu1.SetHookAtBlockBegin((address, size) =>
+                {
+                    Interlocked.Increment(ref completedBlocks);
+                    running.Set();
+                    var status = cpu1.GetRegister(2).RawValue;
+                    if(status == 0xa500a500) valid.Set();
+                    if(status == 0x00c300c3) invalid.Set();
+                });
+                cpu1.ExecutionMode = ExecutionMode.Continuous;
+                try
+                {
+                    EmulationManager.Instance.CurrentEmulation.StartAll();
+                    Wait(running);
+                    Wait(valid);
+                    cpu0.Reset();
+                    Wait(invalid);
+                    var before = Volatile.Read(ref completedBlocks);
+                    Assert(SpinWait.SpinUntil(() => Volatile.Read(ref completedBlocks) != before,
+                        TimeSpan.FromSeconds(5)), "Core 0 reset stopped the peer");
+                    Assert(!Nmi(cpu1), "Status polling faulted during shared salt invalidation");
+                    valid.Reset();
+                    Assert(Salt(1) == 1, "Reseeding after core 0 reset failed");
+                    Wait(valid);
+                }
+                finally
+                {
+                    EmulationManager.Instance.CurrentEmulation.PauseAll();
+                    cpu1.SetHookAtBlockBegin(null);
+                    cpu1.ExecutionMode = ExecutionMode.SingleStep;
+                }
+                AssertState(cpu1, false, true);
             }
         }
 
