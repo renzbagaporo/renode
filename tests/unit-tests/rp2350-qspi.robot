@@ -49,3 +49,20 @@ ShouldReportA2ChipAndQFN60Package
     Read Should Equal               0x40000000  0x20004927
     Read Should Equal               0x40000004  1
     Read Should Equal               0x40000008  2
+
+ShouldResetPinFunctionsToNull
+    Create QSPI Machine
+    Read Should Equal               0x40030004  0x1f
+    Read Should Equal               0x4003001c  0x1f
+    Read Should Equal               0x4003003c  0x1f
+
+ShouldExposeInterruptsAtDocumentedQSPIRegisterOffsets
+    Create QSPI Machine
+    Execute Command                 sysbus WriteDoubleWord 0x40030218 0xffffffff
+    Execute Command                 sysbus WriteDoubleWord 0x4003021c 0x800
+    Execute Command                 qspi OnGPIO 2 true
+    Read Should Equal               0x40030224  0x800
+    Read Should Equal               0x40030200  4
+    Execute Command                 sysbus WriteDoubleWord 0x40030218 0x800
+    Read Should Equal               0x40030224  0
+    Read Should Equal               0x40030200  0
