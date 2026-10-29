@@ -112,3 +112,13 @@ ShouldPublishMaintenanceAndConfigurationCallbacksOutsideStateLock
     Execute Command                 cache Reset
     ${status}=                      Execute Command  probe Status
     Should Be Equal As Integers      ${status.strip()}  1
+
+ShouldPublishCompleteCacheWordAfterOneBusStore
+    Execute Command                 include @${CURDIR}/RP2350XIPNotificationProbe.cs
+    Create XIP Machine
+    Execute Command                 sysbus WriteByte 0x1bffc007 0
+    Execute Command                 machine LoadPlatformDescriptionFromString "probe: Miscellaneous.RP2350XIPNotificationProbe @ sysbus 0x60000000 { cache: cache; memory: cacheRam }"
+    Execute Command                 probe ExpectedWord 0x12345678
+    Execute Command                 sysbus WriteDoubleWord 0x13ffc000 0x12345678
+    ${mixed}=                       Execute Command  probe ObservedPartialWord
+    Should Be Equal                 ${mixed.strip()}  False
