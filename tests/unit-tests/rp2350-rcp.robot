@@ -80,6 +80,11 @@ Enter Non Secure RCP
     Execute Command                 sysbus WriteDoubleWord 0xe000ed24 0x40000 context=cpu0
     Execute Command                 sysbus WriteDoubleWord 0xe000ed88 0xc000 context=cpu0
 
+Create RCP Concurrency Tester
+    Create RCP Machine
+    Execute Command                 include "${CURDIR}/RP2350RcpConcurrency.cs"
+    Execute Command                 machine LoadPlatformDescriptionFromString "rcpConcurrency: Miscellaneous.RP2350RcpConcurrencyTester @ sysbus 0x50000000 { cpu0: cpu0; cpu1: cpu1 }"
+
 *** Test Cases ***
 Should Report Salt Invalid And Valid Using Official Encodings
     Create RCP Machine
@@ -372,3 +377,33 @@ Should Stall Further RCP Instructions After Fault
     Execute Command                 cpu0 ClearTranslationCache
     Execute Command                 cpu0 Step
     RCP Register Should Equal       PC  0x4000
+
+Should Serialize Fault Publication Before Local Reset
+    [Tags]                          rcp_concurrency
+    Create RCP Concurrency Tester
+    Execute Command                 rcpConcurrency FaultThenReset
+
+Should Serialize Local Reset Before Fault Publication
+    [Tags]                          rcp_concurrency
+    Create RCP Concurrency Tester
+    Execute Command                 rcpConcurrency ResetThenFault
+
+Should Serialize Salt Publication Before Local Reset
+    [Tags]                          rcp_concurrency
+    Create RCP Concurrency Tester
+    Execute Command                 rcpConcurrency SaltThenReset
+
+Should Serialize Local Reset Before Salt Publication
+    [Tags]                          rcp_concurrency
+    Create RCP Concurrency Tester
+    Execute Command                 rcpConcurrency ResetThenSalt
+
+Should Deliver Simultaneous Native Faults Without Deadlock
+    [Tags]                          rcp_concurrency
+    Create RCP Concurrency Tester
+    Execute Command                 rcpConcurrency SimultaneousNativeFaults
+
+Should Publish Salt And Fault To AContinuouslyExecutingPeer
+    [Tags]                          rcp_concurrency
+    Create RCP Concurrency Tester
+    Execute Command                 rcpConcurrency LivePeerPublicationAndFault
