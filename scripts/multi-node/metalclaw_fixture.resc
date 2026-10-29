@@ -1,0 +1,34 @@
+# Set these file variables before including this script:
+#   $harness_rom: RP2040 B2 boot ROM ELF
+#   $harness_flash: raw flash payload extracted from the Metalclaw Pico 1 UF2
+#   $dut_rom: RP2350 A2 combined boot ROM binary
+# Pico 2 flash starts erased and is programmed through the SWD probe.
+
+$usbip_port?=3240
+$quantum?="0.0001"
+
+mach create "pico1"
+machine LoadPlatformDescription @platforms/boards/raspberry_pi_pico.repl
+sysbus LoadELF $harness_rom false
+xipMemory LoadBinary $harness_flash
+
+mach create "pico2"
+machine LoadPlatformDescription @platforms/boards/raspberry_pi_pico2.repl
+rom LoadBinary $dut_rom
+
+# SWCLK, SWDIO and active-low RUN use Pico 1 GPIOs 2, 3 and 28.
+emulation CreateDigitalWire "swclk" false
+emulation CreateDigitalWire "swdio" true
+emulation CreateDigitalWire "run" true
+swclk Connect debug_port 0
+swdio Connect debug_port 1
+run Connect debug_port 2
+mach set "pico1"
+swclk Connect gpio 2
+swdio Connect gpio 3
+run Connect gpio 28
+
+emulation SetGlobalQuantum $quantum
+emulation SetGlobalAdvanceImmediately true
+emulation CreateUSBIPServer $usbip_port "pico1"
+host.pico1 Register usb 0 Full
