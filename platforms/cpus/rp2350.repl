@@ -37,7 +37,10 @@ bootram: Memory.RP2350_BootRAM @ sysbus 0x400e0000
     accessControl: accessctrl
 
 sram: Memory.MappedMemory @ sysbus 0x20000000
-    size: 0x82000
+    size: 0x40000
+
+sramHigh: Memory.MappedMemory @ sysbus 0x20040000
+    size: 0x42000
 
 resets: Miscellaneous.RP2_Resets @ sysbus 0x40020000
     rp2350: true
@@ -92,6 +95,10 @@ powman: Miscellaneous.RP2350_POWMAN @ sysbus 0x40100000
     nvic0: nvic0
     nvic1: nvic1
     debugPort: debug_port
+    bootRAM: bootram
+    xip: xip
+    sramLow: sram
+    sramHigh: sramHigh
 
 nvic0:
     SystemResetRequest -> powman@0

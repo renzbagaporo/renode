@@ -1,8 +1,7 @@
 *** Keywords ***
 Create Power Machine
     Execute Command                 mach create
-    ${platform}=                    Evaluate  open('platforms/cpus/rp2350.repl').read().split('xip: MemoryControllers.RP2350_XIP')[0]
-    Execute Command                 machine LoadPlatformDescriptionFromString """${platform}"""
+    Execute Command                 machine LoadPlatformDescription @platforms/boards/raspberry_pi_pico2.repl
     Execute Command                 sysbus WriteDoubleWord 0x40023000 0x01800000
     Execute Command                 cpu0 IsHalted true
     Execute Command                 cpu1 IsHalted true
@@ -63,3 +62,47 @@ ShouldRetainAONScratchAndClearWatchdogScratchOnPOWMANReset
     Read Should Equal               0x400d800c  0
     Read Should Equal               0x400d8008  2
     Read Should Equal               0x4010002c  0x10000000
+
+ShouldPowerGateSplitSRAMDomainsWithoutPartialMappedLocks
+    Create Power Machine
+    Execute Command                 sysbus WriteDoubleWord 0x20000000 0x12345678
+    Execute Command                 sysbus WriteDoubleWord 0x20040000 0xabcdef01
+    Execute Command                 sysbus WriteDoubleWord 0x40100038 0x5afe0010
+    Execute Command                 emulation RunFor "0.000001"
+    Read Should Equal               0x40100038  0x11
+    Read Should Equal               0x20000000  0x12345678
+    Read Should Equal               0x20040000  0
+    Execute Command                 sysbus WriteDoubleWord 0x20040000 0xdeadbeef
+    Execute Command                 sysbus WriteDoubleWord 0x40100038 0x5afe0000
+    Execute Command                 emulation RunFor "0.000001"
+    Read Should Equal               0x40100038  0
+    Read Should Equal               0x20000000  0x12345678
+    Read Should Equal               0x20040000  0
+
+ShouldLoseBootRAMAndPinnedCacheWhenXIPDomainPowersDown
+    Create Power Machine
+    Execute Command                 sysbus WriteByte 0x1bffc007 0
+    Execute Command                 sysbus WriteDoubleWord 0x13ffc000 0x12345678
+    Execute Command                 sysbus WriteDoubleWord 0x400e0000 0xabcdef01
+    Execute Command                 sysbus WriteDoubleWord 0x40100038 0x5afe00c0
+    Execute Command                 emulation RunFor "0.000001"
+    Read Should Equal               0x40100038  0xcc
+    Run Keyword And Expect Error    *Bus access failed*  Execute Command  sysbus ReadDoubleWord 0x13ffc000
+    Run Keyword And Expect Error    *Bus access failed*  Execute Command  sysbus ReadDoubleWord 0x400e0000
+    Execute Command                 sysbus WriteDoubleWord 0x40100038 0x5afe0080
+    Execute Command                 emulation RunFor "0.000001"
+    Read Should Equal               0x40100038  0x88
+    Read Should Equal               0x400e0000  0
+    Run Keyword And Expect Error    *Bus access failed*  Execute Command  sysbus ReadDoubleWord 0x13ffc000
+    Execute Command                 sysbus WriteByte 0x1bffc007 0
+    Read Should Equal               0x13ffc000  0
+
+ShouldReleaseSRAMDomainGatesWhenPowerControllerResets
+    Create Power Machine
+    Execute Command                 sysbus WriteDoubleWord 0x40100038 0x5afe0010
+    Execute Command                 emulation RunFor "0.000001"
+    Read Should Equal               0x40100038  0x11
+    Execute Command                 powman Reset
+    Read Should Equal               0x40100038  0
+    Execute Command                 sysbus WriteDoubleWord 0x20040000 0x12345678
+    Read Should Equal               0x20040000  0x12345678

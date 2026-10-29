@@ -48,7 +48,7 @@ Create Boot Machine
     Execute Command                 machine LoadPlatformDescriptionFromString """${BOOT_PLATFORM}"""
     Execute Command                 sysbus WriteDoubleWord 0 0x20008000
     Execute Command                 sysbus WriteDoubleWord 4 0x101
-    Execute Command                 sysbus WriteWord 0x100 0xe7fe
+    Execute Command                 sysbus WriteDoubleWord 0x100 0xe7fe242a
     Execute Command                 debug_port EnableDebugPower
     Execute Command                 cpu1 IsHalted true
 
@@ -71,6 +71,7 @@ Should Retain Sibling Core SRAM And Debug Power AcrossCore0WarmReset
     Execute Command                 sysbus WriteDoubleWord 0x401000b0 0xa5a55a5a
     Execute Command                 sysbus WriteDoubleWord 0xe000ed0c 0x05fa0004 context=cpu0
     Execute Command                 emulation RunFor "0.00001"
+    Execute Command                 emulation RunFor "0.00001"
     ${r0}=                          Execute Command  cpu0 GetRegister "R0"
     Should Be Equal As Integers      ${r0.strip()}  0
     ${r1}=                          Execute Command  cpu1 GetRegister "R0"
@@ -78,6 +79,8 @@ Should Retain Sibling Core SRAM And Debug Power AcrossCore0WarmReset
     Read Should Equal               0x20001000  0x87654321
     Read Should Equal               0x401000b0  0xa5a55a5a
     Debug Power Should Be Retained
+    ${r4}=                          Execute Command  cpu0 GetRegister "R4"
+    Should Be Equal As Integers      ${r4.strip()}  42
 
 Should PreserveAONScratchAndRPAPAcrossRescueAndRequirePasswordToClearFlag
     Create Boot Machine
@@ -145,3 +148,18 @@ Should LockOTPReadsIrreversiblyAndFaultGuardedAccess
     Run Keyword And Expect Error    *Bus access failed*  Execute Command  sysbus ReadDoubleWord 0x4013c000
     Execute Command                 sysbus WriteDoubleWord 0x40123000 2
     Read Should Equal               0x40120000  2
+
+ShouldFenceQueuedWarmResetWhenRescueHoldsProcessors
+    Create Boot Machine
+    Execute Command                 emulation RunFor "0.00001"
+    Execute Command                 sysbus WriteDoubleWord 0xe000ed0c 0x05fa0004 context=cpu0
+    Execute Command                 debug_port Rescue true
+    Execute Command                 emulation RunFor "0.00001"
+    ${held}=                        Execute Command  cpu0 IsHalted
+    Should Be Equal                 ${held.strip()}  True
+    Debug Power Should Be Retained
+    Execute Command                 debug_port Rescue false
+    Execute Command                 emulation RunFor "0.00001"
+    Execute Command                 emulation RunFor "0.00001"
+    ${r4}=                          Execute Command  cpu0 GetRegister "R4"
+    Should Be Equal As Integers      ${r4.strip()}  42
