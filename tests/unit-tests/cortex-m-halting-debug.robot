@@ -162,6 +162,8 @@ Should Mask Pending Interrupts During A Debug Step And Restore Them On Run
     Wait For Debug Halt             0
     Execute Command                 emulation RunFor "0.0001"
     Register Should Equal           cpu0  6  102
+    # Pending IRQ must enter before the ADD at the resumed PC can retire.
+    Register Should Equal           cpu0  0  1
 
 Should Step A Sleeping Core Without Requiring An Interrupt
     Prepare Single Step Program     30bf2a21fee7
