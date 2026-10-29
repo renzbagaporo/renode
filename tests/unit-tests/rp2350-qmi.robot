@@ -68,4 +68,4 @@ ShouldTranslate4MiBWindowsAndKeepUntranslatedReadsDistinct
     Execute Command                 sysbus WriteDoubleWord 0x30001000 0x12345678
     QMI Write                       0x34  0x00010001
     Read Should Equal               0x10000000  0x12345678
-    Read Should Equal               0x10001000  0xffffffff
+    Run Keyword And Expect Error    *Bus access failed*  Execute Command  sysbus ReadDoubleWord 0x10001000
