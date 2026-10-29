@@ -104,9 +104,13 @@ Should ImplementDataOnlyAPBAtomicBootRAM
     Execute Command                 sysbus WriteDoubleWord 0x400e1000 0x01
     Read Should Equal               0x400e0000  0x20
     Execute Command                 sysbus WriteByte 0x400e0000 0xa5
-    Read Should Equal               0x400e0000  0xa5a5a5a5
+    Read Should Equal               0x400e0000  0xa5
+    Execute Command                 sysbus WriteWord 0x400e0002 0xbeef
+    Read Should Equal               0x400e0000  0xbeef00a5
+    Execute Command                 sysbus WriteByte 0x400e2001 0x12
+    Read Should Equal               0x400e0000  0xbeef12a5
     Execute Command                 bootram Reset
-    Read Should Equal               0x400e0000  0xa5a5a5a5
+    Read Should Equal               0x400e0000  0xbeef12a5
     Run Keyword And Expect Error    *Bus access failed*  Execute Command  sysbus ReadDoubleWord 0x400e0400
 
 ShouldKeepWriteOnceBitsAndClaimBootLocksAtomically
