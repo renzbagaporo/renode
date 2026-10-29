@@ -82,6 +82,31 @@ Should Keep Underflow Sticky And Core Local
     Write SIO                       0x50  8  cpu1
     FIFO IRQ Should Equal           1  False
 
+Should Transfer Eight FIFO Words From Core One To Core Zero
+    Create Machine
+    FOR  ${word}  IN RANGE  8
+        Write SIO                   0x54  ${word}  cpu1
+    END
+    Read SIO Should Equal           0x50  0  cpu1
+    Read SIO Should Equal           0x50  3  cpu0
+    Write SIO                       0x54  0xdeadbeef  cpu1
+    Read SIO Should Equal           0x50  4  cpu1
+    Write SIO                       0x50  8  cpu1
+    Read SIO Should Equal           0x50  4  cpu1
+    Write SIO                       0x50  4  cpu1
+    FIFO IRQ Should Equal           1  False
+    FIFO IRQ Should Equal           0  True
+    FOR  ${word}  IN RANGE  8
+        Read SIO Should Equal       0x58  ${word}  cpu0
+    END
+    FIFO IRQ Should Equal           0  False
+    Read SIO Should Equal           0x58  0  cpu0
+    Read SIO Should Equal           0x50  10  cpu0
+    Write SIO                       0x50  4  cpu0
+    Read SIO Should Equal           0x50  10  cpu0
+    Write SIO                       0x50  8  cpu0
+    FIFO IRQ Should Equal           0  False
+
 Should Reset Queues Errors And Spinlocks
     Create Machine
     Write SIO                       0x54  0x12345678
@@ -176,3 +201,33 @@ Should Cancel Divider Operation When Restoring Results
     Execute Command                 emulation RunFor "0.000001"
     Read SIO Should Equal           0x74  0x12345678
     Read SIO Should Equal           0x70  0xabcdef01
+
+Should Wake Core One With SEV Without A FIFO Interrupt
+    Create Machine
+    Execute Command                 emulation SetGlobalQuantum "0.000001"
+    Execute Command                 machine LoadPlatformDescriptionFromString "rom: Memory.MappedMemory @ sysbus 0 { size: 0x1000 }"
+    Execute Command                 machine LoadPlatformDescriptionFromString "ram: Memory.MappedMemory @ sysbus 0x20000000 { size: 0x1000 }"
+    # Core 0: SEV; B .
+    Execute Command                 sysbus WriteWord 0x100 0xbf40
+    Execute Command                 sysbus WriteWord 0x102 0xe7fe
+    # Core 1: WFE; LDR r0, [PC, #8]; MOVS r1, #1; STR r1, [r0]; B .
+    Execute Command                 sysbus WriteWord 0x200 0xbf20
+    Execute Command                 sysbus WriteWord 0x202 0x4802
+    Execute Command                 sysbus WriteWord 0x204 0x2101
+    Execute Command                 sysbus WriteWord 0x206 0x6001
+    Execute Command                 sysbus WriteWord 0x208 0xe7fe
+    Execute Command                 sysbus WriteDoubleWord 0x20c 0x20000000
+    Execute Command                 cpu0 PC 0x100
+    Execute Command                 cpu1 PC 0x200
+    Execute Command                 cpu1 IsHalted false
+    Execute Command                 emulation RunFor "0.000001"
+    ${before}=                      Execute Command  sysbus ReadDoubleWord 0x20000000
+    Should Be Equal As Integers      ${before.strip()}  0
+    FIFO IRQ Should Equal           0  False
+    FIFO IRQ Should Equal           1  False
+    Execute Command                 cpu0 IsHalted false
+    Execute Command                 emulation RunFor "0.000003"
+    ${after}=                       Execute Command  sysbus ReadDoubleWord 0x20000000
+    Should Be Equal As Integers      ${after.strip()}  1
+    FIFO IRQ Should Equal           0  False
+    FIFO IRQ Should Equal           1  False
