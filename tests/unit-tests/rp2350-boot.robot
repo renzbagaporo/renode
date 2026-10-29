@@ -159,6 +159,8 @@ Should LockOTPReadsIrreversiblyAndFaultGuardedAccess
 
 ShouldFenceQueuedWarmResetWhenRescueHoldsProcessors
     Create Boot Machine
+    # Exercise queued reset/release across multiple synchronization boundaries.
+    Execute Command                 emulation SetGlobalQuantum "0.000001"
     Execute Command                 emulation RunFor "0.00001"
     Execute Command                 sysbus WriteDoubleWord 0xe000ed0c 0x05fa0004 context=cpu0
     Execute Command                 debug_port Rescue true
