@@ -1,0 +1,64 @@
+// RP2350 processor and clock subsystem. Board descriptions provide external flash.
+
+cpu0: CPU.CortexM @ sysbus
+    cpuType: "cortex-m33-rp2350"
+    nvic: nvic0
+    enableTrustZone: true
+
+cpu1: CPU.CortexM @ sysbus
+    cpuType: "cortex-m33-rp2350"
+    nvic: nvic1
+    cpuId: 1
+    enableTrustZone: true
+    isCpuWaitSignalSet: true
+
+nvic0: IRQControllers.NVIC @ {
+    sysbus new Bus.BusPointRegistration { address: 0xe000e000; cpu: cpu0 }
+}
+    -> cpu0@0
+    systickFrequency: 6000000
+    priorityMask: 0xf0
+
+nvic1: IRQControllers.NVIC @ {
+    sysbus new Bus.BusPointRegistration { address: 0xe000e000; cpu: cpu1 }
+}
+    -> cpu1@0
+    systickFrequency: 6000000
+    priorityMask: 0xf0
+
+sram: Memory.MappedMemory @ sysbus 0x20000000
+    size: 0x82000
+
+resets: Miscellaneous.RP2_Resets @ sysbus 0x40020000
+    rp2350: true
+
+xosc: Miscellaneous.RP2_XOSC @ sysbus 0x40048000
+    crystalFrequency: 12000000
+    rp2350: true
+
+rosc: Miscellaneous.RP2350_ROSC @ sysbus 0x400e8000
+
+pll_sys: Miscellaneous.RP2_PLL @ {
+    sysbus 0x40050000;
+    resets 14
+}
+    xosc: xosc
+    rp2350: true
+
+pll_usb: Miscellaneous.RP2_PLL @ {
+    sysbus 0x40058000;
+    resets 15
+}
+    xosc: xosc
+    rp2350: true
+
+clocks: Miscellaneous.RP2350_Clocks @ sysbus 0x40010000
+    xosc: xosc
+    rosc: rosc
+    pllSys: pll_sys
+    pllUsb: pll_usb
+    nvic0: nvic0
+    nvic1: nvic1
+
+ticks: Miscellaneous.RP2350_Ticks @ sysbus 0x40108000
+    clocks: clocks

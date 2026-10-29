@@ -1,0 +1,4 @@
+using "platforms/cpus/rp2350.repl"
+
+flash: Memory.MappedMemory @ sysbus 0x10000000
+    size: 0x400000
