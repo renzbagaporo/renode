@@ -173,3 +173,12 @@ Should Step A Sleeping Core Without Requiring An Interrupt
     Step One Instruction
     Register Should Equal           cpu0  15  0x104
     Register Should Equal           cpu0  1  42
+
+Should Step A Sleeping WFE Without Requiring An Event
+    Prepare Single Step Program     20bf2a21fee7
+    Step One Instruction
+    Register Should Equal           cpu0  15  0x102
+    Register Should Equal           cpu0  1  0
+    Step One Instruction
+    Register Should Equal           cpu0  15  0x104
+    Register Should Equal           cpu0  1  42
