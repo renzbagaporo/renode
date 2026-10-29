@@ -6,9 +6,9 @@ Create Power Machine
     Execute Command                 sysbus WriteDoubleWord 0x40023000 0x01800000
     Execute Command                 cpu0 IsHalted true
     Execute Command                 cpu1 IsHalted true
-    Execute Command                 sysbus WriteDoubleWord 0 0x20008000
-    Execute Command                 sysbus WriteDoubleWord 4 0x101
-    Execute Command                 sysbus WriteWord 0x100 0xe7fe
+    ${image}=                       Evaluate  bytes.fromhex('0080002001010000') + bytes(248) + bytes.fromhex('fee7')
+    Evaluate                        open(r'%{RP2_TEST_OUTPUT}/power_reset_rom.bin', 'wb').write($image)
+    Execute Command                 rom LoadBinary @%{RP2_TEST_OUTPUT}/power_reset_rom.bin
 
 Read Should Equal
     [Arguments]                     ${address}  ${expected}

@@ -31,8 +31,7 @@ nvic1: IRQControllers.NVIC @ {
     systickFrequency: 6000000
     priorityMask: 0xf0
 
-rom: Memory.MappedMemory @ sysbus 0
-    size: 0x8000
+rom: Memory.RP2350_ROM @ sysbus 0
 
 bootram: Memory.RP2350_BootRAM @ sysbus 0x400e0000
     accessControl: accessctrl
