@@ -1,8 +1,10 @@
 // Standalone native debug-entry regression. Compile against the matching
 // runtime DLLs and platform-lib; run with isolated HOME and a process timeout.
-// Modes: wfe, wfi, wfe_deep, wfi_deep, event_set, exclusive, lockup.
+// Modes: wfe, wfi, wfe_deep, wfi_deep, event_set, exclusive, lockup, live_wfe, live_wfi.
 using System;
 using System.Threading;
+using System.Threading.Tasks;
+using System.Reflection;
 using Antmicro.Renode.Core;
 using Antmicro.Renode.Peripherals;
 using Antmicro.Renode.Peripherals.Bus;
@@ -22,6 +24,9 @@ public static class CortexMDebugSleepRepro
     }
     static void Run(string mode)
     {
+        var live = mode.StartsWith("live_");
+        var description = mode;
+        if(live) mode = mode.Substring(5);
         var emulation = EmulationManager.Instance.CurrentEmulation;
         emulation.MasterTimeSource.Quantum = TimeInterval.FromMicroseconds(1);
         var machine = new Machine(createLocalTimeSource: true);
@@ -62,8 +67,54 @@ public static class CortexMDebugSleepRepro
         if(mode.EndsWith("_deep")) nvic.WriteDoubleWord(0xd10, 4);
         var enters = 0;
         var exits = 0;
-        cpu.AddHookAtWfiStateChange(entered => { if(entered) Interlocked.Increment(ref enters); else Interlocked.Increment(ref exits); });
-        Action advance = () => emulation.RunFor(TimeInterval.FromMicroseconds(100));
+        uint sleepPC = 0, sleepR1 = 0, sleepR2 = 0;
+        var firstSleep = new ManualResetEventSlim();
+        var secondSleep = new ManualResetEventSlim();
+        var loopReached = new ManualResetEventSlim();
+        var resetMonitor = typeof(CortexM).GetField("reset", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(cpu);
+        cpu.AddHookAtWfiStateChange(entered =>
+        {
+            if(entered)
+            {
+                // This notification runs on the executing native CPU thread.
+                Volatile.Write(ref sleepPC, (uint)cpu.PC);
+                Volatile.Write(ref sleepR1, (uint)cpu.GetRegister(1));
+                Volatile.Write(ref sleepR2, (uint)cpu.GetRegister(2));
+                if(Interlocked.Increment(ref enters) == 1) firstSleep.Set();
+                else secondSleep.Set();
+            }
+            else
+            {
+                Interlocked.Increment(ref exits);
+                Need(Task.Run(() => { lock(resetMonitor) { } }).Wait(TimeSpan.FromSeconds(3)),
+                    "Sleep-exit callback owns the CPU reset monitor");
+            }
+        });
+        if(live) cpu.SetHookAtBlockBegin((address, size) =>
+        {
+            if(address == 0x2000010c && (uint)cpu.GetRegister(3) > 0) loopReached.Set();
+        });
+        var advances = 0;
+        Action advance = () =>
+        {
+            if(!live) { emulation.RunFor(TimeInterval.FromMicroseconds(100)); return; }
+            switch(++advances)
+            {
+            case 1:
+                emulation.StartAll();
+                Need(firstSleep.Wait(TimeSpan.FromSeconds(5)), "Live native core did not reach first wait");
+                break;
+            case 2:
+                Need(secondSleep.Wait(TimeSpan.FromSeconds(5)), "Live native resume did not reach next wait");
+                break;
+            default:
+                Need(loopReached.Wait(TimeSpan.FromSeconds(5)), "Live native PC rewrite never reached ADD loop");
+                nvic.WriteDoubleWord(0xdf0, 0xa05f0003);
+                Need(SpinWait.SpinUntil(() => (nvic.ReadDoubleWord(0xdf0) & 0x20000) != 0,
+                    TimeSpan.FromSeconds(5)), "Live final native halt failed");
+                break;
+            }
+        };
         advance();
         if(mode == "exclusive")
         {
@@ -82,20 +133,24 @@ public static class CortexMDebugSleepRepro
         }
         if(mode != "lockup")
         {
-            Need((uint)cpu.PC == 0x20000102 && (uint)cpu.GetRegister(1) == 0, "Real wait instruction did not sleep at its next PC");
+            Need((live ? Volatile.Read(ref sleepPC) : (uint)cpu.PC) == 0x20000102
+                && (live ? Volatile.Read(ref sleepR1) : (uint)cpu.GetRegister(1)) == 0,
+                "Real wait instruction did not sleep at its next PC");
             Need((nvic.ReadDoubleWord(0xdf0) & 0x40000) != 0, "DHCSR did not report actual sleep");
             Need(mode.EndsWith("_deep") ? nvic.InDeepSleep.IsSet : nvic.InSleep.IsSet, "Sleep output was not asserted");
             Need(enters == 1 && exits == 0, "Unexpected sleep transition before debug");
             if(mode == "event_set") cpu.SetEventFlag();
         }
         else Need(nvic.Lockup.IsSet && (uint)cpu.PC == 0xeffffffe, "Fixture did not cause real reset Lockup: PC=" + cpu.PC + " signal=" + nvic.Lockup.IsSet);
-        Log("NATIVE_WAIT_OR_LOCKUP_BEFORE_DEBUG mode=" + mode + " pc=" + cpu.PC);
+        Log("NATIVE_WAIT_OR_LOCKUP_BEFORE_DEBUG mode=" + description + " pc="
+            + (live ? Volatile.Read(ref sleepPC).ToString("x") : cpu.PC.ToString()));
         nvic.WriteDoubleWord(0xdf0, 0xa05f0003);
         Need(SpinWait.SpinUntil(() => (nvic.ReadDoubleWord(0xdf0) & 0x30000) == 0x30000,
             TimeSpan.FromSeconds(5)), "Native halt was not acknowledged");
         var halted = nvic.ReadDoubleWord(0xdf0);
         Need((halted & 0xc0000) == 0, "Acknowledged Debug state still reports sleep or Lockup");
         Need(!nvic.InSleep.IsSet && !nvic.InDeepSleep.IsSet && !nvic.Lockup.IsSet, "Actual sleep/Lockup outputs remained asserted");
+        if(mode == "lockup") Need((uint)cpu.PC == 0xeffffffe, "Debug entry changed Lockup return address");
         if(mode != "lockup")
         {
             Need((uint)cpu.PC == 0x20000102 && (uint)cpu.GetRegister(1) == 0, "Debug entry retired the instruction after the wait");
@@ -103,9 +158,11 @@ public static class CortexMDebugSleepRepro
             nvic.WriteDoubleWord(0xdf0, 0xa05f0001);
             WaitRunning(nvic);
             advance();
-            Need((uint)cpu.GetRegister(1) == 42, "Resume remained blocked in native wait state");
+            Need((live ? Volatile.Read(ref sleepR1) : (uint)cpu.GetRegister(1)) == 42,
+                "Resume remained blocked in native wait state");
             var secondPC = mode == "event_set" ? 0x2000010au : 0x20000106u;
-            Need((uint)cpu.PC == secondPC && (uint)cpu.GetRegister(2) == (mode == "event_set" ? 59u : 0u),
+            Need((live ? Volatile.Read(ref sleepPC) : (uint)cpu.PC) == secondPC
+                && (live ? Volatile.Read(ref sleepR2) : (uint)cpu.GetRegister(2)) == (mode == "event_set" ? 59u : 0u),
                 "Debug entry changed Event Register semantics at the next wait");
             Need((nvic.ReadDoubleWord(0xdf0) & 0x40000) != 0 && enters == 2 && exits == 1,
                 "Second wait did not assert sleep once, or resume replayed sleep-exit notification");
@@ -129,7 +186,7 @@ public static class CortexMDebugSleepRepro
         WaitRunning(nvic);
         advance();
         Need((uint)cpu.GetRegister(3) > 0 && !nvic.Lockup.IsSet, "Debugger PC rewrite could not resume: PC=" + cpu.PC + " r3=" + cpu.GetRegister(3) + " lockup=" + nvic.Lockup.IsSet);
-        Log("NATIVE_DEBUG_WAKE_RESUME_AND_PC_REWRITE_PASSED mode=" + mode + " r3=" + cpu.GetRegister(3));
+        Log("NATIVE_DEBUG_WAKE_RESUME_AND_PC_REWRITE_PASSED mode=" + description + " r3=" + cpu.GetRegister(3));
     }
     sealed class FaultingVectors : IDoubleWordPeripheral, IKnownSize
     {
