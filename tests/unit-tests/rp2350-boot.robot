@@ -94,9 +94,8 @@ Should PreserveAONScratchAndRPAPAcrossRescueAndRequirePasswordToClearFlag
     Execute Command                 sysbus WriteDoubleWord 0x4010002c 0x5afe0010
     Read Should Equal               0x4010002c  0x00200000
 
-Should ImplementAPBAtomicBootRAMAndExecuteItsContents
+Should ImplementDataOnlyAPBAtomicBootRAM
     Create Boot Machine
-    Execute Command                 sysbus WriteDoubleWord 4 0x400e0101
     Execute Command                 sysbus WriteDoubleWord 0x400e0000 0x10
     Execute Command                 sysbus WriteDoubleWord 0x400e2000 0x21
     Read Should Equal               0x400e0000  0x31
@@ -104,25 +103,34 @@ Should ImplementAPBAtomicBootRAMAndExecuteItsContents
     Read Should Equal               0x400e0000  0x21
     Execute Command                 sysbus WriteDoubleWord 0x400e1000 0x01
     Read Should Equal               0x400e0000  0x20
-    Execute Command                 sysbus WriteDoubleWord 0x400e0100 0xe7fe202a
-    Execute Command                 cpu0 VectorTableOffset 0
-    Execute Command                 sysbus WriteDoubleWord 0xe000ed98 0 context=cpu0
-    Execute Command                 sysbus WriteDoubleWord 0xe000ed9c 0x400e0000 context=cpu0
-    Execute Command                 sysbus WriteDoubleWord 0xe000eda0 0x400e03e1 context=cpu0
-    Execute Command                 sysbus WriteDoubleWord 0xe000edc0 0xff context=cpu0
-    Execute Command                 sysbus WriteDoubleWord 0xe000ed94 5 context=cpu0
-    Execute Command                 cpu0 PC 0x400e0100
-    Execute Command                 emulation RunFor "0.001"
-    ${halt}=                        Execute Command  cpu0 IsHalted
-    ${dhcsr}=                       Execute Command  sysbus ReadDoubleWord 0xe000edf0 context=cpu0
-    ${mem}=                         Execute Command  sysbus ReadDoubleWord 0x400e0100
-    Log To Console                  BootRAM halted=${halt} DHCSR=${dhcsr} code=${mem}
-    ${pc}=                          Execute Command  cpu0 PC
-    ${fault}=                       Execute Command  sysbus ReadDoubleWord 0xe000ed28 context=cpu0
-    ${sfsr}=                        Execute Command  sysbus ReadDoubleWord 0xe000ede4 context=cpu0
-    Log To Console                  BootRAM PC=${pc} CFSR=${fault} SFSR=${sfsr}
-    ${r0}=                          Execute Command  cpu0 GetRegister "R0"
-    Should Be Equal As Integers      ${r0.strip()}  42
+    Execute Command                 sysbus WriteByte 0x400e0000 0xa5
+    Read Should Equal               0x400e0000  0xa5a5a5a5
+    Execute Command                 bootram Reset
+    Read Should Equal               0x400e0000  0xa5a5a5a5
+    Run Keyword And Expect Error    *Bus access failed*  Execute Command  sysbus ReadDoubleWord 0x400e0400
+
+ShouldKeepWriteOnceBitsAndClaimBootLocksAtomically
+    Create Boot Machine
+    Execute Command                 sysbus WriteDoubleWord 0x400e0800 0x11
+    Execute Command                 sysbus WriteDoubleWord 0x400e0800 0x20
+    Execute Command                 sysbus WriteDoubleWord 0x400e3800 0x10
+    Read Should Equal               0x400e0800  0x31
+    Read Should Equal               0x400e0808  0xff
+    Read Should Equal               0x400e0818  8
+    Read Should Equal               0x400e0818  0
+    Read Should Equal               0x400e0808  0xf7
+    Execute Command                 sysbus WriteDoubleWord 0x400e0818 0
+    Read Should Equal               0x400e0808  0xff
+    Execute Command                 bootram Reset
+    Read Should Equal               0x400e0800  0
+    Read Should Equal               0x400e0808  0xff
+
+ShouldRejectNonSecureBootRAMDataThroughMEMAP
+    Create Boot Machine
+    Execute Command                 sysbus WriteDoubleWord 0x400e0000 0x12345678
+    ${value}=                       Execute Command  debug_port ReadCoreMemory 0 0x400e0000 true
+    Should Be Equal As Integers      ${value.strip()}  0x12345678
+    Run Keyword And Expect Error    *Bus access failed*  Execute Command  debug_port ReadCoreMemory 0 0x400e0000 false
 
 Should LockOTPReadsIrreversiblyAndFaultGuardedAccess
     Create Boot Machine
