@@ -1,30 +1,41 @@
-// RP2350 processor and clock subsystem. Board descriptions provide external flash.
+// RP2350 dual Cortex-M33 processor and on-chip memories.
+// Board descriptions provide external serial flash.
 
 cpu0: CPU.CortexM @ sysbus
     cpuType: "cortex-m33-rp2350"
     nvic: nvic0
     enableTrustZone: true
+    InitVectorTableOffset: 0
 
 cpu1: CPU.CortexM @ sysbus
     cpuType: "cortex-m33-rp2350"
     nvic: nvic1
     cpuId: 1
     enableTrustZone: true
+    InitVectorTableOffset: 0
     isCpuWaitSignalSet: true
 
 nvic0: IRQControllers.NVIC @ {
-    sysbus new Bus.BusPointRegistration { address: 0xe000e000; cpu: cpu0 }
+    sysbus new Bus.BusPointRegistration { address: 0xe000e000; cpu: cpu0 };
+    sysbus new Bus.BusMultiRegistration { address: 0xe002e000; size: 0x1000; region: "NonSecure"; cpu: cpu0 }
 }
     -> cpu0@0
     systickFrequency: 6000000
     priorityMask: 0xf0
 
 nvic1: IRQControllers.NVIC @ {
-    sysbus new Bus.BusPointRegistration { address: 0xe000e000; cpu: cpu1 }
+    sysbus new Bus.BusPointRegistration { address: 0xe000e000; cpu: cpu1 };
+    sysbus new Bus.BusMultiRegistration { address: 0xe002e000; size: 0x1000; region: "NonSecure"; cpu: cpu1 }
 }
     -> cpu1@0
     systickFrequency: 6000000
     priorityMask: 0xf0
+
+rom: Memory.MappedMemory @ sysbus 0
+    size: 0x8000
+
+bootram: Memory.RP2350_BootRAM @ sysbus 0x400e0000
+    accessControl: accessctrl
 
 sram: Memory.MappedMemory @ sysbus 0x20000000
     size: 0x82000
@@ -62,3 +73,119 @@ clocks: Miscellaneous.RP2350_Clocks @ sysbus 0x40010000
 
 ticks: Miscellaneous.RP2350_Ticks @ sysbus 0x40108000
     clocks: clocks
+    timer0: timer0
+    timer1: timer1
+
+sha256: Miscellaneous.RP2350_SHA256 @ { sysbus 0x400f8000; resets 17 }
+    clocks: clocks
+
+trng: Miscellaneous.RP2350_TRNG @ { sysbus 0x400f0000; resets 25 }
+    clocks: clocks
+    IRQ -> nvic0@39 | nvic1@39
+
+debug_port: CPU.RP2350_DebugPort
+    cpu0: cpu0
+    cpu1: cpu1
+
+powman: Miscellaneous.RP2350_POWMAN @ sysbus 0x40100000
+    core0: cpu0
+    core1: cpu1
+    nvic0: nvic0
+    nvic1: nvic1
+    debugPort: debug_port
+
+nvic0:
+    SystemResetRequest -> powman@0
+
+nvic1:
+    SystemResetRequest -> powman@1
+
+otp: Miscellaneous.RP2350_OTP @ sysbus 0x40120000
+
+otpData: Memory.RP2350_OTPData @ sysbus 0x40130000
+    otp: otp
+
+otpRaw: Memory.RP2350_OTPData @ sysbus 0x40134000
+    otp: otp
+    raw: true
+
+otpGuarded: Memory.RP2350_OTPData @ sysbus 0x40138000
+    otp: otp
+    guarded: true
+
+otpRawGuarded: Memory.RP2350_OTPData @ sysbus 0x4013c000
+    otp: otp
+    raw: true
+    guarded: true
+
+sysinfo: Miscellaneous.RP2350_SYSINFO @ { sysbus 0x40000000; resets 21 }
+
+accessctrl: Miscellaneous.RP2350_AccessControl @ sysbus 0x40060000
+
+psm: Miscellaneous.RP2350_PSM @ sysbus 0x40018000
+    core0: cpu0
+    core1: cpu1
+    nvic0: nvic0
+    nvic1: nvic1
+
+dpram: USB.RP2_USB_DPRAM @ sysbus 0x50100000
+
+sio: Miscellaneous.RP2350_SIO @ {
+    sysbus 0xd0000000;
+    sysbus new Bus.BusMultiRegistration { address: 0xd0020000; size: 0x1000; region: "NonSecure" }
+}
+    accessControl: accessctrl
+    Core0IRQ -> nvic0@25
+    Core1IRQ -> nvic1@25
+    Core0NonSecureIRQ -> nvic0@27
+    Core1NonSecureIRQ -> nvic1@27
+    Core0DoorbellIRQ -> nvic0@26
+    Core1DoorbellIRQ -> nvic1@26
+    Core0NonSecureDoorbellIRQ -> nvic0@28
+    Core1NonSecureDoorbellIRQ -> nvic1@28
+
+timer0: Timers.RP2_Timer @ { sysbus 0x400b0000; resets 23 }
+    clocked: true
+    rp2350: true
+    0 -> nvic0@0 | nvic1@0
+    1 -> nvic0@1 | nvic1@1
+    2 -> nvic0@2 | nvic1@2
+    3 -> nvic0@3 | nvic1@3
+
+timer1: Timers.RP2_Timer @ { sysbus 0x400b8000; resets 24 }
+    clocked: true
+    rp2350: true
+    0 -> nvic0@4 | nvic1@4
+    1 -> nvic0@5 | nvic1@5
+    2 -> nvic0@6 | nvic1@6
+    3 -> nvic0@7 | nvic1@7
+
+watchdog: Miscellaneous.RP2350_Watchdog @ sysbus 0x400d8000
+    ticks: ticks
+    psm: psm
+    powman: powman
+
+gpio: GPIOPort.RP2_GPIOBank0 @ { sysbus 0x40028000; resets 6 }
+    sio: sio
+    rp2350: true
+    accessControl: accessctrl
+    Core0IRQ -> nvic0@21
+    Core1IRQ -> nvic1@21
+    Core0NonSecureIRQ -> nvic0@22
+    Core1NonSecureIRQ -> nvic1@22
+
+pads: GPIOPort.RP2_PadsBank0 @ { sysbus 0x40038000; resets 9 }
+    gpio: gpio
+    rp2350: true
+
+romTable: CPU.CortexM_ROMTable @ sysbus 0xe00ff000
+
+usb: USB.RP2_USB @ { sysbus 0x50110000; resets 28 }
+    dpram: dpram
+    clockSource: clocks
+    IRQ -> nvic0@14 | nvic1@14
+
+xip: MemoryControllers.RP2350_XIP @ sysbus 0x400c8000
+
+xipMaintenance: MemoryControllers.RP2350_XIPMaintenance @ sysbus 0x18000000
+    xip: xip

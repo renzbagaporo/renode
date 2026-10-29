@@ -1,4 +1,71 @@
 using "platforms/cpus/rp2350.repl"
 
-flash: Memory.MappedMemory @ sysbus 0x10000000
+flashMemory: Memory.MappedMemory
     size: 0x400000
+
+flash: SPI.WinbondW25QFlash
+    underlyingMemory: flashMemory
+
+qmi: MemoryControllers.RP2350_QMI @ sysbus 0x400d0000
+    flash: flash
+    clocks: clocks
+
+xipMemory: Memory.RP2350_XIPMemory @ sysbus 0x10000000
+    flash: flash
+    qmi: qmi
+    xip: xip
+
+xipUncached: Memory.RP2350_XIPMemory @ sysbus 0x14000000
+    flash: flash
+    qmi: qmi
+    xip: xip
+    useCache: false
+
+xipUntranslated: Memory.RP2350_XIPMemory @ sysbus 0x1c000000
+    flash: flash
+    qmi: qmi
+    untranslated: true
+    useCache: false
+    xip: xip
+
+qspi: GPIOPort.RP2350_QSPI @ { sysbus 0x40030000; resets 7 }
+    qmi: qmi
+    sio: sio
+    accessControl: accessctrl
+    Core0IRQ -> nvic0@23
+    Core1IRQ -> nvic1@23
+    Core0NonSecureIRQ -> nvic0@24
+    Core1NonSecureIRQ -> nvic1@24
+
+qpads: GPIOPort.RP2350_PadsQSPI @ { sysbus 0x40040000; resets 10 }
+    gpio: qspi
+
+sysinfo:
+    packageQfn60: true
+
+gpio:
+    numberOfPins: 30
+
+pads:
+    rp2350A2PadRemap: true
+
+xipCacheMemory: Memory.RP2350_XIPMemory @ sysbus 0x12000000
+    flash: flash
+    qmi: qmi
+    xip: xip
+    windowOffset: 0x2000000
+
+xipUncachedReserved: Memory.RP2350_XIPMemory @ sysbus 0x16000000
+    flash: flash
+    qmi: qmi
+    xip: xip
+    useCache: false
+    windowOffset: 0x2000000
+
+xipUntranslatedReserved: Memory.RP2350_XIPMemory @ sysbus 0x1e000000
+    flash: flash
+    qmi: qmi
+    xip: xip
+    useCache: false
+    untranslated: true
+    windowOffset: 0x2000000
