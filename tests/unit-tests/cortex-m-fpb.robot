@@ -29,8 +29,10 @@ ${FPB_PLATFORM}                     SEPARATOR=\n
 
 *** Keywords ***
 Create FPB Machine
+    [Arguments]                     ${model}=cortex-m33-rp2350
     Execute Command                 mach create
-    Execute Command                 machine LoadPlatformDescriptionFromString """${FPB_PLATFORM}"""
+    ${platform}=                    Evaluate  $FPB_PLATFORM.replace('cortex-m33-rp2350', $model)
+    Execute Command                 machine LoadPlatformDescriptionFromString """${platform}"""
     Execute Command                 emulation SetGlobalAdvanceImmediately true
     Execute Command                 emulation SetGlobalQuantum "0.000001"
     Execute Command                 cpu0 EnableMemoryMappedDebug true
@@ -337,3 +339,43 @@ Should SelectIndependentFPBsThroughTheTwoMemAPs
     Execute Command                 include "${CURDIR}/FPBConcurrency.cs"
     Execute Command                 machine LoadPlatformDescriptionFromString "fpbConcurrency: Miscellaneous.FPBConcurrencyTester @ sysbus 0x50000000 { cpu0: cpu0; cpu1: cpu1 }"
     Execute Command                 fpbConcurrency VerifyMemAPCoreIsolation
+
+Should ObserveComparatorArmedAfterEnteringSelfBranchLoop
+    Create FPB Machine
+    Enable FPB Debug
+    Execute Command                 emulation RunFor "0.0001"
+    FPB Core Should Be Running
+    FPB Register Should Equal       15  0x106
+    Set FPB Comparator              0  0x107
+    Enable FPB
+    Execute Command                 emulation RunFor "0.0001"
+    FPB Core Should Be Halted       0x106
+    FPB Register Should Equal       0  16
+    FPB Register Should Equal       1  42
+    FPB Register Should Equal       2  59
+
+Should PreserveRealWFIWhenComparatorIsArmedAtFollowingInstruction
+    Create FPB Machine
+    Enable FPB Debug
+    Execute Command                 sysbus WriteWord 0x100 0xbf30
+    Execute Command                 emulation RunFor "0.0001"
+    FPB Core Should Be Running
+    FPB Register Should Equal       15  0x102
+    FPB Register Should Equal       1  0
+    Set FPB Comparator              0  0x103
+    Enable FPB
+    Execute Command                 emulation RunFor "0.0001"
+    FPB Core Should Be Running
+    FPB Register Should Equal       15  0x102
+    FPB Register Should Equal       1  0
+
+Should PreserveGenericM33SelfBranchOptimization
+    Create FPB Machine              cortex-m33
+    Enable FPB Debug
+    Execute Command                 emulation RunFor "0.0001"
+    ${before}=                      Execute Command  cpu0 ExecutedInstructions
+    Execute Command                 emulation RunFor "0.0001"
+    ${after}=                       Execute Command  cpu0 ExecutedInstructions
+    Should Be Equal As Integers      ${after.strip()}  ${before.strip()}
+    FPB Core Should Be Running
+    FPB Register Should Equal       15  0x106
