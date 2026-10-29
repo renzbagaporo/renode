@@ -83,11 +83,32 @@ Should Resample Held FIFO IRQ Across NVIC Reset
 
 Should Resample Held FIFO IRQ Across PSM Core Reset
     Create Machine
+    Execute Command                 emulation SetGlobalQuantum "0.000001"
+    Execute Command                 sysbus WriteDoubleWord 0 0x20001000
+    Execute Command                 sysbus WriteDoubleWord 4 0x101
+    Execute Command                 sysbus WriteWord 0x100 0xe7fe
     Execute Command                 sysbus WriteDoubleWord 0xd0000054 0x12345678 cpu0
+    Execute Command                 sysbus WriteDoubleWord 0xe000e100 0x10000 cpu1
+    Execute Command                 sysbus WriteDoubleWord 0xe000e200 8 cpu1
     Execute Command                 sysbus WriteDoubleWord 0x40012004 0x10000
-    Pending Should Equal            cpu1  0x10000  0x10000
+    Execute Command                 emulation RunFor "0.00001"
+    ${held}=                        Execute Command  sysbus ReadDoubleWord 0x40010004
+    Should Be Equal As Integers      ${held.strip()}  0x10000
+    Pending Should Equal            cpu1  0x10008  0x10000
+    ${enabled}=                     Execute Command  sysbus ReadDoubleWord 0xe000e100 cpu1
+    Should Be Equal As Integers      ${enabled.strip()}  0
     Execute Command                 sysbus WriteDoubleWord 0x40013004 0x10000
+    Execute Command                 emulation RunFor "0.00001"
+    ${released}=                    Execute Command  sysbus ReadDoubleWord 0x40010004
+    Should Be Equal As Integers      ${released.strip()}  0
     Pending Should Equal            cpu1  0x10000  0x10000
+    ${fifo}=                        Execute Command  sysbus ReadDoubleWord 0xd0000058 cpu1
+    Should Be Equal As Integers      ${fifo.strip()}  0x12345678
+    ${status}=                      Execute Command  sysbus ReadDoubleWord 0xd0000050 cpu1
+    Should Be True                  int("${status.strip()}", 0) & 1 == 0
+    # Draining the FIFO lowers its source; clear the latched NVIC pending bit.
+    Execute Command                 sysbus WriteDoubleWord 0xe000e280 0x10000 cpu1
+    Pending Should Equal            cpu1  0x10000  0
 
 Should Clear Software Pending State When Physical IRQ Is Low At Reset
     Create Machine
