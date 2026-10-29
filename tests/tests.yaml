@@ -332,3 +332,5 @@
 
 - port_3346:
   - tests/unit-tests/gdb/gdb_multiprocess.robot
+- tests/peripherals/RP2040_SIO.robot
+- tests/peripherals/RP2040_PSM.robot
