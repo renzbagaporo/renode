@@ -42,12 +42,23 @@ Enable External Debug
     Execute Command                 cpu0 EnableMemoryMappedDebug true
     Execute Command                 nvic0 WriteDoubleWord 0xdf0 0xa05f0001
 
+Debug Halt Should Equal
+    [Arguments]                     ${expected}
+    ${status}=                      Execute Command  nvic0 ReadDoubleWord 0xdf0
+    ${halted}=                      Evaluate  (int("${status.strip()}", 0) >> 17) & 1
+    Should Be Equal As Integers      ${halted}  ${expected}
+
+Wait For Debug Halt
+    [Arguments]                     ${expected}=1
+    Wait Until Keyword Succeeds     5s  0.01s  Debug Halt Should Equal  ${expected}
+
 Register Should Equal
     [Arguments]                     ${cpu}  ${register}  ${expected}
     ${actual}=                      Execute Command  ${cpu} GetRegister ${register}
     Should Be Equal As Integers      ${actual.strip()}  ${expected}
 
 Core Should Be Halted At Breakpoint
+    Wait For Debug Halt
     ${halted}=                      Execute Command  cpu0 HaltedByDebugger
     Should Be Equal                 ${halted.strip()}  True
     Register Should Equal           cpu0  15  0x102
@@ -65,6 +76,7 @@ Prepare Single Step Program
     Enable External Debug
     Execute Command                 emulation RunFor "0.0001"
     Execute Command                 nvic0 WriteDoubleWord 0xdf0 0xa05f0003
+    Wait For Debug Halt
     Execute Command                 cpu0 SetRegister 15 0x100
     Execute Command                 cpu0 SetRegister 0 0
     Execute Command                 cpu0 SetRegister 1 0
@@ -72,7 +84,9 @@ Prepare Single Step Program
 Step One Instruction
     ${before}=                      Execute Command  cpu0 ExecutedInstructions
     Execute Command                 nvic0 WriteDoubleWord 0xdf0 0xa05f000d
+    Wait For Debug Halt             0
     Execute Command                 emulation RunFor "0.0001"
+    Wait For Debug Halt
     ${after}=                       Execute Command  cpu0 ExecutedInstructions
     ${retired}=                     Evaluate  int("${after.strip()}",0) - int("${before.strip()}",0)
     Should Be Equal As Integers      ${retired}  1
@@ -99,6 +113,7 @@ Should Resume From An Explicit Debugger Program Counter
     Core Should Be Halted At Breakpoint
     Execute Command                 cpu0 SetRegister 15 0x104
     Execute Command                 nvic0 WriteDoubleWord 0xdf0 0xa05f0001
+    Wait For Debug Halt             0
     Execute Command                 emulation RunFor "0.0001"
     Register Should Equal           cpu0  1  42
     ${halted}=                      Execute Command  cpu0 HaltedByDebugger
@@ -109,6 +124,7 @@ Should Preserve Fault Behavior On The Other Core Without External Debug
     Enable External Debug
     Execute Command                 emulation RunFor "0.0001"
     Core Should Be Halted At Breakpoint
+    Wait For Debug Halt
     ${halted}=                      Execute Command  cpu1 HaltedByDebugger
     Should Be Equal                 ${halted.strip()}  False
     Register Should Equal           cpu1  7  119
@@ -143,6 +159,7 @@ Should Mask Pending Interrupts During A Debug Step And Restore Them On Run
     Register Should Equal           cpu0  15  0x104
     Register Should Equal           cpu0  6  0
     Execute Command                 nvic0 WriteDoubleWord 0xdf0 0xa05f0001
+    Wait For Debug Halt             0
     Execute Command                 emulation RunFor "0.0001"
     Register Should Equal           cpu0  6  102
 

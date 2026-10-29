@@ -55,8 +55,15 @@ FPB Register Should Equal
     ${actual}=                      Execute Command  ${cpu} GetRegister ${register}
     Should Be Equal As Integers      ${actual.strip()}  ${expected}
 
+FPB Halt Status Should Equal
+    [Arguments]                     ${expected}  ${cpu}=cpu0
+    ${status}=                      Execute Command  sysbus ReadDoubleWord 0xe000edf0 context=${cpu}
+    ${halted}=                      Evaluate  (int("${status.strip()}", 0) >> 17) & 1
+    Should Be Equal As Integers      ${halted}  ${expected}
+
 FPB Core Should Be Halted
     [Arguments]                     ${pc}=0x102  ${cpu}=cpu0
+    Wait Until Keyword Succeeds     5s  0.01s  FPB Halt Status Should Equal  1  ${cpu}
     ${halted}=                      Execute Command  ${cpu} HaltedByDebugger
     Should Be Equal                 ${halted.strip()}  True
     FPB Register Should Equal       15  ${pc}  ${cpu}
@@ -83,6 +90,7 @@ Resume FPB Core
     [Arguments]                     ${cpu}=cpu0
     Execute Command                 sysbus WriteDoubleWord 0xe000ed30 0x1f context=${cpu}
     Enable FPB Debug                ${cpu}
+    Wait Until Keyword Succeeds     5s  0.01s  FPB Halt Status Should Equal  0  ${cpu}
     Execute Command                 emulation RunFor "0.0001"
 
 *** Test Cases ***
