@@ -340,3 +340,6 @@
 - tests/peripherals/RP2040_Interrupts.robot
 - tests/unit-tests/cortex-m-halting-debug.robot
 - tests/unit-tests/rp2350-dcp.robot
+- tests/unit-tests/rp2350-rcp.robot
+- tests/unit-tests/rp2350-qmi.robot
+- tests/unit-tests/rp2350-crypto.robot
