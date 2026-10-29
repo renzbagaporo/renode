@@ -48,8 +48,8 @@ Check CPU Store
     Create Machine
     # Execute STR to the selected XIP alias, then write a success marker to SRAM.
     ${program}=                     Evaluate  bytes.fromhex("03490720086003492a200860fee7c046") + struct.pack("<II", int("${address}", 0), 0x20000100)  modules=struct
-    Create Binary File              ${OUTPUT DIR}/rp2040_xip_store.bin  ${program}
-    Execute Command                 flash LoadBinary @${OUTPUT DIR}/rp2040_xip_store.bin
+    Create Binary File              ${TEMPDIR}/rp2040_xip_store.bin  ${program}
+    Execute Command                 flash LoadBinary @${TEMPDIR}/rp2040_xip_store.bin
     Execute Command                 sysbus WriteDoubleWord 0 0x20001000
     Execute Command                 sysbus WriteDoubleWord 4 0x10000001
     Configure Standard XIP Read
@@ -73,8 +73,8 @@ Should Ignore CPU Stores To Uncached Nonallocating Alias
 Should Block Uncached Reads When SSI Is Disabled
     Create Machine
     ${program}=                     Evaluate  bytes.fromhex("03490720086003492a200860fee7c046")
-    Create Binary File              ${OUTPUT DIR}/rp2040_xip_read.bin  ${program}
-    Execute Command                 flash LoadBinary @${OUTPUT DIR}/rp2040_xip_read.bin
+    Create Binary File              ${TEMPDIR}/rp2040_xip_read.bin  ${program}
+    Execute Command                 flash LoadBinary @${TEMPDIR}/rp2040_xip_read.bin
     Read Should Equal               0x13000000  0
     Configure Standard XIP Read
     Read Should Equal               0x13000000  0x20074903
