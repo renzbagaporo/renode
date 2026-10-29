@@ -48,6 +48,24 @@ Should Route SSI Interrupts To Both Cores
     Pending Should Equal            cpu0  0x40  0x40
     Pending Should Equal            cpu1  0x40  0x40
 
+Should Route Both PIO Interrupt Lines From Both Blocks To Both Cores
+    Create Machine
+    Execute Command                 sysbus WriteDoubleWord 0x4000f000 0xc00
+    Execute Command                 sysbus WriteDoubleWord 0x50200130 1
+    Execute Command                 sysbus WriteDoubleWord 0x5020013c 1
+    Execute Command                 sysbus WriteDoubleWord 0x50300130 1
+    Execute Command                 sysbus WriteDoubleWord 0x5030013c 1
+    Pending Should Equal            cpu0  0x780  0x780
+    Pending Should Equal            cpu1  0x780  0x780
+
+Should Route Both DMA Interrupt Lines To Both Cores
+    Create Machine
+    Execute Command                 sysbus WriteDoubleWord 0x4000f000 4
+    Execute Command                 sysbus WriteDoubleWord 0x50000408 1
+    Execute Command                 sysbus WriteDoubleWord 0x50000418 1
+    Pending Should Equal            cpu0  0x1800  0x1800
+    Pending Should Equal            cpu1  0x1800  0x1800
+
 Should Keep GPIO Interrupts Specific To Each Core
     Create Machine
     Execute Command                 sysbus WriteDoubleWord 0x4000f000 0x20

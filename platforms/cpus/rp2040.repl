@@ -60,6 +60,42 @@ gpio: GPIOPort.RP2_GPIOBank0 @ { sysbus 0x40014000; resets 5 }
     Core1IRQ -> nvic1@13
 pads: GPIOPort.RP2_PadsBank0 @ { sysbus 0x4001c000; resets 8 }
     gpio: gpio
+
+dma: DMA.RP2040_DMA @ { sysbus 0x50000000; resets 2 }
+    clocks: clocks
+    IRQ0 -> nvic0@11 | nvic1@11
+    IRQ1 -> nvic0@12 | nvic1@12
+
+pio0: Miscellaneous.RP2040_PIO @ { sysbus 0x50200000; resets 10 }
+    gpio: gpio
+    clocks: clocks
+    pioId: 0
+    0 -> dma@0
+    1 -> dma@1
+    2 -> dma@2
+    3 -> dma@3
+    4 -> dma@4
+    5 -> dma@5
+    6 -> dma@6
+    7 -> dma@7
+    8 -> nvic0@7 | nvic1@7
+    9 -> nvic0@8 | nvic1@8
+
+pio1: Miscellaneous.RP2040_PIO @ { sysbus 0x50300000; resets 11 }
+    gpio: gpio
+    clocks: clocks
+    pioId: 1
+    0 -> dma@8
+    1 -> dma@9
+    2 -> dma@10
+    3 -> dma@11
+    4 -> dma@12
+    5 -> dma@13
+    6 -> dma@14
+    7 -> dma@15
+    8 -> nvic0@9 | nvic1@9
+    9 -> nvic0@10 | nvic1@10
+
 dpram: USB.RP2_USB_DPRAM @ sysbus 0x50100000
 usb: USB.RP2_USB @ { sysbus 0x50110000; resets 24 }
     dpram: dpram
