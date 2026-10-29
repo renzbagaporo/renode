@@ -137,7 +137,15 @@ ShouldRejectNonSecureBootRAMDataThroughMEMAP
     Execute Command                 sysbus WriteDoubleWord 0x400e0000 0x12345678
     ${value}=                       Execute Command  debug_port ReadCoreMemory 0 0x400e0000 true
     Should Be Equal As Integers      ${value.strip()}  0x12345678
-    Run Keyword And Expect Error    *Bus access failed*  Execute Command  debug_port ReadCoreMemory 0 0x400e0000 false
+    Run Keyword And Expect Error    *AP read refused*  Execute Command  debug_port ReadCoreMemory 0 0x400e0000 false
+    ${status}=                      Execute Command  debug_port ReadPowerControl
+    Should Be Equal As Integers      ${{int($status.strip(), 0) & 0x20}}  0x20
+    Run Keyword And Expect Error    *AP write refused*  Execute Command  debug_port ReadCoreMemory 0 0x400e0000 true
+    Execute Command                 debug_port ClearStickyErrors
+    ${status}=                      Execute Command  debug_port ReadPowerControl
+    Should Be Equal As Integers      ${{int($status.strip(), 0) & 0x20}}  0
+    ${value}=                       Execute Command  debug_port ReadCoreMemory 0 0x400e0000 true
+    Should Be Equal As Integers      ${value.strip()}  0x12345678
 
 Should LockOTPReadsIrreversiblyAndFaultGuardedAccess
     Create Boot Machine

@@ -14,8 +14,9 @@ Create ROM Machine
     Execute Command                 mach create
     Execute Command                 machine LoadPlatformDescriptionFromString """${PLATFORM}"""
     ${image}=                       Evaluate  bytes.fromhex('0080002001010000') + bytes(248) + bytes.fromhex('2a20002100220a60fee7')
-    Evaluate                        open(r'%{RP2_TEST_OUTPUT}/mask_rom.bin', 'wb').write($image)
-    Execute Command                 rom LoadBinary @%{RP2_TEST_OUTPUT}/mask_rom.bin
+    ${rom_image}=                   Allocate Temporary File
+    Evaluate                        open(r'${rom_image}', 'wb').write($image)
+    Execute Command                 rom LoadBinary @${rom_image}
 
 Read Should Equal
     [Arguments]                     ${address}  ${expected}

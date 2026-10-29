@@ -6,8 +6,9 @@ Create Power Machine
     Execute Command                 cpu0 IsHalted true
     Execute Command                 cpu1 IsHalted true
     ${image}=                       Evaluate  bytes.fromhex('0080002001010000') + bytes(248) + bytes.fromhex('fee7')
-    Evaluate                        open(r'%{RP2_TEST_OUTPUT}/power_reset_rom.bin', 'wb').write($image)
-    Execute Command                 rom LoadBinary @%{RP2_TEST_OUTPUT}/power_reset_rom.bin
+    ${rom_image}=                   Allocate Temporary File
+    Evaluate                        open(r'${rom_image}', 'wb').write($image)
+    Execute Command                 rom LoadBinary @${rom_image}
 
 Read Should Equal
     [Arguments]                     ${address}  ${expected}

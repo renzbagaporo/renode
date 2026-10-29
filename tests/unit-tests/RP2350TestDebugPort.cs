@@ -13,6 +13,7 @@ namespace Antmicro.Renode.Peripherals.CPU
         public uint ReadDoubleWord(long offset) => ReadPowerControl();
         public void WriteDoubleWord(long offset, uint value) => CompleteWrite(false, (byte)(offset & 0xc), value);
         public void EnableDebugPower() => CompleteWrite(false, 4, 0x50000000);
+        public void ClearStickyErrors() => CompleteWrite(false, 0, 0x1e);
         public uint ReadPowerControl()
         {
             BeginTransfer(false, true, 4, out var value);
