@@ -8,6 +8,8 @@ ${PLATFORM}                         SEPARATOR=\n
 ...  ${SPACE*4}-> cpu@0
 ...  mem: Memory.MappedMemory @ sysbus 0x0
 ...  ${SPACE*4}size: 0x10000
+...  sram: Memory.MappedMemory @ sysbus 0x20000000
+...  ${SPACE*4}size: 0x10000
 
 *** Keywords ***
 Create DCP Machine
@@ -15,7 +17,7 @@ Create DCP Machine
     Execute Command                 mach create
     ${platform}=                    Evaluate  $PLATFORM.replace('@MODEL@', $model).replace('@TRUSTZONE@', str($trustzone).lower())
     Execute Command                 machine LoadPlatformDescriptionFromString """${platform}"""
-    Execute Command                 sysbus WriteDoubleWord 0x0 0x8000
+    Execute Command                 sysbus WriteDoubleWord 0x0 0x20010000
     Execute Command                 sysbus WriteDoubleWord 0x4 0x1001
     Execute Command                 sysbus WriteDoubleWord 0xc 0x3001
     Execute Command                 sysbus WriteDoubleWord 0x18 0x2001
@@ -23,7 +25,7 @@ Create DCP Machine
     Execute Command                 sysbus WriteWord 0x3000 0xe7fe
     Execute Command                 sysbus WriteDoubleWord 0xe000ed24 0x40000 context=cpu
     Execute Command                 cpu VectorTableOffset 0
-    Execute Command                 cpu SP 0x8000
+    Execute Command                 cpu SP 0x20010000
 
 Issue Instruction
     [Arguments]                     ${opcode}
@@ -203,7 +205,7 @@ Should Reset DCP State And Preserve Its Implementation
     Execute Command                 cpu SetRegister "r1" 0x87654321
     Issue Instruction               0xec410400
     Execute Command                 machine Reset
-    Execute Command                 cpu SP 0x8000
+    Execute Command                 cpu SP 0x20010000
     Execute Command                 sysbus WriteDoubleWord 0xe000ed88 0x300 context=cpu
     Issue Instruction               0xfe106430
     Read Register Should Equal      R6  0

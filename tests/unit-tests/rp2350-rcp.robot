@@ -15,6 +15,8 @@ ${RCP_PLATFORM}                     SEPARATOR=\n
 ...  ${SPACE*4}-> cpu1@0
 ...  mem: Memory.MappedMemory @ sysbus 0x0
 ...  ${SPACE*4}size: 0x10000
+...  sram: Memory.MappedMemory @ sysbus 0x20000000
+...  ${SPACE*4}size: 0x10000
 
 *** Keywords ***
 Create RCP Machine
@@ -22,7 +24,7 @@ Create RCP Machine
     Execute Command                 mach create
     ${platform}=                    Evaluate  $RCP_PLATFORM.replace('@MODEL@', $model)
     Execute Command                 machine LoadPlatformDescriptionFromString """${platform}"""
-    Execute Command                 sysbus WriteDoubleWord 0x0 0x8000
+    Execute Command                 sysbus WriteDoubleWord 0x0 0x20010000
     Execute Command                 sysbus WriteDoubleWord 0x4 0x1001
     Execute Command                 sysbus WriteDoubleWord 0x8 0x4001
     Execute Command                 sysbus WriteDoubleWord 0xc 0x3001
@@ -35,7 +37,7 @@ Create RCP Machine
         Execute Command             sysbus WriteDoubleWord 0xe000ed88 0xc000 context=${cpu}
         Execute Command             ${cpu} ExecutionMode SingleStep
         Execute Command             ${cpu} VectorTableOffset 0
-        Execute Command             ${cpu} SP 0x8000
+        Execute Command             ${cpu} SP 0x20010000
     END
 
 Issue RCP Instruction
@@ -76,7 +78,7 @@ Enter Non Secure RCP
     Execute Command                 cpu0 SAUControl 2
     Execute Command                 cpu0 SecureState false
     Execute Command                 cpu0 VectorTableOffset 0
-    Execute Command                 cpu0 SP 0x8000
+    Execute Command                 cpu0 SP 0x20010000
     Execute Command                 sysbus WriteDoubleWord 0xe000ed24 0x40000 context=cpu0
     Execute Command                 sysbus WriteDoubleWord 0xe000ed88 0xc000 context=cpu0
 
