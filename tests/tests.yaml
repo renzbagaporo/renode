@@ -345,3 +345,12 @@
 - tests/unit-tests/rp2350-crypto.robot
 - tests/unit-tests/rp2350-boot.robot
 - tests/unit-tests/rp2350-sio.robot
+- tests/peripherals/RP2350_GPIO.robot
+- tests/unit-tests/cortex-m-fpb.robot
+- tests/unit-tests/rp2350-power.robot
+- tests/unit-tests/rp2350-xip.robot
+- tests/unit-tests/rp2350-debug-master.robot
+- tests/unit-tests/rp2350-qspi.robot
+- tests/unit-tests/rp2350-rom.robot
+- tests/unit-tests/rp2350-idau.robot
+- tests/unit-tests/rp2350-platform.robot

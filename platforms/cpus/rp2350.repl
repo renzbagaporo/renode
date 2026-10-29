@@ -85,7 +85,7 @@ trng: Miscellaneous.RP2350_TRNG @ { sysbus 0x400f0000; resets 25 }
     clocks: clocks
     IRQ -> nvic0@39 | nvic1@39
 
-debug_port: CPU.RP2350_DebugPort
+debug_port: CPU.RP2350_DebugPort @ sysbus
     cpu0: cpu0
     cpu1: cpu1
 
@@ -184,7 +184,14 @@ pads: GPIOPort.RP2_PadsBank0 @ { sysbus 0x40038000; resets 9 }
     gpio: gpio
     rp2350: true
 
+fpb0: CPU.ARM_FlashPatchBreakpoint @ sysbus new Bus.BusPointRegistration { address: 0xe0002000; cpu: cpu0 }
+    cpu: cpu0
+
+fpb1: CPU.ARM_FlashPatchBreakpoint @ sysbus new Bus.BusPointRegistration { address: 0xe0002000; cpu: cpu1 }
+    cpu: cpu1
+
 romTable: CPU.CortexM_ROMTable @ sysbus 0xe00ff000
+    fpb: fpb0
 
 usb: USB.RP2_USB @ { sysbus 0x50110000; resets 28 }
     dpram: dpram
