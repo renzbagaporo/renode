@@ -6,7 +6,7 @@ flashMemory: Memory.MappedMemory
 flash: SPI.WinbondW25QFlash @ ssi 0
     underlyingMemory: flashMemory
 
-xip: MemoryControllers.RP2040_XIP @ sysbus 0x14000000
+xip: MemoryControllers.RP2040_XIP @ { sysbus 0x14000000; psm 12 }
     ssi: ssi
     flash: flash
 

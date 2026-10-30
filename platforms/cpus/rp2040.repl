@@ -22,7 +22,7 @@ rom: Memory.MappedMemory @ sysbus 0
     size: 0x4000
 sram: Memory.MappedMemory @ sysbus 0x20000000
     size: 0x42000
-sio: Miscellaneous.RP2040_SIO @ sysbus 0xd0000000
+sio: Miscellaneous.RP2040_SIO @ { sysbus 0xd0000000; psm 14 }
     Core0IRQ -> nvic0@15 | nvic1@15
     Core1IRQ -> nvic0@16 | nvic1@16
 psm: Miscellaneous.RP2040_PSM @ sysbus 0x40010000
@@ -30,14 +30,14 @@ psm: Miscellaneous.RP2040_PSM @ sysbus 0x40010000
     core1: cpu1
     nvic0: nvic0
     nvic1: nvic1
-resets: Miscellaneous.RP2_Resets @ sysbus 0x4000c000
-rosc: Miscellaneous.RP2040_ROSC @ sysbus 0x40060000
-xosc: Miscellaneous.RP2_XOSC @ sysbus 0x40024000
+resets: Miscellaneous.RP2_Resets @ { sysbus 0x4000c000; psm 3 }
+rosc: Miscellaneous.RP2040_ROSC @ { sysbus 0x40060000; psm 0 }
+xosc: Miscellaneous.RP2_XOSC @ { sysbus 0x40024000; psm 1 }
 pll_sys: Miscellaneous.RP2_PLL @ { sysbus 0x40028000; resets 12 }
     xosc: xosc
 pll_usb: Miscellaneous.RP2_PLL @ { sysbus 0x4002c000; resets 13 }
     xosc: xosc
-clocks: Miscellaneous.RP2040_Clocks @ sysbus 0x40008000
+clocks: Miscellaneous.RP2040_Clocks @ { sysbus 0x40008000; psm 2 }
     rosc: rosc
     xosc: xosc
     pllSys: pll_sys
@@ -54,6 +54,7 @@ timer: Timers.RP2_Timer @ { sysbus 0x40054000; resets 21 }
 watchdog: Miscellaneous.RP2040_Watchdog @ sysbus 0x40058000
     clocks: clocks
     timer: timer
+    psm: psm
 gpio: GPIOPort.RP2_GPIOBank0 @ { sysbus 0x40014000; resets 5 }
     sio: sio
     Core0IRQ -> nvic0@13
@@ -102,7 +103,7 @@ usb: USB.RP2_USB @ { sysbus 0x50110000; resets 24 }
     clockSource: clocks
     IRQ -> nvic0@5 | nvic1@5
 
-ssi: SPI.RP2040_SSI @ sysbus 0x18000000
+ssi: SPI.RP2040_SSI @ { sysbus 0x18000000; psm 12 }
     IRQ -> nvic0@6 | nvic1@6
 
 qspi: GPIOPort.RP2040_QSPI @ { sysbus 0x40018000; resets 6 }
