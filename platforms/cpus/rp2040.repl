@@ -119,3 +119,11 @@ sysinfo: Miscellaneous.RP2040_SYSINFO @ sysbus 0x40000000
 rtc: Timers.RP2040_RTC @ { sysbus 0x4005c000; resets 15 }
     clocks: clocks
     IRQ -> nvic0@25 | nvic1@25
+
+uart0: UART.RP2_UART @ { sysbus 0x40034000; resets 22 }
+    clocks: clocks
+    IRQ -> nvic0@20 | nvic1@20
+
+uart1: UART.RP2_UART @ { sysbus 0x40038000; resets 23 }
+    clocks: clocks
+    IRQ -> nvic0@21 | nvic1@21

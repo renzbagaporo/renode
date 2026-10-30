@@ -202,3 +202,11 @@ xip: MemoryControllers.RP2350_XIP @ sysbus 0x400c8000
 
 xipMaintenance: MemoryControllers.RP2350_XIPMaintenance @ sysbus 0x18000000
     xip: xip
+
+uart0: UART.RP2_UART @ { sysbus 0x40070000; resets 26 }
+    clocks: clocks
+    IRQ -> nvic0@33 | nvic1@33
+
+uart1: UART.RP2_UART @ { sysbus 0x40078000; resets 27 }
+    clocks: clocks
+    IRQ -> nvic0@34 | nvic1@34
