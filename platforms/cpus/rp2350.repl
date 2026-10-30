@@ -5,6 +5,7 @@ cpu0: CPU.CortexM @ sysbus
     cpuType: "cortex-m33-rp2350"
     nvic: nvic0
     enableTrustZone: true
+    GPIOCoprocessor: sio
     InitVectorTableOffset: 0
 
 cpu1: CPU.CortexM @ sysbus
@@ -12,6 +13,7 @@ cpu1: CPU.CortexM @ sysbus
     nvic: nvic1
     cpuId: 1
     enableTrustZone: true
+    GPIOCoprocessor: sio
     InitVectorTableOffset: 0
     isCpuWaitSignalSet: true
 
