@@ -33,9 +33,9 @@ nvic1: IRQControllers.NVIC @ {
     systickFrequency: 6000000
     priorityMask: 0xf0
 
-rom: Memory.RP2350_ROM @ sysbus 0
+rom: Memory.RP2350_ROM @ { sysbus 0; psm 8 }
 
-bootram: Memory.RP2350_BootRAM @ sysbus 0x400e0000
+bootram: Memory.RP2350_BootRAM @ { sysbus 0x400e0000; psm 9 }
     accessControl: accessctrl
 
 sram: Memory.MappedMemory @ sysbus 0x20000000
@@ -44,14 +44,14 @@ sram: Memory.MappedMemory @ sysbus 0x20000000
 sramHigh: Memory.MappedMemory @ sysbus 0x20040000
     size: 0x42000
 
-resets: Miscellaneous.RP2_Resets @ sysbus 0x40020000
+resets: Miscellaneous.RP2_Resets @ { sysbus 0x40020000; psm 4 }
     rp2350: true
 
-xosc: Miscellaneous.RP2_XOSC @ sysbus 0x40048000
+xosc: Miscellaneous.RP2_XOSC @ { sysbus 0x40048000; psm 3 }
     crystalFrequency: 12000000
     rp2350: true
 
-rosc: Miscellaneous.RP2350_ROSC @ sysbus 0x400e8000
+rosc: Miscellaneous.RP2350_ROSC @ { sysbus 0x400e8000; psm 2 }
 
 pll_sys: Miscellaneous.RP2_PLL @ {
     sysbus 0x40050000;
@@ -67,7 +67,7 @@ pll_usb: Miscellaneous.RP2_PLL @ {
     xosc: xosc
     rp2350: true
 
-clocks: Miscellaneous.RP2350_Clocks @ sysbus 0x40010000
+clocks: Miscellaneous.RP2350_Clocks @ { sysbus 0x40010000; psm 5 }
     xosc: xosc
     rosc: rosc
     pllSys: pll_sys
@@ -75,7 +75,8 @@ clocks: Miscellaneous.RP2350_Clocks @ sysbus 0x40010000
     nvic0: nvic0
     nvic1: nvic1
 
-ticks: Miscellaneous.RP2350_Ticks @ sysbus 0x40108000
+// Model CLOCKS as the reset stage for the system-level tick generator.
+ticks: Miscellaneous.RP2350_Ticks @ { sysbus 0x40108000; psm 5 }
     clocks: clocks
     timer0: timer0
     timer1: timer1
@@ -108,7 +109,7 @@ nvic0:
 nvic1:
     SystemResetRequest -> powman@1
 
-otp: Miscellaneous.RP2350_OTP @ sysbus 0x40120000
+otp: Miscellaneous.RP2350_OTP @ { sysbus 0x40120000; psm 1 }
 
 otpData: Memory.RP2350_OTPData @ sysbus 0x40130000
     otp: otp
@@ -128,7 +129,7 @@ otpRawGuarded: Memory.RP2350_OTPData @ sysbus 0x4013c000
 
 sysinfo: Miscellaneous.RP2350_SYSINFO @ { sysbus 0x40000000; resets 21 }
 
-accessctrl: Miscellaneous.RP2350_AccessControl @ sysbus 0x40060000
+accessctrl: Miscellaneous.RP2350_AccessControl @ { sysbus 0x40060000; psm 22 }
 
 psm: Miscellaneous.RP2350_PSM @ sysbus 0x40018000
     core0: cpu0
@@ -139,6 +140,7 @@ psm: Miscellaneous.RP2350_PSM @ sysbus 0x40018000
 dpram: USB.RP2_USB_DPRAM @ sysbus 0x50100000
 
 sio: Miscellaneous.RP2350_SIO @ {
+    psm 21;
     sysbus 0xd0000000;
     sysbus new Bus.BusMultiRegistration { address: 0xd0020000; size: 0x1000; region: "NonSecure" }
 }
@@ -200,7 +202,7 @@ usb: USB.RP2_USB @ { sysbus 0x50110000; resets 28 }
     clockSource: clocks
     IRQ -> nvic0@14 | nvic1@14
 
-xip: MemoryControllers.RP2350_XIP @ sysbus 0x400c8000
+xip: MemoryControllers.RP2350_XIP @ { sysbus 0x400c8000; psm 20 }
 
 xipMaintenance: MemoryControllers.RP2350_XIPMaintenance @ sysbus 0x18000000
     xip: xip

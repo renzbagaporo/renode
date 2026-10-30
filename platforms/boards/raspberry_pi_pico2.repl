@@ -6,7 +6,7 @@ flashMemory: Memory.MappedMemory
 flash: SPI.WinbondW25QFlash
     underlyingMemory: flashMemory
 
-qmi: MemoryControllers.RP2350_QMI @ sysbus 0x400d0000
+qmi: MemoryControllers.RP2350_QMI @ { sysbus 0x400d0000; psm 20 }
     flash: flash
     clocks: clocks
 
