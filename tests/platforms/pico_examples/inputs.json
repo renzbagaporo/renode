@@ -1,0 +1,27 @@
+{
+  "pico_examples": {
+    "repository": "https://github.com/raspberrypi/pico-examples.git",
+    "revision": "0d62f75bafc2c8120d3276c3343d1a9195e909e9"
+  },
+  "pico_sdk": {
+    "repository": "https://github.com/raspberrypi/pico-sdk.git",
+    "version": "2.3.0",
+    "revision": "98a542c1a62fb549ffb5d66a3e5892b06276b670"
+  },
+  "arm_toolchain": "Arm GNU Toolchain 14.2.Rel1 arm-none-eabi",
+  "build_type": "Release",
+  "boards": [
+    "pico",
+    "pico2"
+  ],
+  "reviewed_example_fixes": [
+    {
+      "patch": "patches/multicore_doorbell_volatile.patch",
+      "patch_sha256": "642b3707481358477f95d64b9982d0c18587a69795befe1307c4e21485cb91d7",
+      "source": "multicore/multicore_doorbell/multicore_doorbell.c",
+      "original_source_sha256": "0531d97faf5360a221f750da2d6751cf4715781543a1ac53eea5586c97d04f2f",
+      "corrected_source_sha256": "b4aae6d1f2b1b14d30a513252a145cab56a98692dedefb52a323ce4e3a4b31d4",
+      "reason": "The interrupt-modified exit flag requires volatile so optimized foreground code reloads it."
+    }
+  ]
+}

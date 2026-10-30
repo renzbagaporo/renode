@@ -1,0 +1,13 @@
+diff --git a/multicore/multicore_doorbell/multicore_doorbell.c b/multicore/multicore_doorbell/multicore_doorbell.c
+index c4f391d..c06dd9d 100644
+--- a/multicore/multicore_doorbell/multicore_doorbell.c
++++ b/multicore/multicore_doorbell/multicore_doorbell.c
+@@ -13,7 +13,7 @@
+ static int doorbell_counter;
+ static int doorbell_exit;
+ static uint32_t doorbell_irq_count;
+-static bool exit_core0;
++static volatile bool exit_core0;
+ 
+ // Handle the doorbell set from core0
+ void core1_doorbell_irq() {
