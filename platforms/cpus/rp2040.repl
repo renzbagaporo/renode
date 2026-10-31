@@ -117,6 +117,11 @@ qpads: GPIOPort.RP2040_PadsQSPI @ { sysbus 0x40020000; resets 9 }
 
 sysinfo: Miscellaneous.RP2040_SYSINFO @ sysbus 0x40000000
 
+busctrl: Miscellaneous.RP2040_BUSCTRL @ { sysbus 0x40030000; resets 1 }
+    core0: cpu0
+    core1: cpu1
+    dma: dma
+
 rtc: Timers.RP2040_RTC @ { sysbus 0x4005c000; resets 15 }
     clocks: clocks
     IRQ -> nvic0@25 | nvic1@25
