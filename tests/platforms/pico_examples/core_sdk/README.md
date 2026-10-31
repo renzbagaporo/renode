@@ -115,7 +115,8 @@ python3 tests/platforms/pico_examples/core_sdk/run_acceptance.py \
   --isolator tests/platforms/pico_examples/core_sdk/run_isolated.py \
   --output .dev/outputs/core_sdk_freertos/acceptance_pico \
   --scratch .dev/tmp/core_sdk_freertos/acceptance_pico \
-  --rpc-port 19321
+  --rpc-port 19321 \
+  --wall-timeout 172800
 ```
 
 `--cases` selects named targets for a bounded work batch. The result ledger lists
@@ -153,7 +154,7 @@ Wait for that marker before sending commands through `usb/vm.py run`.
 python3 tests/platforms/pico_examples/core_sdk/run_isolated.py \
   --output .dev/outputs/core_sdk_freertos/usb_pico \
   --scratch .dev/tmp/core_sdk_freertos/usb_pico \
-  --timeout 14400 \
+  --timeout 51000 \
   -- \
   python3 tests/platforms/pico_examples/core_sdk/usb/run_usb_matrix.py \
   --repository /path/to/renode \
@@ -169,7 +170,8 @@ python3 tests/platforms/pico_examples/core_sdk/run_isolated.py \
   --vm-directory /path/to/task_vm \
   --vm-output /path/to/task_vm_output \
   --output '{output}/matrix' \
-  --scratch '{scratch}/scenarios'
+  --scratch '{scratch}/scenarios' \
+  --wall-timeout 7200
 ```
 
 Use a distinct output/scratch pair for Pico 2 and select its combined A2 ROM.
@@ -185,11 +187,17 @@ failure is never counted as a passing case. Randomness uses the declared seed0
 and all 500000 source samples with the original integer distribution assertions.
 RTC repetition runs for the catalog's full 185 virtual seconds.
 
-The regular driver declares a 43200-second wall budget per scenario. This allows
-the complete firmware lifecycle to run without changing emulated clocks or
-instruction rates. Post-deinitialization observation advances the required
-eleven virtual seconds through calls of at most half a second, saving progress
-after each call and verifying the complete master-time delta.
+The regular driver defaults to a 43200-second wall budget per scenario. The
+command above declares 172800 seconds (48 hours) before execution because full
+FreeRTOS lifecycles can take many wall hours. The USB command declares 7200
+seconds per scenario and an outer budget covering all seven scenarios. Choose
+wall budgets before starting a run; keep active attempts and their deadlines
+intact. Wall budgets do not change emulated clocks, instruction rates, firmware
+delays, or acceptance criteria.
+
+Post-deinitialization observation advances the required eleven virtual seconds
+through calls of at most half a second, saving progress after each call and
+verifying the complete master-time delta.
 
 `capture_rand_macros.py` records the SDK's actual random-source macros from each
 build's compiler command, plus hashes and descriptions of the modeled entropy
