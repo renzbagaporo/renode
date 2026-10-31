@@ -121,6 +121,48 @@ their acceptance includes real Linux USB transfers. They are excluded from this
 regular-case driver, with their requirements preserved in the same catalog.
 The Linux guest and every USB/IP import require exclusive ownership.
 
+`usb/run_usb_matrix.py` runs the four `hello_anything` metadata configurations
+and the three `hello_double_tap` reset controls for one board. Each scenario gets
+a fresh process and private environment. The driver copies its helpers, records
+firmware/configuration hashes, and checks that those inputs stay unchanged.
+The Linux guest supplies actual CDC bytes or a BOOTSEL mass-storage sector and
+USB traffic captures. A supervisor records the capture process's terminal status;
+a shared lease serializes imports across concurrent board runs.
+
+Prepare a task-owned Linux VM with USB/IP, `vhci_hcd`, `cdc_acm`, Python pyserial,
+`lsusb`, and debugfs. Mount the VM output directory's `guest_outputs` share at
+`/mnt/guest_outputs`. `usb/vm.py` can create a new qcow2 overlay from an inactive
+guest image and exposes no physical host USB devices. Keep the guest exclusively
+owned for the duration of these runs.
+
+```sh
+python3 tests/platforms/pico_examples/core_sdk/run_isolated.py \
+  --output .dev/outputs/core_sdk_freertos/usb_pico \
+  --scratch .dev/tmp/core_sdk_freertos/usb_pico \
+  --timeout 14400 \
+  -- \
+  python3 tests/platforms/pico_examples/core_sdk/usb/run_usb_matrix.py \
+  --repository /path/to/renode \
+  --runtime /path/to/runtime \
+  --dotnet /path/to/dotnet \
+  --board pico \
+  --build-manifest /path/to/board/build/build_manifest.json \
+  --metadata-ledger /path/to/metadata/metadata.json \
+  --catalog tests/platforms/pico_examples/core_sdk/acceptance_catalog.json \
+  --profiles tests/platforms/pico_examples/core_sdk/execution_profiles.json \
+  --rom /path/to/rp2040_b2.elf \
+  --isolator tests/platforms/pico_examples/core_sdk/run_isolated.py \
+  --vm-directory /path/to/task_vm \
+  --vm-output /path/to/task_vm_output \
+  --output '{output}/matrix' \
+  --scratch '{scratch}/scenarios'
+```
+
+Use a distinct output/scratch pair for Pico 2 and select its combined A2 ROM.
+`--cases` selects either target; `--diagnostic-only` records observations without
+counting them as accepted cases. The regular and USB driver ledgers together
+cover the catalog; seven USB sub-scenarios represent two cases per board.
+
 FreeRTOS success covers all ten main-task counts, completed context
 deinitialization, actual self deletion, and eleven further virtual seconds of
 other-task progress. The original task-return defect is a negative control.
