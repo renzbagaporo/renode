@@ -89,10 +89,12 @@ trng: Miscellaneous.RP2350_TRNG @ { sysbus 0x400f0000; resets 25 }
     IRQ -> nvic0@39 | riscv0@39 | nvic1@39 | riscv1@39
 
 debug_port: CPU.RP2350_DebugPort @ sysbus
+    architectureSelector: architecture
     cpu0: cpu0
     cpu1: cpu1
 
 powman: Miscellaneous.RP2350_POWMAN @ sysbus 0x40100000
+    architectureSelector: architecture
     core0: cpu0
     core1: cpu1
     nvic0: nvic0
