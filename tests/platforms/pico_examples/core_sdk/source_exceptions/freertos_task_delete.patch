@@ -1,0 +1,10 @@
+--- a/freertos/hello_freertos/hello_freertos.c
++++ b/freertos/hello_freertos/hello_freertos.c
+@@ -154,6 +154,7 @@
+     }
+     printf("main_task is exiting now\n");
+     async_context_deinit(context);
++    vTaskDelete(NULL);
+ }
+ 
+ void vLaunch( void) {

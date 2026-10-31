@@ -50,6 +50,14 @@ with `--source-exception`; its ledger must declare `status: approved`, the pinne
 `original_revision`, and exact `modified_files` hashes. SDK/kernel source edits,
 extra example edits, and changed source revisions are rejected.
 
+The reviewed FreeRTOS lifecycle exception is
+`source_exceptions/freertos_task_delete.patch`, with its build ledger at
+`source_exceptions/freertos_task_delete.json`. Apply the patch to a separate
+checkout of the pinned Pico Examples revision and pass that ledger to
+`build_examples.py --source-exception`. It adds task self deletion after context
+deinitialization. Keep the original build for the six task-return negative
+controls and use the repaired build for the six full-lifecycle success cases.
+
 ## Prepare binary configuration and identity inputs
 
 `prepare_metadata.py` creates the catalog's LED pin and UART/USB configuration

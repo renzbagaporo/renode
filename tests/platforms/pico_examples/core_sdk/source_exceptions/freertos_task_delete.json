@@ -1,0 +1,21 @@
+{
+  "status": "approved",
+  "original_revision": "0d62f75bafc2c8120d3276c3343d1a9195e909e9",
+  "original_files": {
+    "freertos/hello_freertos/hello_freertos.c": "9fa28de05275cb6e1b8dae4e533c1d1e84677a8bf1abf12524f6e45de09ce24a"
+  },
+  "modified_files": {
+    "freertos/hello_freertos/hello_freertos.c": "6cc17d1589b89ce9dcb87ec5ce959a2821b466ff116763aa99586d8413baad1f"
+  },
+  "patch": {
+    "path": "freertos_task_delete.patch",
+    "sha256": "5fead09418d7bd79eae219cd3c0f50f73c4ad67bde2b9f766d20dd5b290ec983"
+  },
+  "justification": "FreeRTOS task functions must terminate through vTaskDelete(NULL). This exception adds that call after async-context deinitialization in the shared example task.",
+  "limits": [
+    "Only the exact modified file hash is approved; SDK and kernel sources remain unchanged.",
+    "Preserve task priorities, core counts, ticks, delays, work counters and GPIO timing.",
+    "Preserve the original firmware controls for all six board/configuration cases.",
+    "Positive acceptance requires actual main-task deletion and continued scheduling for at least eleven virtual seconds after deinitialization."
+  ]
+}
