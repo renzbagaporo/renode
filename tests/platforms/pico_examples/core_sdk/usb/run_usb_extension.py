@@ -318,7 +318,7 @@ def main():
                  Path(common.__file__).resolve(), Path(__file__).with_name('vm.py'),
                  Path(__file__).with_name('guest_capture.py'), Path(__file__).with_name('guest_run.py'),
                  *[args.runtime / 'platform-lib' / prefix / f'translate-{arch}-le.so'
-                   for arch in ['arm-m', 'arm', 'riscv32'] for prefix in ['', 'linux-x64']]]:
+                   for arch in ['arm-m', 'arm', 'riscv'] for prefix in ['', 'linux-x64']]]:
         if path.is_file():
             record['inputs'][str(path)] = dict(bytes=path.stat().st_size, sha256=common.sha(path))
     settings = prepare_metadata(args, record) if args.target == 'hello_anything' else None
