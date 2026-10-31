@@ -1,0 +1,1419 @@
+{
+  "schema": "source_derived_acceptance_catalog",
+  "state": "initial_freeze_proposal_with_explicit_FreeRTOS_exception_gate",
+  "created_utc": "2026-10-31T14:47:37.915400+00:00",
+  "milestone": "Core SDK and FreeRTOS Coverage",
+  "examples_revision": "0d62f75bafc2c8120d3276c3343d1a9195e909e9",
+  "sdk_revision": "98a542c1a62fb549ffb5d66a3e5892b06276b670",
+  "freertos_kernel_revision": "ca759444e9ca59cfa3a9faa6cb8b49e0772ca520",
+  "build_type": "Release",
+  "toolchain": "Arm GNU Toolchain 14.2.Rel1",
+  "inventory_sha256": "a5e0cbc0cd3a6c1c11dae402d0dbdf421f9b0d5eac3766df657fd82a6ef186ea",
+  "target_count": 18,
+  "case_count": 32,
+  "emulation_seed": 0,
+  "threshold_change_policy": "Frozen before model implementation and acceptance executions; diagnostic controls are not passes. Any correction requires source/specification evidence and adversarial review, never pass-outcome tuning.",
+  "global_requirements": [
+    "Ordinary launches use the official mask ROM and strict file-backed NOR segments. Extract exactly 16 KiB from the Pico1 B2 ROM. Do not seed ELF BSS, heap, or USB DPRAM; patch CPU PC/SP/VTOR/security state; or recognize examples in models.",
+    "Keep example, SDK, and FreeRTOS sources pinned and unchanged except for explicit reviewed exceptions. Official picotool postlink bi_ptr configuration is a designed data fixture. Preserve original/configured ELF and UF2 hashes, instruction identity, data diffs, and matching NOR payloads.",
+    "Record managed/native build provenance, actual per-core loaded module hashes, helper/wrapper/Renode terminal statuses, raw GPIO/UART/IRQ/address/register events, and source/input/configuration hashes. Diagnostic-only runs are not passes.",
+    "Reject unexpected panic, assertion, fault, or lockup. The original FreeRTOS task-return defect control is negative evidence only. Finite examples must actually exit with status zero.",
+    "Use virtual time for timing checks without changing firmware delays, sample counts, or tick rates. Observers must preserve bus values and never fabricate effects.",
+    "USB checks require an isolated Linux guest, an exclusive exchange lease, actual descriptors/control/bulk and CDC/MSC behavior, and clean import detachment. Coordinate any physical fixture use with root; this milestone uses emulation.",
+    "Propagate private HOME/XDG/TMP/Cargo/NuGet/dotnet paths to subprocesses. Preserve failed, interrupted, and setup attempts separately from selected successful cases.",
+    "Keep the existing 32 Pico cases, affected model/platform suites, and original three Metalclaw smokes passing. Require a fresh independent source build and all 32 new cases with the same frozen inputs and criteria. Do not claim all 274 examples, the custom board, or Quasar are complete.",
+    "Commit incrementally in repository style without AI attribution. Do not push without current-message authorization. Clean owned processes and local worker refs as work finishes, while preserving user changes, generated files, and frozen runtime dependencies; archive branch history before audited pruning."
+  ],
+  "upstream_exclusions": [
+    {
+      "target": "color_blink",
+      "reason": "Plain Pico/Pico2 boards have no default WS2812 capability; the upstream supported() hard assertion fails. Keep the target in the inventory, outside this 18-target scope."
+    },
+    {
+      "board": "pico2",
+      "targets": [
+        "hello_rtc",
+        "rtc_alarm",
+        "rtc_alarm_repeat"
+      ],
+      "reason": "These upstream RTC targets support RP2040 only; do not substitute an AON timer."
+    },
+    {
+      "board": "pico",
+      "targets": [
+        "boot_info"
+      ],
+      "reason": "The upstream ROM boot-info API target supports RP2350 only."
+    }
+  ],
+  "source_hashes": {
+    ".dev/resources/pico_examples/binary_info/blink_any/CMakeLists.txt": "0bd8423c2064ff6e907050026cf4b763262576b2fc5a27d84d0767f4da5bce96",
+    ".dev/resources/pico_examples/binary_info/blink_any/blink_any.c": "dbd9afdd2c696b2e4776f2f9434f812bd7c488cfc7a3546345d5ec48f3c9fa86",
+    ".dev/resources/pico_examples/cmake/build_variants/other.c": "6a337684ac5e1c8b7b8cd7cc6300be7e374c628b9f5bcdf5cdd92a9a139b900b",
+    ".dev/resources/pico_examples/cmake/build_variants/CMakeLists.txt": "3c998a91465383b6c9ab58a5253b1786afee0b6b5e0fc671b593351aa865a9b5",
+    ".dev/resources/pico_examples/cmake/build_variants/main.c": "c4bbfc7b1d670bd78a47a1f9bbb60c06d51af8ce7829189f413d9ccd5762d204",
+    ".dev/resources/pico_examples/cmake/build_variants/other.h": "3bbf2ebabb042528fbb6fc9cdf1b320eabe4b5b9c02eb2a55dbc7ff69e2ca826",
+    ".dev/resources/pico_examples/binary_info/hello_anything/CMakeLists.txt": "a165fd826ee8caff9da126691c6dc3e01267be9d498e1b48f3f6b3ae1d1b493c",
+    ".dev/resources/pico_examples/binary_info/hello_anything/hello_anything.c": "fe7e2b4579d8c42b525c5bb7f0706b6c523cc34ba98a61db18098f1eb690b07e",
+    ".dev/resources/pico_examples/divider/CMakeLists.txt": "f514ece19cd799884b585aa831a5529d1f3dd99dc0947cd1a3d197243f05b148",
+    ".dev/resources/pico_examples/divider/hello_divider.c": "a4c313dc2ab0308f26660179deec7cead3e299423fbf6d537d8f3121dd592fd2",
+    ".dev/resources/pico_examples/system/hello_double_tap/hello_double_tap.c": "70fb5ee48dd904aa396bf5a3d121b9dcd7c90e3fe78aa0ca0828bc12bba91d2e",
+    ".dev/resources/pico_examples/system/hello_double_tap/CMakeLists.txt": "98132ded13e1b483a2f7b0cf6133d01c8a3fa486bbc48171e97645ea65ed7e02",
+    ".dev/resources/pico_examples/rtc/hello_rtc/CMakeLists.txt": "9d0852faff0e1046383217ae4356f27c5769dc33dba1f488a98cebad2abc9d05",
+    ".dev/resources/pico_examples/rtc/hello_rtc/hello_rtc.c": "f79ff1ce059b66d84e24fe721e4577798aa21e2cfe43f89d36646de8c757540e",
+    ".dev/resources/pico_examples/system/narrow_io_write/CMakeLists.txt": "eec5a3870d3509cc3da10de33841ae19b5416522456c37fa187aeae3ea344590",
+    ".dev/resources/pico_examples/system/narrow_io_write/narrow_io_write.c": "3d53c24a45db87690ef8dca1d49cb2ccdfbfb76dc0e2eaafb3b2003d39978401",
+    ".dev/resources/pico_examples/system/rand/CMakeLists.txt": "317969c4b20f4a879eead4afe42115377d02aaf9cf2cdb82590c9f1e8a0279c4",
+    ".dev/resources/pico_examples/system/rand/rand.c": "cfe3360c9a4ef2d41307debb67b812196371ddb24157455215313a08526578c6",
+    ".dev/resources/pico_examples/rtc/rtc_alarm/CMakeLists.txt": "bc3110f27618a0f401c69217b852f8a0a49bde2ea42a034954ebb4be5c6f0d87",
+    ".dev/resources/pico_examples/rtc/rtc_alarm/rtc_alarm.c": "955aace31b1bcdfaad1192997197e4431b2308d973dfc692efcaffdff1781da9",
+    ".dev/resources/pico_examples/rtc/rtc_alarm_repeat/CMakeLists.txt": "17d1b5b0421e4e42e2b7cfc11bfe000a1ea73f1ff4ff26cb8a9f7bb4dcb2c0ba",
+    ".dev/resources/pico_examples/rtc/rtc_alarm_repeat/rtc_alarm_repeat.c": "01e8c71a6fe1d2460c2d32bec3507c8e576b5417b515f445574745c9dcd09aee",
+    ".dev/resources/pico_examples/async_context/simple_at_time_worker/simple_at_time_worker.c": "2c63f91f6922ce498ad96d8bd9962eabaa05f676d466e0d7ec4aa9d71ebbfbed",
+    ".dev/resources/pico_examples/async_context/simple_at_time_worker/CMakeLists.txt": "574b79868684ee766957761e9ddf035d86f69e9f38b37939b5fe9b4a115085a3",
+    ".dev/resources/pico_examples/status_led/status_blink/CMakeLists.txt": "09c582cae6252fe1a136c568ef23465d473f3c28be31fa6d7621edf0a1230fa0",
+    ".dev/resources/pico_examples/status_led/status_blink/status_blink.c": "b4c93faeee170002c2e0e7ea50b104dd74bf27f174f906d9a2fa893e6786a652",
+    ".dev/resources/pico_examples/system/unique_board_id/unique_board_id.c": "051acb0274f19a7f3fae861ac995a6026d3ecdf76b7995788a1a23a97c826bed",
+    ".dev/resources/pico_examples/system/unique_board_id/CMakeLists.txt": "910275e684fb9b53367c605f7f59819e228764cd4dc9c60eaccc65ca3bbcaa37",
+    ".dev/resources/pico_examples/freertos/hello_freertos/CMakeLists.txt": "db574a1f47cf855be4753e5e076c23da94374e2e7c1b258491fd5ac9e322b03f",
+    ".dev/resources/pico_examples/freertos/hello_freertos/hello_freertos.c": "9fa28de05275cb6e1b8dae4e533c1d1e84677a8bf1abf12524f6e45de09ce24a",
+    ".dev/resources/pico_examples/system/boot_info/CMakeLists.txt": "df6e369a9cfcb890e5fe0d0cc961a2e1b57ef1d58042afba4c2639b9a7ca9298",
+    ".dev/resources/pico_examples/system/boot_info/boot_info.c": "d0ac33f81c26baf6bc22e104f5505d2eb848ca3f16252bc81ced1a75b7a29577",
+    ".dev/resources/pico_examples/freertos/FreeRTOSConfig.h": "67edb738b92e5087f95019092f12377992458d1db09c649b8b45c1de9fd0b33c",
+    ".dev/resources/pico_examples/freertos/FreeRTOSConfig_examples_common.h": "d1141074283d25a957c63fdff9384e9ab9ebee34d12af439b9e4aad173567358",
+    ".dev/resources/pico_examples/freertos/FreeRTOS_Kernel_import.cmake": "c5d4e8fa880248fd382c7305b72bfd4ee241cfdd74ff48f0f7b5a41747fa76f6",
+    ".dev/resources/pico_examples_inputs/pico_sdk_2_3_0/src/rp2_common/pico_unique_id/unique_id.c": "e6a4b77cfdac0b6c58ce2f3f2438f4f396dbb2ccc6b478408ab62d41137dbcb8",
+    ".dev/resources/pico_examples_inputs/pico_sdk_2_3_0/src/rp2_common/pico_bootsel_via_double_reset/pico_bootsel_via_double_reset.c": "d024f71bb7bee0b66bca80da4322d855b492fbee6398423a4c4d2f9e431269a9",
+    ".dev/resources/pico_examples_inputs/pico_sdk_2_3_0/src/rp2_common/pico_rand/rand.c": "03ff3129ef1d50a8d971b45d0b35e61388bbbdc9773dbf4118945e25c6261c97",
+    ".dev/resources/pico_examples_inputs/pico_sdk_2_3_0/src/rp2_common/hardware_rtc/rtc.c": "392bdbac41232eaeb71a85dca70c1cb1c79f8109eeb93fb57216b82995500c97",
+    ".dev/resources/pico_examples_inputs/freertos_kernel/portable/ThirdParty/GCC/RP2040/port.c": "1f5b2f4a536c0f08a5f0a42362a0fc88030d6e8477b2c0080d85ef6396b305de",
+    ".dev/resources/pico_examples_inputs/freertos_kernel/portable/GCC/ARM_CM33_NTZ/non_secure/port.c": "0b6335be4a23e8649389d30cd93cf5c4e5e92a262541f66687ea081b34c8237f"
+  },
+  "cases": [
+    {
+      "id": "pico/blink_any",
+      "board": "pico",
+      "target": "blink_any",
+      "source_directory": ".dev/resources/pico_examples/binary_info/blink_any",
+      "sources": {
+        ".dev/resources/pico_examples/binary_info/blink_any/CMakeLists.txt": "0bd8423c2064ff6e907050026cf4b763262576b2fc5a27d84d0767f4da5bce96",
+        ".dev/resources/pico_examples/binary_info/blink_any/blink_any.c": "dbd9afdd2c696b2e4776f2f9434f812bd7c488cfc7a3546345d5ec48f3c9fa86"
+      },
+      "loader": "official_mask_rom_coldboot_from_strict_NOR_file_segments",
+      "duration_seconds": 2,
+      "scenarios": [
+        "default_gpio25",
+        "picotool_config_gpio7"
+      ],
+      "checks": [
+        {
+          "id": "metadata",
+          "requirement": "The pinned official picotool must list LED_TYPE=0 and LED_PIN=25. Configure a separate postlink ELF copy to LED_PIN=7 using the documented picotool config operation, regenerate its matching UF2, preserve instruction bytes, and record the variable-address data diff."
+        },
+        {
+          "id": "led",
+          "requirement": "Both variants must boot through the actual ROM. Observe at least seven alternating driven GPIO edges after the first high, with output direction enabled. Only GPIO25 for the default or GPIO7 for the configured variant may blink.",
+          "half_period_seconds": [
+            0.2375,
+            0.2625
+          ]
+        },
+        {
+          "id": "negative_pin",
+          "requirement": "The configured variant must not blink GPIO25. Do not patch RAM, PC, or the variable after boot."
+        }
+      ]
+    },
+    {
+      "id": "pico2/blink_any",
+      "board": "pico2",
+      "target": "blink_any",
+      "source_directory": ".dev/resources/pico_examples/binary_info/blink_any",
+      "sources": {
+        ".dev/resources/pico_examples/binary_info/blink_any/CMakeLists.txt": "0bd8423c2064ff6e907050026cf4b763262576b2fc5a27d84d0767f4da5bce96",
+        ".dev/resources/pico_examples/binary_info/blink_any/blink_any.c": "dbd9afdd2c696b2e4776f2f9434f812bd7c488cfc7a3546345d5ec48f3c9fa86"
+      },
+      "loader": "official_mask_rom_coldboot_from_strict_NOR_file_segments",
+      "duration_seconds": 2,
+      "scenarios": [
+        "default_gpio25",
+        "picotool_config_gpio7"
+      ],
+      "checks": [
+        {
+          "id": "metadata",
+          "requirement": "The pinned official picotool must list LED_TYPE=0 and LED_PIN=25. Configure a separate postlink ELF copy to LED_PIN=7 using the documented picotool config operation, regenerate its matching UF2, preserve instruction bytes, and record the variable-address data diff."
+        },
+        {
+          "id": "led",
+          "requirement": "Both variants must boot through the actual ROM. Observe at least seven alternating driven GPIO edges after the first high, with output direction enabled. Only GPIO25 for the default or GPIO7 for the configured variant may blink.",
+          "half_period_seconds": [
+            0.2375,
+            0.2625
+          ]
+        },
+        {
+          "id": "negative_pin",
+          "requirement": "The configured variant must not blink GPIO25. Do not patch RAM, PC, or the variable after boot."
+        }
+      ]
+    },
+    {
+      "id": "pico/build_variant1",
+      "board": "pico",
+      "target": "build_variant1",
+      "source_directory": ".dev/resources/pico_examples/cmake/build_variants",
+      "sources": {
+        ".dev/resources/pico_examples/cmake/build_variants/other.c": "6a337684ac5e1c8b7b8cd7cc6300be7e374c628b9f5bcdf5cdd92a9a139b900b",
+        ".dev/resources/pico_examples/cmake/build_variants/CMakeLists.txt": "3c998a91465383b6c9ab58a5253b1786afee0b6b5e0fc671b593351aa865a9b5",
+        ".dev/resources/pico_examples/cmake/build_variants/main.c": "c4bbfc7b1d670bd78a47a1f9bbb60c06d51af8ce7829189f413d9ccd5762d204",
+        ".dev/resources/pico_examples/cmake/build_variants/other.h": "3bbf2ebabb042528fbb6fc9cdf1b320eabe4b5b9c02eb2a55dbc7ff69e2ca826"
+      },
+      "loader": "official_mask_rom_coldboot_from_strict_NOR_file_segments",
+      "duration_seconds": 1,
+      "scenarios": [
+        "default"
+      ],
+      "checks": [
+        {
+          "id": "exact_output",
+          "requirement": "Receive exactly the common value 123 and binary-local value 456, without \"A little extra\", followed by an actual normal exit with status zero.",
+          "lines": [
+            "The common thing is 123",
+            "The binary local thing is 456"
+          ],
+          "forbidden": [
+            "A little extra"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pico2/build_variant1",
+      "board": "pico2",
+      "target": "build_variant1",
+      "source_directory": ".dev/resources/pico_examples/cmake/build_variants",
+      "sources": {
+        ".dev/resources/pico_examples/cmake/build_variants/other.c": "6a337684ac5e1c8b7b8cd7cc6300be7e374c628b9f5bcdf5cdd92a9a139b900b",
+        ".dev/resources/pico_examples/cmake/build_variants/CMakeLists.txt": "3c998a91465383b6c9ab58a5253b1786afee0b6b5e0fc671b593351aa865a9b5",
+        ".dev/resources/pico_examples/cmake/build_variants/main.c": "c4bbfc7b1d670bd78a47a1f9bbb60c06d51af8ce7829189f413d9ccd5762d204",
+        ".dev/resources/pico_examples/cmake/build_variants/other.h": "3bbf2ebabb042528fbb6fc9cdf1b320eabe4b5b9c02eb2a55dbc7ff69e2ca826"
+      },
+      "loader": "official_mask_rom_coldboot_from_strict_NOR_file_segments",
+      "duration_seconds": 1,
+      "scenarios": [
+        "default"
+      ],
+      "checks": [
+        {
+          "id": "exact_output",
+          "requirement": "Receive exactly the common value 123 and binary-local value 456, without \"A little extra\", followed by an actual normal exit with status zero.",
+          "lines": [
+            "The common thing is 123",
+            "The binary local thing is 456"
+          ],
+          "forbidden": [
+            "A little extra"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pico/build_variant2",
+      "board": "pico",
+      "target": "build_variant2",
+      "source_directory": ".dev/resources/pico_examples/cmake/build_variants",
+      "sources": {
+        ".dev/resources/pico_examples/cmake/build_variants/other.c": "6a337684ac5e1c8b7b8cd7cc6300be7e374c628b9f5bcdf5cdd92a9a139b900b",
+        ".dev/resources/pico_examples/cmake/build_variants/CMakeLists.txt": "3c998a91465383b6c9ab58a5253b1786afee0b6b5e0fc671b593351aa865a9b5",
+        ".dev/resources/pico_examples/cmake/build_variants/main.c": "c4bbfc7b1d670bd78a47a1f9bbb60c06d51af8ce7829189f413d9ccd5762d204",
+        ".dev/resources/pico_examples/cmake/build_variants/other.h": "3bbf2ebabb042528fbb6fc9cdf1b320eabe4b5b9c02eb2a55dbc7ff69e2ca826"
+      },
+      "loader": "official_mask_rom_coldboot_from_strict_NOR_file_segments",
+      "duration_seconds": 1,
+      "scenarios": [
+        "default"
+      ],
+      "checks": [
+        {
+          "id": "exact_output",
+          "requirement": "Receive exactly the common value 123, binary-local value 789, and \"A little extra\", followed by an actual normal exit with status zero.",
+          "lines": [
+            "The common thing is 123",
+            "The binary local thing is 789",
+            "A little extra"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pico2/build_variant2",
+      "board": "pico2",
+      "target": "build_variant2",
+      "source_directory": ".dev/resources/pico_examples/cmake/build_variants",
+      "sources": {
+        ".dev/resources/pico_examples/cmake/build_variants/other.c": "6a337684ac5e1c8b7b8cd7cc6300be7e374c628b9f5bcdf5cdd92a9a139b900b",
+        ".dev/resources/pico_examples/cmake/build_variants/CMakeLists.txt": "3c998a91465383b6c9ab58a5253b1786afee0b6b5e0fc671b593351aa865a9b5",
+        ".dev/resources/pico_examples/cmake/build_variants/main.c": "c4bbfc7b1d670bd78a47a1f9bbb60c06d51af8ce7829189f413d9ccd5762d204",
+        ".dev/resources/pico_examples/cmake/build_variants/other.h": "3bbf2ebabb042528fbb6fc9cdf1b320eabe4b5b9c02eb2a55dbc7ff69e2ca826"
+      },
+      "loader": "official_mask_rom_coldboot_from_strict_NOR_file_segments",
+      "duration_seconds": 1,
+      "scenarios": [
+        "default"
+      ],
+      "checks": [
+        {
+          "id": "exact_output",
+          "requirement": "Receive exactly the common value 123, binary-local value 789, and \"A little extra\", followed by an actual normal exit with status zero.",
+          "lines": [
+            "The common thing is 123",
+            "The binary local thing is 789",
+            "A little extra"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pico/hello_anything",
+      "board": "pico",
+      "target": "hello_anything",
+      "source_directory": ".dev/resources/pico_examples/binary_info/hello_anything",
+      "sources": {
+        ".dev/resources/pico_examples/binary_info/hello_anything/CMakeLists.txt": "a165fd826ee8caff9da126691c6dc3e01267be9d498e1b48f3f6b3ae1d1b493c",
+        ".dev/resources/pico_examples/binary_info/hello_anything/hello_anything.c": "fe7e2b4579d8c42b525c5bb7f0706b6c523cc34ba98a61db18098f1eb690b07e"
+      },
+      "loader": "official_mask_rom_coldboot_from_strict_NOR_file_segments",
+      "duration_seconds": 4,
+      "scenarios": [
+        "default_dual_stdio",
+        "configured_dual_stdio",
+        "uart_only",
+        "usb_only"
+      ],
+      "checks": [
+        {
+          "id": "metadata",
+          "requirement": "Inspect every upstream bi_ptr field before configuration. The original text is \"Hello, world!\", with UART0 TX0/RX1 at 115200 baud and use_uart=use_usb=1."
+        },
+        {
+          "id": "configured_metadata",
+          "requirement": "Use the official picotool to configure a separate postlink ELF: text=\"Goodbye, world!\", uart_num=1, uart_tx=4, uart_rx=5, uart_baud=57600, and both interfaces enabled. Regenerate the matching UF2; preserve source and instruction bytes.",
+          "configuration": {
+            "text": "Goodbye, world!",
+            "uart_num": 1,
+            "uart_tx": 4,
+            "uart_rx": 5,
+            "uart_baud": 57600,
+            "use_uart": 1,
+            "use_usb": 1
+          }
+        },
+        {
+          "id": "real_both_transports",
+          "requirement": "For both the default and configured variants, receive at least three exact greeting lines through actual UART bytes and through actual Linux CDC enumeration, control, and bulk transfers. Verify the same configured text on both transports and the correct UART instance, pins, baud, and control.",
+          "greeting_interval_seconds": [
+            0.95,
+            1.05
+          ]
+        },
+        {
+          "id": "disabled_interfaces",
+          "requirement": "The UART-only variant sets use_usb=0 and must show no USB enable or connection while UART greetings remain correct. The USB-only variant sets use_uart=0 and must show actual Linux CDC greetings without application UART greetings or UART driver enable. Use a fresh machine and separately recorded picotool copy for each."
+        },
+        {
+          "id": "binary_info_bounds",
+          "requirement": "The picotool feature groups and field values must match the configuration. Preserve the 256-byte text capacity. Do not replace stdio at a high level or recognize this example in a model."
+        }
+      ]
+    },
+    {
+      "id": "pico2/hello_anything",
+      "board": "pico2",
+      "target": "hello_anything",
+      "source_directory": ".dev/resources/pico_examples/binary_info/hello_anything",
+      "sources": {
+        ".dev/resources/pico_examples/binary_info/hello_anything/CMakeLists.txt": "a165fd826ee8caff9da126691c6dc3e01267be9d498e1b48f3f6b3ae1d1b493c",
+        ".dev/resources/pico_examples/binary_info/hello_anything/hello_anything.c": "fe7e2b4579d8c42b525c5bb7f0706b6c523cc34ba98a61db18098f1eb690b07e"
+      },
+      "loader": "official_mask_rom_coldboot_from_strict_NOR_file_segments",
+      "duration_seconds": 4,
+      "scenarios": [
+        "default_dual_stdio",
+        "configured_dual_stdio",
+        "uart_only",
+        "usb_only"
+      ],
+      "checks": [
+        {
+          "id": "metadata",
+          "requirement": "Inspect every upstream bi_ptr field before configuration. The original text is \"Hello, world!\", with UART0 TX0/RX1 at 115200 baud and use_uart=use_usb=1."
+        },
+        {
+          "id": "configured_metadata",
+          "requirement": "Use the official picotool to configure a separate postlink ELF: text=\"Goodbye, world!\", uart_num=1, uart_tx=4, uart_rx=5, uart_baud=57600, and both interfaces enabled. Regenerate the matching UF2; preserve source and instruction bytes.",
+          "configuration": {
+            "text": "Goodbye, world!",
+            "uart_num": 1,
+            "uart_tx": 4,
+            "uart_rx": 5,
+            "uart_baud": 57600,
+            "use_uart": 1,
+            "use_usb": 1
+          }
+        },
+        {
+          "id": "real_both_transports",
+          "requirement": "For both the default and configured variants, receive at least three exact greeting lines through actual UART bytes and through actual Linux CDC enumeration, control, and bulk transfers. Verify the same configured text on both transports and the correct UART instance, pins, baud, and control.",
+          "greeting_interval_seconds": [
+            0.95,
+            1.05
+          ]
+        },
+        {
+          "id": "disabled_interfaces",
+          "requirement": "The UART-only variant sets use_usb=0 and must show no USB enable or connection while UART greetings remain correct. The USB-only variant sets use_uart=0 and must show actual Linux CDC greetings without application UART greetings or UART driver enable. Use a fresh machine and separately recorded picotool copy for each."
+        },
+        {
+          "id": "binary_info_bounds",
+          "requirement": "The picotool feature groups and field values must match the configuration. Preserve the 256-byte text capacity. Do not replace stdio at a high level or recognize this example in a model."
+        }
+      ]
+    },
+    {
+      "id": "pico/hello_divider",
+      "board": "pico",
+      "target": "hello_divider",
+      "source_directory": ".dev/resources/pico_examples/divider",
+      "sources": {
+        ".dev/resources/pico_examples/divider/CMakeLists.txt": "f514ece19cd799884b585aa831a5529d1f3dd99dc0947cd1a3d197243f05b148",
+        ".dev/resources/pico_examples/divider/hello_divider.c": "a4c313dc2ab0308f26660179deec7cead3e299423fbf6d537d8f3121dd592fd2"
+      },
+      "loader": "official_mask_rom_coldboot_from_strict_NOR_file_segments",
+      "duration_seconds": 2,
+      "scenarios": [
+        "default"
+      ],
+      "checks": [
+        {
+          "id": "quotients",
+          "requirement": "Check every numeric line: signed 123456/-321 gives quotient -384 and remainder 192; unsigned 123456/321 gives 384 and 192; both backwards checks give 123456; asynchronous signed division gives -384 and 192; operator and inline results are -384; inner 123/7 gives 17; restored outer division gives -384. Require an actual normal exit with status zero.",
+          "signed_quotient": -384,
+          "signed_remainder": 192,
+          "unsigned_quotient": 384,
+          "unsigned_remainder": 192,
+          "inner_quotient": 17
+        },
+        {
+          "id": "state",
+          "requirement": "On Pico1, save/restore must preserve hardware divider state across the inner operation; inspect the actual MMIO sequence without modifying reads. Pico2 may use CPU division or compiler constant folding, so do not fabricate a hardware-MMIO requirement. The second upstream backwards check references the prior result; preserve the source."
+        }
+      ]
+    },
+    {
+      "id": "pico2/hello_divider",
+      "board": "pico2",
+      "target": "hello_divider",
+      "source_directory": ".dev/resources/pico_examples/divider",
+      "sources": {
+        ".dev/resources/pico_examples/divider/CMakeLists.txt": "f514ece19cd799884b585aa831a5529d1f3dd99dc0947cd1a3d197243f05b148",
+        ".dev/resources/pico_examples/divider/hello_divider.c": "a4c313dc2ab0308f26660179deec7cead3e299423fbf6d537d8f3121dd592fd2"
+      },
+      "loader": "official_mask_rom_coldboot_from_strict_NOR_file_segments",
+      "duration_seconds": 2,
+      "scenarios": [
+        "default"
+      ],
+      "checks": [
+        {
+          "id": "quotients",
+          "requirement": "Check every numeric line: signed 123456/-321 gives quotient -384 and remainder 192; unsigned 123456/321 gives 384 and 192; both backwards checks give 123456; asynchronous signed division gives -384 and 192; operator and inline results are -384; inner 123/7 gives 17; restored outer division gives -384. Require an actual normal exit with status zero.",
+          "signed_quotient": -384,
+          "signed_remainder": 192,
+          "unsigned_quotient": 384,
+          "unsigned_remainder": 192,
+          "inner_quotient": 17
+        },
+        {
+          "id": "state",
+          "requirement": "On Pico1, save/restore must preserve hardware divider state across the inner operation; inspect the actual MMIO sequence without modifying reads. Pico2 may use CPU division or compiler constant folding, so do not fabricate a hardware-MMIO requirement. The second upstream backwards check references the prior result; preserve the source."
+        }
+      ]
+    },
+    {
+      "id": "pico/hello_double_tap",
+      "board": "pico",
+      "target": "hello_double_tap",
+      "source_directory": ".dev/resources/pico_examples/system/hello_double_tap",
+      "sources": {
+        ".dev/resources/pico_examples/system/hello_double_tap/hello_double_tap.c": "70fb5ee48dd904aa396bf5a3d121b9dcd7c90e3fe78aa0ca0828bc12bba91d2e",
+        ".dev/resources/pico_examples/system/hello_double_tap/CMakeLists.txt": "98132ded13e1b483a2f7b0cf6133d01c8a3fa486bbc48171e97645ea65ed7e02"
+      },
+      "loader": "official_mask_rom_coldboot_from_strict_NOR_file_segments",
+      "duration_seconds": null,
+      "scenarios": [
+        "cold_normal_blink",
+        "two_run_taps_inside_window",
+        "two_run_taps_outside_window"
+      ],
+      "checks": [
+        {
+          "id": "normal",
+          "requirement": "Boot through the actual ROM from a cold machine. The pre-main constructor must complete its nominal 200 ms flag window, followed by at least three complete GPIO25 blink cycles.",
+          "half_period_seconds": [
+            0.2375,
+            0.2625
+          ]
+        },
+        {
+          "id": "inside_window",
+          "requirement": "Start from normal main execution. The first actual RUN assertion/release starts a new pre-main window. A second RUN assertion/release 100 ms after constructor entry must detect the retained token and enter the official ROM BOOTSEL path before main reenters. Do not seed the token, patch PC/SP/VTOR/security state, bypass the constructor, or substitute a reset API that lacks RUN semantics.",
+          "double_reset_window_ms": 200,
+          "inside_second_tap_ms": 100
+        },
+        {
+          "id": "outside_window",
+          "requirement": "Two explicit RUN pulses 300 ms apart must let the first window expire. The subsequent boot must reach main and blink rather than enter BOOTSEL. Record reset edges and ROM, constructor, and main timestamps.",
+          "outside_second_tap_ms": 300
+        },
+        {
+          "id": "chip_retention",
+          "requirement": "Pico1 must retain ordinary SRAM, including the SDK noinit flag, across RUN. Pico2 must retain POWMAN.DOUBLE_TAP while RUN resets the documented POWMAN, debug-port, and AON domains and loses ordinary SRAM. Require component controls using arbitrary sentinels, holds, and reset generations; no magic-token-specific model behavior."
+        },
+        {
+          "id": "real_bootsel",
+          "requirement": "After detection, require actual Linux BOOTSEL enumeration, control and bulk transfers, and a 512-byte MSC boot sector ending in 55aa. External NOR contents must remain unchanged, and the owned USB import must be detached."
+        }
+      ]
+    },
+    {
+      "id": "pico2/hello_double_tap",
+      "board": "pico2",
+      "target": "hello_double_tap",
+      "source_directory": ".dev/resources/pico_examples/system/hello_double_tap",
+      "sources": {
+        ".dev/resources/pico_examples/system/hello_double_tap/hello_double_tap.c": "70fb5ee48dd904aa396bf5a3d121b9dcd7c90e3fe78aa0ca0828bc12bba91d2e",
+        ".dev/resources/pico_examples/system/hello_double_tap/CMakeLists.txt": "98132ded13e1b483a2f7b0cf6133d01c8a3fa486bbc48171e97645ea65ed7e02"
+      },
+      "loader": "official_mask_rom_coldboot_from_strict_NOR_file_segments",
+      "duration_seconds": null,
+      "scenarios": [
+        "cold_normal_blink",
+        "two_run_taps_inside_window",
+        "two_run_taps_outside_window"
+      ],
+      "checks": [
+        {
+          "id": "normal",
+          "requirement": "Boot through the actual ROM from a cold machine. The pre-main constructor must complete its nominal 200 ms flag window, followed by at least three complete GPIO25 blink cycles.",
+          "half_period_seconds": [
+            0.2375,
+            0.2625
+          ]
+        },
+        {
+          "id": "inside_window",
+          "requirement": "Start from normal main execution. The first actual RUN assertion/release starts a new pre-main window. A second RUN assertion/release 100 ms after constructor entry must detect the retained token and enter the official ROM BOOTSEL path before main reenters. Do not seed the token, patch PC/SP/VTOR/security state, bypass the constructor, or substitute a reset API that lacks RUN semantics.",
+          "double_reset_window_ms": 200,
+          "inside_second_tap_ms": 100
+        },
+        {
+          "id": "outside_window",
+          "requirement": "Two explicit RUN pulses 300 ms apart must let the first window expire. The subsequent boot must reach main and blink rather than enter BOOTSEL. Record reset edges and ROM, constructor, and main timestamps.",
+          "outside_second_tap_ms": 300
+        },
+        {
+          "id": "chip_retention",
+          "requirement": "Pico1 must retain ordinary SRAM, including the SDK noinit flag, across RUN. Pico2 must retain POWMAN.DOUBLE_TAP while RUN resets the documented POWMAN, debug-port, and AON domains and loses ordinary SRAM. Require component controls using arbitrary sentinels, holds, and reset generations; no magic-token-specific model behavior."
+        },
+        {
+          "id": "real_bootsel",
+          "requirement": "After detection, require actual Linux BOOTSEL enumeration, control and bulk transfers, and a 512-byte MSC boot sector ending in 55aa. External NOR contents must remain unchanged, and the owned USB import must be detached."
+        }
+      ]
+    },
+    {
+      "id": "pico/hello_rtc",
+      "board": "pico",
+      "target": "hello_rtc",
+      "source_directory": ".dev/resources/pico_examples/rtc/hello_rtc",
+      "sources": {
+        ".dev/resources/pico_examples/rtc/hello_rtc/CMakeLists.txt": "9d0852faff0e1046383217ae4356f27c5769dc33dba1f488a98cebad2abc9d05",
+        ".dev/resources/pico_examples/rtc/hello_rtc/hello_rtc.c": "f79ff1ce059b66d84e24fe721e4577798aa21e2cfe43f89d36646de8c757540e"
+      },
+      "loader": "official_mask_rom_coldboot_from_strict_NOR_file_segments",
+      "duration_seconds": 3,
+      "scenarios": [
+        "default"
+      ],
+      "checks": [
+        {
+          "id": "date",
+          "requirement": "The initialized date is Friday 5 June 2020 at 15:45:00. Parse carriage-return-delimited datetime output, not just newline-terminated lines. Observe at least seconds 00, 01, and 02, advancing monotonically at 1 Hz without changing the date.",
+          "initial_datetime": {
+            "year": 2020,
+            "month": 6,
+            "day": 5,
+            "dotw": 5,
+            "hour": 15,
+            "min": 45,
+            "sec": 0
+          }
+        },
+        {
+          "id": "polling",
+          "requirement": "The firmware polls and prints every 100 ms plus UART transmission time. Require at least 20 samples over three seconds. Do not increment the RTC once per poll. Preserve the unmodified SDK clock divider and RTC_0-before-RTC_1 snapshot read order.",
+          "sample_interval_seconds": [
+            0.09,
+            0.12
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pico/narrow_io_write",
+      "board": "pico",
+      "target": "narrow_io_write",
+      "source_directory": ".dev/resources/pico_examples/system/narrow_io_write",
+      "sources": {
+        ".dev/resources/pico_examples/system/narrow_io_write/CMakeLists.txt": "eec5a3870d3509cc3da10de33841ae19b5416522456c37fa187aeae3ea344590",
+        ".dev/resources/pico_examples/system/narrow_io_write/narrow_io_write.c": "3d53c24a45db87690ef8dca1d49cb2ccdfbfb76dc0e2eaafb3b2003d39978401"
+      },
+      "loader": "official_mask_rom_coldboot_from_strict_NOR_file_segments",
+      "duration_seconds": 1,
+      "scenarios": [
+        "default"
+      ],
+      "checks": [
+        {
+          "id": "values",
+          "requirement": "Require the exact values: 32-bit deadbeef; little-endian byte lanes ef be ad de; byte-offset-zero write a5 produces a5a5a5a5; byte-offset-one write 3c produces 3c3c3c3c; halfword f00d produces f00df00d. Require the implicit main return to reach normal exit with status zero.",
+          "expected_word_values": [
+            "deadbeef",
+            "a5a5a5a5",
+            "3c3c3c3c",
+            "f00df00d"
+          ]
+        },
+        {
+          "id": "actual_accesses",
+          "requirement": "The native CPU must perform the documented 8-, 16-, and 32-bit WATCHDOG_SCRATCH0 accesses. Use passive width/value observations or component instruction controls to prove replication rather than read-modify-write. Preserve the example and library sources."
+        }
+      ]
+    },
+    {
+      "id": "pico2/narrow_io_write",
+      "board": "pico2",
+      "target": "narrow_io_write",
+      "source_directory": ".dev/resources/pico_examples/system/narrow_io_write",
+      "sources": {
+        ".dev/resources/pico_examples/system/narrow_io_write/CMakeLists.txt": "eec5a3870d3509cc3da10de33841ae19b5416522456c37fa187aeae3ea344590",
+        ".dev/resources/pico_examples/system/narrow_io_write/narrow_io_write.c": "3d53c24a45db87690ef8dca1d49cb2ccdfbfb76dc0e2eaafb3b2003d39978401"
+      },
+      "loader": "official_mask_rom_coldboot_from_strict_NOR_file_segments",
+      "duration_seconds": 1,
+      "scenarios": [
+        "default"
+      ],
+      "checks": [
+        {
+          "id": "values",
+          "requirement": "Require the exact values: 32-bit deadbeef; little-endian byte lanes ef be ad de; byte-offset-zero write a5 produces a5a5a5a5; byte-offset-one write 3c produces 3c3c3c3c; halfword f00d produces f00df00d. Require the implicit main return to reach normal exit with status zero.",
+          "expected_word_values": [
+            "deadbeef",
+            "a5a5a5a5",
+            "3c3c3c3c",
+            "f00df00d"
+          ]
+        },
+        {
+          "id": "actual_accesses",
+          "requirement": "The native CPU must perform the documented 8-, 16-, and 32-bit WATCHDOG_SCRATCH0 accesses. Use passive width/value observations or component instruction controls to prove replication rather than read-modify-write. Preserve the example and library sources."
+        }
+      ]
+    },
+    {
+      "id": "pico/rand",
+      "board": "pico",
+      "target": "rand",
+      "source_directory": ".dev/resources/pico_examples/system/rand",
+      "sources": {
+        ".dev/resources/pico_examples/system/rand/CMakeLists.txt": "317969c4b20f4a879eead4afe42115377d02aaf9cf2cdb82590c9f1e8a0279c4",
+        ".dev/resources/pico_examples/system/rand/rand.c": "cfe3360c9a4ef2d41307debb67b812196371ddb24157455215313a08526578c6"
+      },
+      "loader": "official_mask_rom_coldboot_from_strict_NOR_file_segments",
+      "duration_seconds": null,
+      "scenarios": [
+        "fixed_seed0_complete"
+      ],
+      "checks": [
+        {
+          "id": "seed",
+          "requirement": "Set the Renode emulation seed to zero before creating the machine or peripherals and before boot. Record all modeled entropy sources. Do not use unrecorded host-clock/OS entropy, balance output buckets, recognize this firmware, or select a seed from outcomes.",
+          "emulation_seed": 0
+        },
+        {
+          "id": "full_run",
+          "requirement": "Preserve RANDOM_COUNT=500000. Printed 32-, 64-, and 128-bit values must contain 8, 16, and 32 hexadecimal digits. Require exactly 32 unique positive-count bins numbered 0..31, a total of 500000, correctly reported extrema, \"All done\", and normal exit with status zero.",
+          "sample_count": 500000,
+          "bins": 32
+        },
+        {
+          "id": "literal_distribution",
+          "requirement": "For every bin, apply the source integer expression exactly: 98 <= 1562500 // count <= 101, equivalent to 15319 <= count <= 15943. Do not replace the source assertion with a looser statistic.",
+          "inverse_integer_check_numerator": 1562500,
+          "inverse_integer_check_range": [
+            98,
+            101
+          ],
+          "equivalent_count_range": [
+            15319,
+            15943
+          ]
+        },
+        {
+          "id": "failures",
+          "requirement": "Preserve and report any statistical source failure at seed zero. Changing the seed, thresholds, or sample count requires a reviewed catalog correction; never rerun until it passes. These checks validate API and emulator behavior, not hardware entropy quality or cryptographic security."
+        }
+      ]
+    },
+    {
+      "id": "pico2/rand",
+      "board": "pico2",
+      "target": "rand",
+      "source_directory": ".dev/resources/pico_examples/system/rand",
+      "sources": {
+        ".dev/resources/pico_examples/system/rand/CMakeLists.txt": "317969c4b20f4a879eead4afe42115377d02aaf9cf2cdb82590c9f1e8a0279c4",
+        ".dev/resources/pico_examples/system/rand/rand.c": "cfe3360c9a4ef2d41307debb67b812196371ddb24157455215313a08526578c6"
+      },
+      "loader": "official_mask_rom_coldboot_from_strict_NOR_file_segments",
+      "duration_seconds": null,
+      "scenarios": [
+        "fixed_seed0_complete"
+      ],
+      "checks": [
+        {
+          "id": "seed",
+          "requirement": "Set the Renode emulation seed to zero before creating the machine or peripherals and before boot. Record all modeled entropy sources. Do not use unrecorded host-clock/OS entropy, balance output buckets, recognize this firmware, or select a seed from outcomes.",
+          "emulation_seed": 0
+        },
+        {
+          "id": "full_run",
+          "requirement": "Preserve RANDOM_COUNT=500000. Printed 32-, 64-, and 128-bit values must contain 8, 16, and 32 hexadecimal digits. Require exactly 32 unique positive-count bins numbered 0..31, a total of 500000, correctly reported extrema, \"All done\", and normal exit with status zero.",
+          "sample_count": 500000,
+          "bins": 32
+        },
+        {
+          "id": "literal_distribution",
+          "requirement": "For every bin, apply the source integer expression exactly: 98 <= 1562500 // count <= 101, equivalent to 15319 <= count <= 15943. Do not replace the source assertion with a looser statistic.",
+          "inverse_integer_check_numerator": 1562500,
+          "inverse_integer_check_range": [
+            98,
+            101
+          ],
+          "equivalent_count_range": [
+            15319,
+            15943
+          ]
+        },
+        {
+          "id": "failures",
+          "requirement": "Preserve and report any statistical source failure at seed zero. Changing the seed, thresholds, or sample count requires a reviewed catalog correction; never rerun until it passes. These checks validate API and emulator behavior, not hardware entropy quality or cryptographic security."
+        }
+      ]
+    },
+    {
+      "id": "pico/rtc_alarm",
+      "board": "pico",
+      "target": "rtc_alarm",
+      "source_directory": ".dev/resources/pico_examples/rtc/rtc_alarm",
+      "sources": {
+        ".dev/resources/pico_examples/rtc/rtc_alarm/CMakeLists.txt": "bc3110f27618a0f401c69217b852f8a0a49bde2ea42a034954ebb4be5c6f0d87",
+        ".dev/resources/pico_examples/rtc/rtc_alarm/rtc_alarm.c": "955aace31b1bcdfaad1192997197e4431b2308d973dfc692efcaffdff1781da9"
+      },
+      "loader": "official_mask_rom_coldboot_from_strict_NOR_file_segments",
+      "duration_seconds": 6,
+      "scenarios": [
+        "default"
+      ],
+      "checks": [
+        {
+          "id": "alarm",
+          "requirement": "The actual initialization is year 2020, January 13, weekday 3, at 11:20:00; the comment saying 2021 is incorrect. Require exactly one callback printing Wednesday 13 January 11:20:05 2020, an actual RTC interrupt entry, and a normal exit with status zero.",
+          "alarm_after_seconds": [
+            4.95,
+            5.05
+          ]
+        },
+        {
+          "id": "matching",
+          "requirement": "Match all configured date and time fields. Observe the actual SDK disable/acknowledge operation and callback. Component controls must cover interrupt masking, clear/rearm, and coherent date/snapshot behavior; do not inject output text."
+        }
+      ]
+    },
+    {
+      "id": "pico/rtc_alarm_repeat",
+      "board": "pico",
+      "target": "rtc_alarm_repeat",
+      "source_directory": ".dev/resources/pico_examples/rtc/rtc_alarm_repeat",
+      "sources": {
+        ".dev/resources/pico_examples/rtc/rtc_alarm_repeat/CMakeLists.txt": "17d1b5b0421e4e42e2b7cfc11bfe000a1ea73f1ff4ff26cb8a9f7bb4dcb2c0ba",
+        ".dev/resources/pico_examples/rtc/rtc_alarm_repeat/rtc_alarm_repeat.c": "01e8c71a6fe1d2460c2d32bec3507c8e576b5417b515f445574745c9dcd09aee"
+      },
+      "loader": "official_mask_rom_coldboot_from_strict_NOR_file_segments",
+      "duration_seconds": 185,
+      "scenarios": [
+        "default"
+      ],
+      "checks": [
+        {
+          "id": "repeat",
+          "requirement": "The initial date is 2020 January 13, weekday 3, at 11:20:00. Only seconds=00 is matched; every other field is a wildcard. Observe at least three actual RTC interrupt callbacks and distinct minute progression through 11:21, 11:22, and 11:23 as applicable. Every callback must report seconds=00.",
+          "interval_between_distinct_minutes_seconds": [
+            59.95,
+            60.05
+          ]
+        },
+        {
+          "id": "initial_phase",
+          "requirement": "An optional immediate match at the initial 11:20:00 is not the repetition oracle. Require distinct minute-boundary callbacks without an interrupt storm or repeated callbacks in one simulated second. Qualify the initial comparator phase from the datasheet and component controls, without choosing it from acceptance outcomes."
+        },
+        {
+          "id": "time",
+          "requirement": "Advance 185 actual virtual seconds without changing the firmware, RTC frequency, divider, or delays. Do not jump the counter, fabricate interrupts, change loop counts, or force the CPU paused. Ordinary native idle/self-branch optimizations are allowed."
+        }
+      ]
+    },
+    {
+      "id": "pico/simple_at_time_worker",
+      "board": "pico",
+      "target": "simple_at_time_worker",
+      "source_directory": ".dev/resources/pico_examples/async_context/simple_at_time_worker",
+      "sources": {
+        ".dev/resources/pico_examples/async_context/simple_at_time_worker/simple_at_time_worker.c": "2c63f91f6922ce498ad96d8bd9962eabaa05f676d466e0d7ec4aa9d71ebbfbed",
+        ".dev/resources/pico_examples/async_context/simple_at_time_worker/CMakeLists.txt": "574b79868684ee766957761e9ddf035d86f69e9f38b37939b5fe9b4a115085a3"
+      },
+      "loader": "official_mask_rom_coldboot_from_strict_NOR_file_segments",
+      "duration_seconds": 4,
+      "scenarios": [
+        "default"
+      ],
+      "checks": [
+        {
+          "id": "worker",
+          "requirement": "The first worker_cb must run about 500 ms after registration, followed by at least six callbacks at 500 ms intervals. Require actual background alarm/user-interrupt execution while main remains in sleep_ms(5000). The callback and user_data must remain valid, and the worker must reschedule itself after removal.",
+          "callback_interval_seconds": [
+            0.475,
+            0.525
+          ]
+        },
+        {
+          "id": "output",
+          "requirement": "Driven GPIO25 transitions must match callback states beginning with true, with at least three full cycles. Do not substitute a foreground or synthetic blink."
+        }
+      ]
+    },
+    {
+      "id": "pico2/simple_at_time_worker",
+      "board": "pico2",
+      "target": "simple_at_time_worker",
+      "source_directory": ".dev/resources/pico_examples/async_context/simple_at_time_worker",
+      "sources": {
+        ".dev/resources/pico_examples/async_context/simple_at_time_worker/simple_at_time_worker.c": "2c63f91f6922ce498ad96d8bd9962eabaa05f676d466e0d7ec4aa9d71ebbfbed",
+        ".dev/resources/pico_examples/async_context/simple_at_time_worker/CMakeLists.txt": "574b79868684ee766957761e9ddf035d86f69e9f38b37939b5fe9b4a115085a3"
+      },
+      "loader": "official_mask_rom_coldboot_from_strict_NOR_file_segments",
+      "duration_seconds": 4,
+      "scenarios": [
+        "default"
+      ],
+      "checks": [
+        {
+          "id": "worker",
+          "requirement": "The first worker_cb must run about 500 ms after registration, followed by at least six callbacks at 500 ms intervals. Require actual background alarm/user-interrupt execution while main remains in sleep_ms(5000). The callback and user_data must remain valid, and the worker must reschedule itself after removal.",
+          "callback_interval_seconds": [
+            0.475,
+            0.525
+          ]
+        },
+        {
+          "id": "output",
+          "requirement": "Driven GPIO25 transitions must match callback states beginning with true, with at least three full cycles. Do not substitute a foreground or synthetic blink."
+        }
+      ]
+    },
+    {
+      "id": "pico/status_blink",
+      "board": "pico",
+      "target": "status_blink",
+      "source_directory": ".dev/resources/pico_examples/status_led/status_blink",
+      "sources": {
+        ".dev/resources/pico_examples/status_led/status_blink/CMakeLists.txt": "09c582cae6252fe1a136c568ef23465d473f3c28be31fa6d7621edf0a1230fa0",
+        ".dev/resources/pico_examples/status_led/status_blink/status_blink.c": "b4c93faeee170002c2e0e7ea50b104dd74bf27f174f906d9a2fa893e6786a652"
+      },
+      "loader": "official_mask_rom_coldboot_from_strict_NOR_file_segments",
+      "duration_seconds": 2,
+      "scenarios": [
+        "default"
+      ],
+      "checks": [
+        {
+          "id": "led",
+          "requirement": "status_led_init must succeed. Observe GPIO25 driven through at least three complete cycles with 250 ms half periods.",
+          "half_period_seconds": [
+            0.2375,
+            0.2625
+          ]
+        },
+        {
+          "id": "release_asserts",
+          "requirement": "Release NDEBUG may remove assert(status_led_get_state()) calls. Record the actual build/disassembly and do not claim the example executes the getter if absent. Test getter readback, masks, and polarity with meaningful model/native component controls; do not change the example build merely to inflate coverage."
+        }
+      ]
+    },
+    {
+      "id": "pico2/status_blink",
+      "board": "pico2",
+      "target": "status_blink",
+      "source_directory": ".dev/resources/pico_examples/status_led/status_blink",
+      "sources": {
+        ".dev/resources/pico_examples/status_led/status_blink/CMakeLists.txt": "09c582cae6252fe1a136c568ef23465d473f3c28be31fa6d7621edf0a1230fa0",
+        ".dev/resources/pico_examples/status_led/status_blink/status_blink.c": "b4c93faeee170002c2e0e7ea50b104dd74bf27f174f906d9a2fa893e6786a652"
+      },
+      "loader": "official_mask_rom_coldboot_from_strict_NOR_file_segments",
+      "duration_seconds": 2,
+      "scenarios": [
+        "default"
+      ],
+      "checks": [
+        {
+          "id": "led",
+          "requirement": "status_led_init must succeed. Observe GPIO25 driven through at least three complete cycles with 250 ms half periods.",
+          "half_period_seconds": [
+            0.2375,
+            0.2625
+          ]
+        },
+        {
+          "id": "release_asserts",
+          "requirement": "Release NDEBUG may remove assert(status_led_get_state()) calls. Record the actual build/disassembly and do not claim the example executes the getter if absent. Test getter readback, masks, and polarity with meaningful model/native component controls; do not change the example build merely to inflate coverage."
+        }
+      ]
+    },
+    {
+      "id": "pico/unique_board_id",
+      "board": "pico",
+      "target": "unique_board_id",
+      "source_directory": ".dev/resources/pico_examples/system/unique_board_id",
+      "sources": {
+        ".dev/resources/pico_examples/system/unique_board_id/unique_board_id.c": "051acb0274f19a7f3fae861ac995a6026d3ecdf76b7995788a1a23a97c826bed",
+        ".dev/resources/pico_examples/system/unique_board_id/CMakeLists.txt": "910275e684fb9b53367c605f7f59819e228764cd4dc9c60eaccc65ca3bbcaa37"
+      },
+      "loader": "official_mask_rom_coldboot_from_strict_NOR_file_segments",
+      "duration_seconds": 1,
+      "scenarios": [
+        "identity_0123456789abcdef",
+        "identity_fedcba9876543210"
+      ],
+      "checks": [
+        {
+          "id": "identity_inputs",
+          "requirement": "Use the two predeclared non-palindromic identities 0123456789abcdef and fedcba9876543210 with identical source and instruction bytes. Pico1 gets its identity from the Winbond uniqueId. Pico2 gets its identity from raw OTP CHIPID rows 0..3 with independently derived ECC, not from NOR.",
+          "fixture_ids": [
+            "0123456789abcdef",
+            "fedcba9876543210"
+          ]
+        },
+        {
+          "id": "exact_bytes",
+          "requirement": "The eight printed hexadecimal bytes must exactly match the configured identity in the SDK byte order. Pico1 must execute flash_get_unique_id. Pico2 must execute the actual ROM GET_SYS_INFO CHIP_INFO path and SDK out.bytes[15-i] reversal. Record the source-derived oracle and raw fixture hashes; do not replace the high-level API or seed its RAM cache."
+        },
+        {
+          "id": "retention",
+          "requirement": "The same provisioned identity must survive a genuine RUN reset and a fresh machine boot. The alternate fixture must change the printed bytes exactly. NOR/OTP identity is retained physical state, not a fresh random value on each read. Require normal exit with status zero in every run."
+        }
+      ]
+    },
+    {
+      "id": "pico2/unique_board_id",
+      "board": "pico2",
+      "target": "unique_board_id",
+      "source_directory": ".dev/resources/pico_examples/system/unique_board_id",
+      "sources": {
+        ".dev/resources/pico_examples/system/unique_board_id/unique_board_id.c": "051acb0274f19a7f3fae861ac995a6026d3ecdf76b7995788a1a23a97c826bed",
+        ".dev/resources/pico_examples/system/unique_board_id/CMakeLists.txt": "910275e684fb9b53367c605f7f59819e228764cd4dc9c60eaccc65ca3bbcaa37"
+      },
+      "loader": "official_mask_rom_coldboot_from_strict_NOR_file_segments",
+      "duration_seconds": 1,
+      "scenarios": [
+        "identity_0123456789abcdef",
+        "identity_fedcba9876543210"
+      ],
+      "checks": [
+        {
+          "id": "identity_inputs",
+          "requirement": "Use the two predeclared non-palindromic identities 0123456789abcdef and fedcba9876543210 with identical source and instruction bytes. Pico1 gets its identity from the Winbond uniqueId. Pico2 gets its identity from raw OTP CHIPID rows 0..3 with independently derived ECC, not from NOR.",
+          "fixture_ids": [
+            "0123456789abcdef",
+            "fedcba9876543210"
+          ]
+        },
+        {
+          "id": "exact_bytes",
+          "requirement": "The eight printed hexadecimal bytes must exactly match the configured identity in the SDK byte order. Pico1 must execute flash_get_unique_id. Pico2 must execute the actual ROM GET_SYS_INFO CHIP_INFO path and SDK out.bytes[15-i] reversal. Record the source-derived oracle and raw fixture hashes; do not replace the high-level API or seed its RAM cache."
+        },
+        {
+          "id": "retention",
+          "requirement": "The same provisioned identity must survive a genuine RUN reset and a fresh machine boot. The alternate fixture must change the printed bytes exactly. NOR/OTP identity is retained physical state, not a fresh random value on each read. Require normal exit with status zero in every run."
+        }
+      ]
+    },
+    {
+      "id": "pico/hello_freertos_one_core",
+      "board": "pico",
+      "target": "hello_freertos_one_core",
+      "source_directory": ".dev/resources/pico_examples/freertos/hello_freertos",
+      "sources": {
+        ".dev/resources/pico_examples/freertos/hello_freertos/CMakeLists.txt": "db574a1f47cf855be4753e5e076c23da94374e2e7c1b258491fd5ac9e322b03f",
+        ".dev/resources/pico_examples/freertos/hello_freertos/hello_freertos.c": "9fa28de05275cb6e1b8dae4e533c1d1e84677a8bf1abf12524f6e45de09ce24a"
+      },
+      "loader": "official_mask_rom_coldboot_from_strict_NOR_file_segments",
+      "duration_seconds": null,
+      "scenarios": [
+        "original_task_return_defect_control",
+        "reviewed_full_lifecycle_success"
+      ],
+      "checks": [
+        {
+          "id": "build_profile",
+          "requirement": "Preserve upstream tick rate 1000 Hz, LED_BUSY_WAIT=1, USE_LED=1, and priorities main=2, blink=1, worker=4. The one-core target runs on core0; two-core and static-allocation targets use SMP2 with main affinity mask 1. The static target must use static allocation with dynamic allocation disabled and actual static TCB/stack storage; dynamic targets use Heap4. Record effective definitions and link maps. Do not change core counts, priorities, or timing to bypass failures."
+        },
+        {
+          "id": "main_lifecycle",
+          "requirement": "Observe exactly main counts 0..9 in order, separated by 3000 ticks/about three seconds, then \"main_task is exiting now\" and completed async_context_deinit. Do not stop before 30 seconds or accept a startup banner alone. After any reviewed lifecycle repair, require actual task deletion and continued progress from other tasks.",
+          "main_counts": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9
+          ],
+          "main_interval_seconds": [
+            2.85,
+            3.15
+          ]
+        },
+        {
+          "id": "worker",
+          "requirement": "Observe actual do_work thread callbacks with counts 0, 1, and 2 at about 0, 10, and 20 seconds. Count 3 near 30 seconds is allowed only before deinitialization. Require no callbacks after deinitialization, including at least 11 virtual seconds of post-completion observation. Do not lose, duplicate, or synthesize counts.",
+          "worker_interval_seconds": [
+            9.5,
+            10.5
+          ],
+          "post_deinit_observe_seconds": 11
+        },
+        {
+          "id": "blink",
+          "requirement": "GPIO25 must alternate low/high at two-second intervals while main blocks and the worker preempts, then continue after main finishes and deletes its task. The initial false level is startup, not a complete cycle.",
+          "blink_half_period_seconds": [
+            1.9,
+            2.1
+          ]
+        },
+        {
+          "id": "scheduler",
+          "requirement": "Observe actual SysTick/PendSV entries and context switches, with task callbacks in thread mode. One-core tasks must run only on core0. In SMP builds, both native cores must execute FreeRTOS task contexts, while main remains on core0 and worker/blink may run on either core. Do not demand migration or an unspecified fixed worker core."
+        },
+        {
+          "id": "source_defect_gate",
+          "requirement": "The original main_task returns after deinitialization. The RP2040 task-return address calls panic_unsupported; the M33 task-return path asserts or disables interrupts and loops. Preserve an original runtime/ELF/disassembly control through that point. No patch is authorized yet. If confirmed unavoidable, a minimal vTaskDelete(NULL) after deinitialization may be reviewed. Positive acceptance requires proper task deletion and subsequent scheduling, never a panic allowance or early stop."
+        }
+      ],
+      "exception_gate": "pending_original_runtime_control_and_adversarial_patch_review"
+    },
+    {
+      "id": "pico2/hello_freertos_one_core",
+      "board": "pico2",
+      "target": "hello_freertos_one_core",
+      "source_directory": ".dev/resources/pico_examples/freertos/hello_freertos",
+      "sources": {
+        ".dev/resources/pico_examples/freertos/hello_freertos/CMakeLists.txt": "db574a1f47cf855be4753e5e076c23da94374e2e7c1b258491fd5ac9e322b03f",
+        ".dev/resources/pico_examples/freertos/hello_freertos/hello_freertos.c": "9fa28de05275cb6e1b8dae4e533c1d1e84677a8bf1abf12524f6e45de09ce24a"
+      },
+      "loader": "official_mask_rom_coldboot_from_strict_NOR_file_segments",
+      "duration_seconds": null,
+      "scenarios": [
+        "original_task_return_defect_control",
+        "reviewed_full_lifecycle_success"
+      ],
+      "checks": [
+        {
+          "id": "build_profile",
+          "requirement": "Preserve upstream tick rate 1000 Hz, LED_BUSY_WAIT=1, USE_LED=1, and priorities main=2, blink=1, worker=4. The one-core target runs on core0; two-core and static-allocation targets use SMP2 with main affinity mask 1. The static target must use static allocation with dynamic allocation disabled and actual static TCB/stack storage; dynamic targets use Heap4. Record effective definitions and link maps. Do not change core counts, priorities, or timing to bypass failures."
+        },
+        {
+          "id": "main_lifecycle",
+          "requirement": "Observe exactly main counts 0..9 in order, separated by 3000 ticks/about three seconds, then \"main_task is exiting now\" and completed async_context_deinit. Do not stop before 30 seconds or accept a startup banner alone. After any reviewed lifecycle repair, require actual task deletion and continued progress from other tasks.",
+          "main_counts": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9
+          ],
+          "main_interval_seconds": [
+            2.85,
+            3.15
+          ]
+        },
+        {
+          "id": "worker",
+          "requirement": "Observe actual do_work thread callbacks with counts 0, 1, and 2 at about 0, 10, and 20 seconds. Count 3 near 30 seconds is allowed only before deinitialization. Require no callbacks after deinitialization, including at least 11 virtual seconds of post-completion observation. Do not lose, duplicate, or synthesize counts.",
+          "worker_interval_seconds": [
+            9.5,
+            10.5
+          ],
+          "post_deinit_observe_seconds": 11
+        },
+        {
+          "id": "blink",
+          "requirement": "GPIO25 must alternate low/high at two-second intervals while main blocks and the worker preempts, then continue after main finishes and deletes its task. The initial false level is startup, not a complete cycle.",
+          "blink_half_period_seconds": [
+            1.9,
+            2.1
+          ]
+        },
+        {
+          "id": "scheduler",
+          "requirement": "Observe actual SysTick/PendSV entries and context switches, with task callbacks in thread mode. One-core tasks must run only on core0. In SMP builds, both native cores must execute FreeRTOS task contexts, while main remains on core0 and worker/blink may run on either core. Do not demand migration or an unspecified fixed worker core."
+        },
+        {
+          "id": "source_defect_gate",
+          "requirement": "The original main_task returns after deinitialization. The RP2040 task-return address calls panic_unsupported; the M33 task-return path asserts or disables interrupts and loops. Preserve an original runtime/ELF/disassembly control through that point. No patch is authorized yet. If confirmed unavoidable, a minimal vTaskDelete(NULL) after deinitialization may be reviewed. Positive acceptance requires proper task deletion and subsequent scheduling, never a panic allowance or early stop."
+        }
+      ],
+      "exception_gate": "pending_original_runtime_control_and_adversarial_patch_review"
+    },
+    {
+      "id": "pico/hello_freertos_static_allocation",
+      "board": "pico",
+      "target": "hello_freertos_static_allocation",
+      "source_directory": ".dev/resources/pico_examples/freertos/hello_freertos",
+      "sources": {
+        ".dev/resources/pico_examples/freertos/hello_freertos/CMakeLists.txt": "db574a1f47cf855be4753e5e076c23da94374e2e7c1b258491fd5ac9e322b03f",
+        ".dev/resources/pico_examples/freertos/hello_freertos/hello_freertos.c": "9fa28de05275cb6e1b8dae4e533c1d1e84677a8bf1abf12524f6e45de09ce24a"
+      },
+      "loader": "official_mask_rom_coldboot_from_strict_NOR_file_segments",
+      "duration_seconds": null,
+      "scenarios": [
+        "original_task_return_defect_control",
+        "reviewed_full_lifecycle_success"
+      ],
+      "checks": [
+        {
+          "id": "build_profile",
+          "requirement": "Preserve upstream tick rate 1000 Hz, LED_BUSY_WAIT=1, USE_LED=1, and priorities main=2, blink=1, worker=4. The one-core target runs on core0; two-core and static-allocation targets use SMP2 with main affinity mask 1. The static target must use static allocation with dynamic allocation disabled and actual static TCB/stack storage; dynamic targets use Heap4. Record effective definitions and link maps. Do not change core counts, priorities, or timing to bypass failures."
+        },
+        {
+          "id": "main_lifecycle",
+          "requirement": "Observe exactly main counts 0..9 in order, separated by 3000 ticks/about three seconds, then \"main_task is exiting now\" and completed async_context_deinit. Do not stop before 30 seconds or accept a startup banner alone. After any reviewed lifecycle repair, require actual task deletion and continued progress from other tasks.",
+          "main_counts": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9
+          ],
+          "main_interval_seconds": [
+            2.85,
+            3.15
+          ]
+        },
+        {
+          "id": "worker",
+          "requirement": "Observe actual do_work thread callbacks with counts 0, 1, and 2 at about 0, 10, and 20 seconds. Count 3 near 30 seconds is allowed only before deinitialization. Require no callbacks after deinitialization, including at least 11 virtual seconds of post-completion observation. Do not lose, duplicate, or synthesize counts.",
+          "worker_interval_seconds": [
+            9.5,
+            10.5
+          ],
+          "post_deinit_observe_seconds": 11
+        },
+        {
+          "id": "blink",
+          "requirement": "GPIO25 must alternate low/high at two-second intervals while main blocks and the worker preempts, then continue after main finishes and deletes its task. The initial false level is startup, not a complete cycle.",
+          "blink_half_period_seconds": [
+            1.9,
+            2.1
+          ]
+        },
+        {
+          "id": "scheduler",
+          "requirement": "Observe actual SysTick/PendSV entries and context switches, with task callbacks in thread mode. One-core tasks must run only on core0. In SMP builds, both native cores must execute FreeRTOS task contexts, while main remains on core0 and worker/blink may run on either core. Do not demand migration or an unspecified fixed worker core."
+        },
+        {
+          "id": "source_defect_gate",
+          "requirement": "The original main_task returns after deinitialization. The RP2040 task-return address calls panic_unsupported; the M33 task-return path asserts or disables interrupts and loops. Preserve an original runtime/ELF/disassembly control through that point. No patch is authorized yet. If confirmed unavoidable, a minimal vTaskDelete(NULL) after deinitialization may be reviewed. Positive acceptance requires proper task deletion and subsequent scheduling, never a panic allowance or early stop."
+        }
+      ],
+      "exception_gate": "pending_original_runtime_control_and_adversarial_patch_review"
+    },
+    {
+      "id": "pico2/hello_freertos_static_allocation",
+      "board": "pico2",
+      "target": "hello_freertos_static_allocation",
+      "source_directory": ".dev/resources/pico_examples/freertos/hello_freertos",
+      "sources": {
+        ".dev/resources/pico_examples/freertos/hello_freertos/CMakeLists.txt": "db574a1f47cf855be4753e5e076c23da94374e2e7c1b258491fd5ac9e322b03f",
+        ".dev/resources/pico_examples/freertos/hello_freertos/hello_freertos.c": "9fa28de05275cb6e1b8dae4e533c1d1e84677a8bf1abf12524f6e45de09ce24a"
+      },
+      "loader": "official_mask_rom_coldboot_from_strict_NOR_file_segments",
+      "duration_seconds": null,
+      "scenarios": [
+        "original_task_return_defect_control",
+        "reviewed_full_lifecycle_success"
+      ],
+      "checks": [
+        {
+          "id": "build_profile",
+          "requirement": "Preserve upstream tick rate 1000 Hz, LED_BUSY_WAIT=1, USE_LED=1, and priorities main=2, blink=1, worker=4. The one-core target runs on core0; two-core and static-allocation targets use SMP2 with main affinity mask 1. The static target must use static allocation with dynamic allocation disabled and actual static TCB/stack storage; dynamic targets use Heap4. Record effective definitions and link maps. Do not change core counts, priorities, or timing to bypass failures."
+        },
+        {
+          "id": "main_lifecycle",
+          "requirement": "Observe exactly main counts 0..9 in order, separated by 3000 ticks/about three seconds, then \"main_task is exiting now\" and completed async_context_deinit. Do not stop before 30 seconds or accept a startup banner alone. After any reviewed lifecycle repair, require actual task deletion and continued progress from other tasks.",
+          "main_counts": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9
+          ],
+          "main_interval_seconds": [
+            2.85,
+            3.15
+          ]
+        },
+        {
+          "id": "worker",
+          "requirement": "Observe actual do_work thread callbacks with counts 0, 1, and 2 at about 0, 10, and 20 seconds. Count 3 near 30 seconds is allowed only before deinitialization. Require no callbacks after deinitialization, including at least 11 virtual seconds of post-completion observation. Do not lose, duplicate, or synthesize counts.",
+          "worker_interval_seconds": [
+            9.5,
+            10.5
+          ],
+          "post_deinit_observe_seconds": 11
+        },
+        {
+          "id": "blink",
+          "requirement": "GPIO25 must alternate low/high at two-second intervals while main blocks and the worker preempts, then continue after main finishes and deletes its task. The initial false level is startup, not a complete cycle.",
+          "blink_half_period_seconds": [
+            1.9,
+            2.1
+          ]
+        },
+        {
+          "id": "scheduler",
+          "requirement": "Observe actual SysTick/PendSV entries and context switches, with task callbacks in thread mode. One-core tasks must run only on core0. In SMP builds, both native cores must execute FreeRTOS task contexts, while main remains on core0 and worker/blink may run on either core. Do not demand migration or an unspecified fixed worker core."
+        },
+        {
+          "id": "source_defect_gate",
+          "requirement": "The original main_task returns after deinitialization. The RP2040 task-return address calls panic_unsupported; the M33 task-return path asserts or disables interrupts and loops. Preserve an original runtime/ELF/disassembly control through that point. No patch is authorized yet. If confirmed unavoidable, a minimal vTaskDelete(NULL) after deinitialization may be reviewed. Positive acceptance requires proper task deletion and subsequent scheduling, never a panic allowance or early stop."
+        }
+      ],
+      "exception_gate": "pending_original_runtime_control_and_adversarial_patch_review"
+    },
+    {
+      "id": "pico/hello_freertos_two_cores",
+      "board": "pico",
+      "target": "hello_freertos_two_cores",
+      "source_directory": ".dev/resources/pico_examples/freertos/hello_freertos",
+      "sources": {
+        ".dev/resources/pico_examples/freertos/hello_freertos/CMakeLists.txt": "db574a1f47cf855be4753e5e076c23da94374e2e7c1b258491fd5ac9e322b03f",
+        ".dev/resources/pico_examples/freertos/hello_freertos/hello_freertos.c": "9fa28de05275cb6e1b8dae4e533c1d1e84677a8bf1abf12524f6e45de09ce24a"
+      },
+      "loader": "official_mask_rom_coldboot_from_strict_NOR_file_segments",
+      "duration_seconds": null,
+      "scenarios": [
+        "original_task_return_defect_control",
+        "reviewed_full_lifecycle_success"
+      ],
+      "checks": [
+        {
+          "id": "build_profile",
+          "requirement": "Preserve upstream tick rate 1000 Hz, LED_BUSY_WAIT=1, USE_LED=1, and priorities main=2, blink=1, worker=4. The one-core target runs on core0; two-core and static-allocation targets use SMP2 with main affinity mask 1. The static target must use static allocation with dynamic allocation disabled and actual static TCB/stack storage; dynamic targets use Heap4. Record effective definitions and link maps. Do not change core counts, priorities, or timing to bypass failures."
+        },
+        {
+          "id": "main_lifecycle",
+          "requirement": "Observe exactly main counts 0..9 in order, separated by 3000 ticks/about three seconds, then \"main_task is exiting now\" and completed async_context_deinit. Do not stop before 30 seconds or accept a startup banner alone. After any reviewed lifecycle repair, require actual task deletion and continued progress from other tasks.",
+          "main_counts": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9
+          ],
+          "main_interval_seconds": [
+            2.85,
+            3.15
+          ]
+        },
+        {
+          "id": "worker",
+          "requirement": "Observe actual do_work thread callbacks with counts 0, 1, and 2 at about 0, 10, and 20 seconds. Count 3 near 30 seconds is allowed only before deinitialization. Require no callbacks after deinitialization, including at least 11 virtual seconds of post-completion observation. Do not lose, duplicate, or synthesize counts.",
+          "worker_interval_seconds": [
+            9.5,
+            10.5
+          ],
+          "post_deinit_observe_seconds": 11
+        },
+        {
+          "id": "blink",
+          "requirement": "GPIO25 must alternate low/high at two-second intervals while main blocks and the worker preempts, then continue after main finishes and deletes its task. The initial false level is startup, not a complete cycle.",
+          "blink_half_period_seconds": [
+            1.9,
+            2.1
+          ]
+        },
+        {
+          "id": "scheduler",
+          "requirement": "Observe actual SysTick/PendSV entries and context switches, with task callbacks in thread mode. One-core tasks must run only on core0. In SMP builds, both native cores must execute FreeRTOS task contexts, while main remains on core0 and worker/blink may run on either core. Do not demand migration or an unspecified fixed worker core."
+        },
+        {
+          "id": "source_defect_gate",
+          "requirement": "The original main_task returns after deinitialization. The RP2040 task-return address calls panic_unsupported; the M33 task-return path asserts or disables interrupts and loops. Preserve an original runtime/ELF/disassembly control through that point. No patch is authorized yet. If confirmed unavoidable, a minimal vTaskDelete(NULL) after deinitialization may be reviewed. Positive acceptance requires proper task deletion and subsequent scheduling, never a panic allowance or early stop."
+        }
+      ],
+      "exception_gate": "pending_original_runtime_control_and_adversarial_patch_review"
+    },
+    {
+      "id": "pico2/hello_freertos_two_cores",
+      "board": "pico2",
+      "target": "hello_freertos_two_cores",
+      "source_directory": ".dev/resources/pico_examples/freertos/hello_freertos",
+      "sources": {
+        ".dev/resources/pico_examples/freertos/hello_freertos/CMakeLists.txt": "db574a1f47cf855be4753e5e076c23da94374e2e7c1b258491fd5ac9e322b03f",
+        ".dev/resources/pico_examples/freertos/hello_freertos/hello_freertos.c": "9fa28de05275cb6e1b8dae4e533c1d1e84677a8bf1abf12524f6e45de09ce24a"
+      },
+      "loader": "official_mask_rom_coldboot_from_strict_NOR_file_segments",
+      "duration_seconds": null,
+      "scenarios": [
+        "original_task_return_defect_control",
+        "reviewed_full_lifecycle_success"
+      ],
+      "checks": [
+        {
+          "id": "build_profile",
+          "requirement": "Preserve upstream tick rate 1000 Hz, LED_BUSY_WAIT=1, USE_LED=1, and priorities main=2, blink=1, worker=4. The one-core target runs on core0; two-core and static-allocation targets use SMP2 with main affinity mask 1. The static target must use static allocation with dynamic allocation disabled and actual static TCB/stack storage; dynamic targets use Heap4. Record effective definitions and link maps. Do not change core counts, priorities, or timing to bypass failures."
+        },
+        {
+          "id": "main_lifecycle",
+          "requirement": "Observe exactly main counts 0..9 in order, separated by 3000 ticks/about three seconds, then \"main_task is exiting now\" and completed async_context_deinit. Do not stop before 30 seconds or accept a startup banner alone. After any reviewed lifecycle repair, require actual task deletion and continued progress from other tasks.",
+          "main_counts": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9
+          ],
+          "main_interval_seconds": [
+            2.85,
+            3.15
+          ]
+        },
+        {
+          "id": "worker",
+          "requirement": "Observe actual do_work thread callbacks with counts 0, 1, and 2 at about 0, 10, and 20 seconds. Count 3 near 30 seconds is allowed only before deinitialization. Require no callbacks after deinitialization, including at least 11 virtual seconds of post-completion observation. Do not lose, duplicate, or synthesize counts.",
+          "worker_interval_seconds": [
+            9.5,
+            10.5
+          ],
+          "post_deinit_observe_seconds": 11
+        },
+        {
+          "id": "blink",
+          "requirement": "GPIO25 must alternate low/high at two-second intervals while main blocks and the worker preempts, then continue after main finishes and deletes its task. The initial false level is startup, not a complete cycle.",
+          "blink_half_period_seconds": [
+            1.9,
+            2.1
+          ]
+        },
+        {
+          "id": "scheduler",
+          "requirement": "Observe actual SysTick/PendSV entries and context switches, with task callbacks in thread mode. One-core tasks must run only on core0. In SMP builds, both native cores must execute FreeRTOS task contexts, while main remains on core0 and worker/blink may run on either core. Do not demand migration or an unspecified fixed worker core."
+        },
+        {
+          "id": "source_defect_gate",
+          "requirement": "The original main_task returns after deinitialization. The RP2040 task-return address calls panic_unsupported; the M33 task-return path asserts or disables interrupts and loops. Preserve an original runtime/ELF/disassembly control through that point. No patch is authorized yet. If confirmed unavoidable, a minimal vTaskDelete(NULL) after deinitialization may be reviewed. Positive acceptance requires proper task deletion and subsequent scheduling, never a panic allowance or early stop."
+        }
+      ],
+      "exception_gate": "pending_original_runtime_control_and_adversarial_patch_review"
+    },
+    {
+      "id": "pico2/boot_info",
+      "board": "pico2",
+      "target": "boot_info",
+      "source_directory": ".dev/resources/pico_examples/system/boot_info",
+      "sources": {
+        ".dev/resources/pico_examples/system/boot_info/CMakeLists.txt": "df6e369a9cfcb890e5fe0d0cc961a2e1b57ef1d58042afba4c2639b9a7ca9298",
+        ".dev/resources/pico_examples/system/boot_info/boot_info.c": "d0ac33f81c26baf6bc22e104f5505d2eb848ca3f16252bc81ced1a75b7a29577"
+      },
+      "loader": "official_mask_rom_coldboot_from_strict_NOR_file_segments",
+      "duration_seconds": 1,
+      "scenarios": [
+        "cold_normal_unpartitioned_flash"
+      ],
+      "checks": [
+        {
+          "id": "actual_rom_api",
+          "requirement": "Boot the plain unpartitioned Pico2 image through the actual ROM. rom_get_boot_info must succeed, and printed fields must equal passive observations of actual ROM BootRAM/sysinfo structures rather than fabricated SDK return data."
+        },
+        {
+          "id": "cold_values",
+          "requirement": "Require normal boot_type=0 without CHAINED, reboot parameters 0:0, tbyb=0/none, and watchdog reboot false with reason zero. Derive unpartitioned slot selection and the diagnostic partition index from official ROM source/image items. Validate diagnostic flags against source constants without assuming an unsigned image has a verified signature.",
+          "expected": {
+            "boot_type": 0,
+            "reboot_params": [
+              0,
+              0
+            ],
+            "tbyb": 0,
+            "watchdog_caused_reboot": false,
+            "watchdog_reason": 0
+          }
+        },
+        {
+          "id": "decode",
+          "requirement": "Every printed partition/type/tbyb/diagnostic name must match the source decoding of its numeric field. The normal image must actually be chosen and launched, followed by normal exit with status zero. The existing hello_watchdog regression separately covers a real watchdog reboot; do not claim this cold case executes unseen branches."
+        }
+      ]
+    }
+  ]
+}
