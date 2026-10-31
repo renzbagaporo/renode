@@ -131,19 +131,28 @@ class Runtime:
         self.record['pid'] = self.proc.pid
         until = time.monotonic() + 120
         try:
+            # HttpListener publishes its TCP socket before initializing accept
+            # bookkeeping. Renode writes this private per-process marker only
+            # after listener.Start() returns, so wait before connecting.
+            port_file = Path(os.environ['TMPDIR']) / f'renode-{self.proc.pid}' / 'robot_port'
+            self.record['rpc_startup_port_file'] = str(port_file)
             while True:
                 if self.proc.poll() is not None:
                     raise RuntimeError(f'Renode exited with {self.proc.returncode}')
                 try:
-                    with socket.create_connection(('127.0.0.1', args.rpc_port), timeout=.2):
-                        break
-                except OSError:
-                    if time.monotonic() > until:
-                        raise TimeoutError('Renode RPC startup')
-                    time.sleep(.1)
-            # TCP listening precedes XML-RPC keyword registration. Confirm
-            # protocol readiness using metadata only, before any application
-            # commands; create a fresh connection for the execution timeout.
+                    published_port = port_file.read_text().strip()
+                except FileNotFoundError:
+                    published_port = ''
+                if published_port:
+                    if published_port != str(args.rpc_port):
+                        raise RuntimeError(f'Renode published unexpected RPC port: {published_port}')
+                    self.record['rpc_startup_published_port'] = int(published_port)
+                    break
+                if time.monotonic() > until:
+                    raise TimeoutError('Renode RPC port publication')
+                time.sleep(.1)
+            # Confirm protocol readiness using metadata only, before any
+            # application commands; use a fresh connection for execution.
             address = f'http://127.0.0.1:{args.rpc_port}'
             previous_timeout = socket.getdefaulttimeout()
             try:
