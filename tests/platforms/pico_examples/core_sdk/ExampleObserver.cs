@@ -43,7 +43,7 @@ namespace Antmicro.Renode.Peripherals.Miscellaneous
                 result.Add(new { name = machine.GetLocalName(cpu), type = cpu.GetType().FullName,
                     architecture = translation.Architecture, gdb_architecture = translation.GDBArchitecture, core = cpu.MultiprocessingId,
                     native_path = (string)nativeFile.GetValue(translation),
-                    halted = cpu.IsHalted, pc = cpu.PC.RawValue,
+                    halted = cpu.IsHalted, has_halting_condition = translation.HasAnyHaltingCondition, pc = cpu.PC.RawValue,
                     executed_instructions = translation.ExecutedInstructions });
             }
             return JsonConvert.SerializeObject(result);

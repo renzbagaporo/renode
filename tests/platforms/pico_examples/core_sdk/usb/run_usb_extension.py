@@ -213,8 +213,8 @@ def run_resets(runtime, args, record, names):
         record['arm_instructions_before_usb'] = []
         for core in [0, 1]:
             if status & (1 << core):
-                common.check(runtime.run(f'cpu{core} IsHalted').strip() == 'True',
-                             'Deselected Arm engine is running')
+                common.check(runtime.run(f'cpu{core} HasAnyHaltingCondition').strip() == 'True',
+                             'Deselected Arm engine has no active execution hold')
                 record['arm_instructions_before_usb'].append(dict(core=core,
                     instructions=int(runtime.run(f'cpu{core} ExecutedInstructions'), 0)))
     record['post_double_tap_processor'] = processor
