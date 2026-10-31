@@ -165,11 +165,17 @@ ShouldFenceQueuedWarmResetWhenRescueHoldsProcessors
     Execute Command                 sysbus WriteDoubleWord 0xe000ed0c 0x05fa0004 context=cpu0
     Execute Command                 debug_port Rescue true
     Execute Command                 emulation RunFor "0.00001"
-    ${held}=                        Execute Command  cpu0 IsHalted
+    ${held}=                        Execute Command  cpu0 HasAnyHaltingCondition
     Should Be Equal                 ${held.strip()}  True
+    ${before}=                      Execute Command  cpu0 ExecutedInstructions
+    Execute Command                 emulation RunFor "0.00001"
+    ${after}=                       Execute Command  cpu0 ExecutedInstructions
+    Should Be Equal As Integers      ${after.strip()}  ${before.strip()}
     Debug Power Should Be Retained
     Execute Command                 debug_port Rescue false
     Execute Command                 emulation RunFor "0.00001"
     Execute Command                 emulation RunFor "0.00001"
+    ${resumed}=                     Execute Command  cpu0 ExecutedInstructions
+    Should Be True                  ${{int($resumed.strip(), 0) > int($after.strip(), 0)}}
     ${r4}=                          Execute Command  cpu0 GetRegister "R4"
     Should Be Equal As Integers      ${r4.strip()}  42
