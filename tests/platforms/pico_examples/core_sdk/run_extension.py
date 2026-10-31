@@ -6,6 +6,7 @@ behavior without an acceptance claim. Acceptance mode requires the frozen
 catalog and source-specific checks, supplied by extension_checks.py.
 """
 import argparse
+from decimal import Decimal
 import json
 import os
 from pathlib import Path
@@ -15,6 +16,29 @@ import subprocess
 import sys
 
 import core_sdk_common as common
+
+
+
+def observe_post_deinit(runtime, args, elapsed, required_seconds):
+    """Observe the complete frozen tail in bounded virtual-time RPC phases."""
+    required = Decimal(str(required_seconds))
+    common.check(required.is_finite() and required >= 0, 'Invalid post-deinit duration')
+    start = runtime.virtual_seconds()
+    total = Decimal(str(elapsed))
+    observed = Decimal(0)
+    while observed < required:
+        step = min(Decimal('0.5'), required - observed)
+        runtime.seconds(step)
+        total += step
+        observed += step
+        progress = json.loads(runtime.run('observer GetMilestones'))
+        (args.output / 'lifecycle_progress.json').write_text(json.dumps(dict(
+            phase='post_deinit', observed_virtual_seconds=float(total),
+            required_post_deinit_seconds=str(required), observed_post_deinit_seconds=str(observed),
+            milestones=progress), indent=2) + '\n')
+    common.check(abs(runtime.virtual_seconds() - start - required) <= Decimal('0.000000001'),
+                 'Post-deinit observation did not advance the complete frozen virtual duration')
+    return float(total)
 
 
 def main():
@@ -146,8 +170,7 @@ def main():
                     if any(e.get('label') == 'async_context_freertos_deinit_return' for e in progress):
                         case = next(c for c in catalog['cases'] if c['id'] == f'{args.board}/{args.target}')
                         post = next(c['post_deinit_observe_seconds'] for c in case['checks'] if c['id'] == 'worker')
-                        r.seconds(post)
-                        elapsed += post
+                        elapsed = observe_post_deinit(r, args, elapsed, post)
                         break
                 args.observed_virtual_seconds = elapsed
             else:

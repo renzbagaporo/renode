@@ -10,6 +10,7 @@ Double-tap and hello_anything require the separate USB/reset integration driver.
 import argparse
 import datetime
 import json
+import math
 from pathlib import Path
 import shutil
 import subprocess
@@ -28,8 +29,10 @@ def main():
     ap.add_argument('--board', choices=['pico', 'pico2'], required=True)
     ap.add_argument('--cases', nargs='+')
     ap.add_argument('--rpc-port', type=int, default=19321)
-    ap.add_argument('--wall-timeout', type=float, default=7200)
+    ap.add_argument('--wall-timeout', type=float, default=43200,
+                    help='Predeclared per-scenario wall budget; full 41s FreeRTOS lifecycles can require hours')
     args = ap.parse_args()
+    check(math.isfinite(args.wall_timeout) and args.wall_timeout > 30, 'Wall timeout must be finite and exceed 30 seconds')
     for name, value in vars(args).items():
         if isinstance(value, Path):
             setattr(args, name, value.resolve())
@@ -54,7 +57,7 @@ def main():
     tools.mkdir()
     for source in [Path(__file__).with_name(x) for x in ['run_extension.py', 'core_sdk_common.py', 'ExampleObserver.cs', 'extension_checks.py']] + [args.isolator]:
         shutil.copy2(source, tools / source.name)
-    record = dict(board=args.board, status='running', selected_cases=[c['id'] for c in cases], results=[],
+    record = dict(board=args.board, status='running', wall_timeout_seconds=args.wall_timeout, selected_cases=[c['id'] for c in cases], results=[],
                   inputs={str(p):sha(p) for p in [args.catalog, args.profiles, args.build_manifest]},
                   tools={x.name:sha(x) for x in tools.iterdir()})
     ledger = args.output / 'acceptance.json'

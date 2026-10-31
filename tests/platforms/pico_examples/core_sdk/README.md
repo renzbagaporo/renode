@@ -171,6 +171,18 @@ failure is never counted as a passing case. Randomness uses the declared seed0
 and all 500000 source samples with the original integer distribution assertions.
 RTC repetition runs for the catalog's full 185 virtual seconds.
 
+The regular driver declares a 43200-second wall budget per scenario. This allows
+the complete firmware lifecycle to run without changing emulated clocks or
+instruction rates. Post-deinitialization observation advances the required
+eleven virtual seconds through calls of at most half a second, saving progress
+after each call and verifying the complete master-time delta.
+
+`capture_rand_macros.py` records the SDK's actual random-source macros from each
+build's compiler command, plus hashes and descriptions of the modeled entropy
+inputs. Run it in a private environment and retain its ledger alongside the
+random-example results. These checks establish reproducible functional behavior;
+they do not measure hardware entropy quality.
+
 Scheduling quantum is chosen by the frozen per-case profile, separately from
 hardware clock configuration. Requested and actual quantum, child environment,
 loaded native modules, ROM/firmware/runtime hashes, and raw observations are
