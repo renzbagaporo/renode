@@ -163,6 +163,7 @@ def main():
                     record['physical_run_stimuli'].append(item)
                 r.seconds(seconds)
                 args.observed_virtual_seconds += .001 + seconds
+            r.capture_native()
             record['observed_virtual_seconds'] = args.observed_virtual_seconds
             events = json.loads(r.run('observer GetEvents'))
             (args.output / 'events.json').write_text(json.dumps(events, indent=2) + '\n')

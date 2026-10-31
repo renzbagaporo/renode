@@ -258,9 +258,35 @@ class Runtime:
             if path.suffix != '.tmp' or not path.parent.name.startswith('renode-'):
                 continue
             loaded[str(path)] = dict(path=str(path), mapping=line, bytes=path.stat().st_size, sha256=sha(path))
-        expected = sha(self.args.runtime / 'platform-lib/linux-x64/translate-arm-m-le.so')
-        check(len(loaded) == 2 and all(item['sha256'] == expected for item in loaded.values()),
-              f'Actual per-core native mappings do not match selected runtime: {loaded}')
+        engines = json.loads(self.run('observer GetConfiguredNativeEngines'))
+        check(bool(engines), 'No configured native engines were found')
+        paths = set()
+        architectures = []
+        for engine in engines:
+            path = str(Path(engine['native_path']).resolve(strict=True))
+            engine['resolved_native_path'] = path
+            architecture = engine['architecture']
+            expected_path = self.args.runtime / f'platform-lib/linux-x64/translate-{architecture}-le.so'
+            check(expected_path.is_file(), f'Configured engine binary is absent: {expected_path}')
+            check(path in loaded, f'Configured engine is missing its executable mapping: {engine}')
+            check(loaded[path]['sha256'] == sha(expected_path),
+                  f'Actual configured native mapping differs from selected runtime: {engine}')
+            check(path not in paths, f'Native engines share a supposedly private library: {engine}')
+            paths.add(path)
+            architectures.append(architecture)
+            engine['sha256'] = loaded[path]['sha256']
+            engine['selected_runtime_binary'] = str(expected_path)
+            if architecture == 'riscv':
+                check(engine['gdb_architecture'] == 'riscv:rv32', f'Unexpected RISC-V engine width: {engine}')
+        check(paths == set(loaded), f'Unaccounted native mappings: {set(loaded) - paths}')
+        # Inspect actual configuration, including dormant architecture engines.
+        # Older two-Arm-engine Pico 2 snapshots remain valid configurations.
+        expected = ['arm-m', 'arm-m']
+        if self.args.board == 'pico2' and any(item != 'arm-m' for item in architectures):
+            expected += ['riscv', 'riscv']
+        check(sorted(architectures) == sorted(expected),
+              f'Unexpected board native engine configuration: {architectures}')
+        self.record['configured_native_engines'] = engines
         self.record['loaded_native_copies'] = list(loaded.values())
 
 

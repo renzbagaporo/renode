@@ -31,6 +31,24 @@ namespace Antmicro.Renode.Peripherals.Miscellaneous
             observedMemory = memory;
         }
 
+        public string GetConfiguredNativeEngines()
+        {
+            var result = new List<object>();
+            var nativeFile = typeof(TranslationCPU).GetField("libraryFile",
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+            foreach(var cpu in machine.SystemBus.GetCPUs())
+            {
+                var translation = cpu as TranslationCPU;
+                if(translation == null) throw new InvalidOperationException("Configured CPU is not a native translation engine");
+                result.Add(new { name = machine.GetLocalName(cpu), type = cpu.GetType().FullName,
+                    architecture = translation.Architecture, gdb_architecture = translation.GDBArchitecture, core = cpu.MultiprocessingId,
+                    native_path = (string)nativeFile.GetValue(translation),
+                    halted = cpu.IsHalted, pc = cpu.PC.RawValue,
+                    executed_instructions = translation.ExecutedInstructions });
+            }
+            return JsonConvert.SerializeObject(result);
+        }
+
         public void ObserveGPIO(RP2_GPIOBank0 gpio, int selectedPin)
         {
             gpio.DriveChanged += (pin, level, enabled) =>
