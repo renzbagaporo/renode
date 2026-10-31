@@ -143,6 +143,12 @@ Prepare a task-owned Linux VM with USB/IP, `vhci_hcd`, `cdc_acm`, Python pyseria
 guest image and exposes no physical host USB devices. Keep the guest exclusively
 owned for the duration of these runs.
 
+The VM exports the `usb` directory as its read-only `helpers` share. Configure
+the disposable guest to run `/mnt/helpers/guest_bootstrap.sh` on its serial console.
+The script mounts the task's output share, loads the USB/IP and CDC drivers,
+prints `PICO_USB_HOST_READY`, and opens a console without login startup files.
+Wait for that marker before sending commands through `usb/vm.py run`.
+
 ```sh
 python3 tests/platforms/pico_examples/core_sdk/run_isolated.py \
   --output .dev/outputs/core_sdk_freertos/usb_pico \
