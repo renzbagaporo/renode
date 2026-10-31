@@ -59,7 +59,9 @@ def check_events(args, catalog, events, runtime):
     interrupts = [e for e in events if e['kind'] == 'interrupt']
     forbidden = {'panic', 'hard_assertion_failure', '__assert_func', 'panic_unsupported',
                  '__unhandled_user_irq', 'prvTaskExitError'}
-    common.check(not any(e['label'] in forbidden for e in addresses), 'Firmware error/illegal task return path was reached')
+    errors = [{key:e[key] for key in ['label', 'core', 'pc', 'seconds']}
+              for e in addresses if e['label'] in forbidden]
+    common.check(not errors, f'Firmware error paths were reached: {errors}')
     common.check(not any(e['exception_kind'] in {1, 3, 4, 7, 16, 17, 18, 19, 20, 21} for e in interrupts),
                  'Unexpected architectural fault exception')
     mains = [e for e in addresses if e['label'] == 'main' and e['core'] == 0]
