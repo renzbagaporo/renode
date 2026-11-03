@@ -80,3 +80,25 @@ Should Block Uncached Reads When SSI Is Disabled
     Read Should Equal               0x13000000  0x20074903
     Execute Command                 ssi WriteDoubleWord 8 0
     Read Should Equal               0x13000000  0
+
+Should Follow XIP Availability In CPU Reads
+    Create Machine
+    # Loop in SRAM: load 0x13000000 and store it to 0x20000100.
+    ${program}=                     Evaluate  bytes.fromhex("0248034a01681160fce700bf") + struct.pack("<II", 0x13000000, 0x20000100)  modules=struct
+    Create Binary File              ${TEMPDIR}/rp2040_xip_cpu_read.bin  ${program}
+    Execute Command                 sysbus LoadBinary @${TEMPDIR}/rp2040_xip_cpu_read.bin 0x20000000
+    Execute Command                 flash LoadBinary @${TEMPDIR}/rp2040_xip_cpu_read.bin
+    Execute Command                 sysbus WriteDoubleWord 0 0x20001000
+    Execute Command                 sysbus WriteDoubleWord 4 0x20000001
+    Execute Command                 sysbus WriteDoubleWord 0x20000100 0xdeadbeef
+    Execute Command                 emulation RunFor "0.00001"
+    Read Should Equal               0x20000100  0
+    Configure Standard XIP Read
+    Execute Command                 emulation RunFor "0.00001"
+    Read Should Equal               0x20000100  0x4a034802
+    Execute Command                 ssi WriteDoubleWord 8 0
+    Execute Command                 emulation RunFor "0.00001"
+    Read Should Equal               0x20000100  0
+    Execute Command                 ssi WriteDoubleWord 8 1
+    Execute Command                 emulation RunFor "0.00001"
+    Read Should Equal               0x20000100  0x4a034802
