@@ -1,7 +1,9 @@
 # Set these file variables before including this script:
-#   $harness_rom: RP2040 B2 boot ROM ELF
+#   $harness_rom: RP2040 B2 16 KiB mask ROM binary, extracted with
+#     extract_rp2040_mask_rom.py in this directory from the B2 boot ROM ELF
 #     https://raw.githubusercontent.com/matgla/Renode_RP2040/5aca847c9f57ed96603e55d28e8ceeefa09e55f6/bootroms/rp2040/b2.elf
-#     sha256 3a3c4c617d83bc9b910a6fa7bfdffa11ce26ff89370271d861507be821cc49aa
+#     ELF sha256 3a3c4c617d83bc9b910a6fa7bfdffa11ce26ff89370271d861507be821cc49aa
+#     binary sha256 9c19b46f068c21f90d200c514faad4a0d5cecfc978f155b8c9d25cb6bc2efd81
 #   $harness_flash: raw flash payload extracted from the Metalclaw Pico 1 UF2
 #     with extract_pico1_uf2.py in this directory
 #   $dut_rom: RP2350 A2 combined boot ROM binary
@@ -14,7 +16,7 @@ $quantum?="0.0001"
 
 mach create "pico1"
 machine LoadPlatformDescription @platforms/boards/raspberry_pi_pico.repl
-sysbus LoadELF $harness_rom false
+sysbus LoadBinary $harness_rom 0
 xipMemory LoadBinary $harness_flash
 
 mach create "pico2"
