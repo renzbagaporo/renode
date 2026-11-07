@@ -92,6 +92,15 @@ gp22 Connect gpio 22
 gp7 Connect gpio 7
 gp20 Connect gpio 20
 
+# I2C0 on SDA 4 and SCL 5: the DUT controller and the harness target share
+# a byte-level bus. Each answer reaches the DUT one round trip after its
+# request, and the DUT holds the clock until it does.
+emulation CreateDelayedI2CBus "i2c_gp4_gp5" $wire_latency_us
+mach set "pico2"
+i2c_gp4_gp5 Connect i2c0 4 5
+mach set "pico1"
+i2c_gp4_gp5 Connect i2c0 4 5
+
 emulation SetGlobalQuantum $quantum
 emulation SetGlobalAdvanceImmediately true
 emulation CreateUSBIPServer $usbip_port "pico1"
