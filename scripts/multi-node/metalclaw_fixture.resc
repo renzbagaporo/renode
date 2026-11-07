@@ -62,8 +62,9 @@ gp9 Connect gpio 9
 gp6 Connect gpio 6
 
 # SPI0 and the radio lines: SCK 18, MOSI 19 and the DUT's GPIO chip selects
-# 17, 21 and 22 run to the harness; MISO 16, BUSY 7 and DIO1 20 return. The
-# DUT samples MISO one round trip, $spi_input_delay_ns, after each sampling edge.
+# 17, 21 and 22 run to the harness; MISO 16, BUSY 7 or 10 and DIO1 20 return.
+# Fixture 1 connects GP6 to GP22 straight through, so both BUSY pins are wired.
+# The DUT samples MISO one round trip, $spi_input_delay_ns, after each sampling edge.
 emulation CreateDelayedDigitalWire "gp18" false $wire_latency_us
 emulation CreateDelayedDigitalWire "gp19" false $wire_latency_us
 emulation CreateDelayedDigitalWire "gp16" false $wire_latency_us
@@ -71,6 +72,7 @@ emulation CreateDelayedDigitalWire "gp17" true $wire_latency_us
 emulation CreateDelayedDigitalWire "gp21" true $wire_latency_us
 emulation CreateDelayedDigitalWire "gp22" true $wire_latency_us
 emulation CreateDelayedDigitalWire "gp7" false $wire_latency_us
+emulation CreateDelayedDigitalWire "gp10" false $wire_latency_us
 emulation CreateDelayedDigitalWire "gp20" false $wire_latency_us
 mach set "pico2"
 gp18 Connect gpio 18
@@ -80,6 +82,7 @@ gp17 Connect gpio 17
 gp21 Connect gpio 21
 gp22 Connect gpio 22
 gp7 Connect gpio 7
+gp10 Connect gpio 10
 gp20 Connect gpio 20
 spi0 InputDelayNanoseconds $spi_input_delay_ns
 mach set "pico1"
@@ -90,6 +93,7 @@ gp17 Connect gpio 17
 gp21 Connect gpio 21
 gp22 Connect gpio 22
 gp7 Connect gpio 7
+gp10 Connect gpio 10
 gp20 Connect gpio 20
 
 # I2C0 on SDA 4 and SCL 5: the DUT controller and the harness target share
