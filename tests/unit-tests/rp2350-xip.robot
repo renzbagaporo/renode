@@ -25,6 +25,12 @@ ${PLATFORM}                         SEPARATOR=\n
 ...  ${SPACE*4}qmi: qmi
 ...  ${SPACE*4}xip: cache
 ...  ${SPACE*4}useCache: false
+...  untranslated: Memory.RP2350_XIPMemory @ sysbus 0x1c000000
+...  ${SPACE*4}flash: flash
+...  ${SPACE*4}qmi: qmi
+...  ${SPACE*4}xip: cache
+...  ${SPACE*4}untranslated: true
+...  ${SPACE*4}useCache: false
 ...  cacheRam: Memory.RP2350_XIPMemory @ sysbus 0x12000000
 ...  ${SPACE*4}flash: flash
 ...  ${SPACE*4}qmi: qmi
@@ -47,6 +53,29 @@ Read Should Equal
     [Arguments]                     ${address}  ${expected}
     ${value}=                       Execute Command  sysbus ReadDoubleWord ${address}
     Should Be Equal As Integers      ${value.strip()}  ${expected}
+
+Start CPU Reader
+    [Arguments]                     ${address}
+    # Loop in SRAM: load ${address} and store it to 0x20000100.
+    Execute Command                 sysbus WriteDoubleWord 0x20000000 0x4a034802
+    Execute Command                 sysbus WriteDoubleWord 0x20000004 0x60116801
+    Execute Command                 sysbus WriteDoubleWord 0x20000008 0xbf00e7fc
+    Execute Command                 sysbus WriteDoubleWord 0x2000000c ${address}
+    Execute Command                 sysbus WriteDoubleWord 0x20000010 0x20000100
+    Execute Command                 sysbus WriteDoubleWord 0x20000100 0xdeadbeef
+    Execute Command                 cpu PC 0x20000000
+    Execute Command                 cpu IsHalted false
+
+CPU Read Should Equal
+    [Arguments]                     ${expected}
+    Execute Command                 sysbus WriteDoubleWord 0x20000100 0xdeadbeef
+    Execute Command                 emulation RunFor "0.0001"
+    Read Should Equal               0x20000100  ${expected}
+
+Load Distinct Flash Pages
+    ${image}=                       Evaluate  struct.pack("<I", 0x11111111) + bytes(0xffc) + struct.pack("<I", 0x22222222)  modules=struct
+    Create Binary File              ${TEMPDIR}/rp2350_xip_pages.bin  ${image}
+    Execute Command                 xip LoadBinary @${TEMPDIR}/rp2350_xip_pages.bin
 
 *** Test Cases ***
 ShouldRequirePinnedTagAndEnabledCacheForSRAM
@@ -122,3 +151,51 @@ ShouldPublishCompleteCacheWordAfterOneBusStore
     Execute Command                 sysbus WriteDoubleWord 0x13ffc000 0x12345678
     ${mixed}=                       Execute Command  probe ObservedPartialWord
     Should Be Equal                 ${mixed.strip()}  False
+
+ShouldFollowQMIReadConfigurationInCPUReads
+    Create XIP Machine
+    Load Distinct Flash Pages
+    Start CPU Reader                0x10000000
+    CPU Read Should Equal           0x11111111
+    # A DTR read format is not modelled, so reads return the undriven bus.
+    Execute Command                 sysbus WriteDoubleWord 0x400d0010 0x10001000
+    CPU Read Should Equal           0xffffffff
+    Execute Command                 sysbus WriteDoubleWord 0x400d0010 0x1000
+    CPU Read Should Equal           0x11111111
+
+ShouldFollowAddressTranslationInCPUReads
+    Create XIP Machine
+    Load Distinct Flash Pages
+    Start CPU Reader                0x10000000
+    CPU Read Should Equal           0x11111111
+    Execute Command                 sysbus WriteDoubleWord 0x400d0034 0x04000001
+    CPU Read Should Equal           0x22222222
+    Execute Command                 sysbus WriteDoubleWord 0x400d0034 0x04000000
+    CPU Read Should Equal           0x11111111
+
+ShouldReadUntranslatedAliasThroughAddressTranslation
+    Create XIP Machine
+    Load Distinct Flash Pages
+    Execute Command                 sysbus WriteDoubleWord 0x400d0034 0x04000001
+    Start CPU Reader                0x1c000000
+    CPU Read Should Equal           0x11111111
+
+ShouldReadPinnedLineInFlashWindowInCPUReads
+    Create XIP Machine
+    Load Distinct Flash Pages
+    Start CPU Reader                0x10000000
+    CPU Read Should Equal           0x11111111
+    Execute Command                 sysbus WriteByte 0x18000007 0
+    CPU Read Should Equal           0
+    Execute Command                 sysbus WriteByte 0x18000000 0
+    CPU Read Should Equal           0x11111111
+
+ShouldCountCPUReadsAfterCountersAreCleared
+    Create XIP Machine
+    Load Distinct Flash Pages
+    Start CPU Reader                0x14000000
+    CPU Read Should Equal           0x11111111
+    Execute Command                 sysbus WriteDoubleWord 0x400c8010 0
+    CPU Read Should Equal           0x11111111
+    ${accesses}=                    Execute Command  sysbus ReadDoubleWord 0x400c8010
+    Should Be True                  ${accesses.strip()} > 0
