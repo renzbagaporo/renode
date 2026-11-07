@@ -221,6 +221,18 @@ uart1: UART.RP2_UART @ { sysbus 0x40078000; resets 27 }
     index: 1
     IRQ -> nvic0@34 | riscv0@34 | nvic1@34 | riscv1@34
 
+spi0: SPI.RP2_SPI @ { sysbus 0x40080000; resets 18 }
+    clocks: clocks
+    gpio: gpio
+    index: 0
+    IRQ -> nvic0@31 | riscv0@31 | nvic1@31 | riscv1@31
+
+spi1: SPI.RP2_SPI @ { sysbus 0x40088000; resets 19 }
+    clocks: clocks
+    gpio: gpio
+    index: 1
+    IRQ -> nvic0@32 | riscv0@32 | nvic1@32 | riscv1@32
+
 // Two alternative execution engines occupy the same physical PE sockets.
 // Their hart IDs remain 0/1; SystemBus assigns distinct engine slots.
 riscv0: CPU.RP2350_Hazard3 @ sysbus

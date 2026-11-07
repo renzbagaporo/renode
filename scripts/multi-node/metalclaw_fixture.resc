@@ -13,6 +13,11 @@
 
 $usbip_port?=3240
 $quantum?="0.0001"
+# Wire latency between the boards in microseconds; it must exceed two
+# quanta. The DUT's SPI input delay is the round trip in nanoseconds.
+# Both are defined before any machine is selected, so every machine sees them.
+$wire_latency_us?=300
+$spi_input_delay_ns?=600000
 
 mach create "pico1"
 machine LoadPlatformDescription @platforms/boards/raspberry_pi_pico.repl
@@ -38,8 +43,6 @@ run Connect gpio 28
 # Serial and control lines connect equal GP numbers on both boards, except
 # UART0, which is crossed. Each board sees the other's edges $wire_latency_us
 # later on the sender's clock, preserving bit timing across the quantum.
-# The latency must exceed two global quanta.
-$wire_latency_us?=300
 emulation CreateDelayedDigitalWire "uart0_dut_tx" true $wire_latency_us
 emulation CreateDelayedDigitalWire "uart0_harness_tx" true $wire_latency_us
 emulation CreateDelayedDigitalWire "gp8" true $wire_latency_us
@@ -57,6 +60,37 @@ uart0_harness_tx Connect gpio 0
 gp8 Connect gpio 8
 gp9 Connect gpio 9
 gp6 Connect gpio 6
+
+# SPI0 and the radio lines: SCK 18, MOSI 19 and the DUT's GPIO chip selects
+# 17, 21 and 22 run to the harness; MISO 16, BUSY 7 and DIO1 20 return. The
+# DUT samples MISO one round trip, $spi_input_delay_ns, after each sampling edge.
+emulation CreateDelayedDigitalWire "gp18" false $wire_latency_us
+emulation CreateDelayedDigitalWire "gp19" false $wire_latency_us
+emulation CreateDelayedDigitalWire "gp16" false $wire_latency_us
+emulation CreateDelayedDigitalWire "gp17" true $wire_latency_us
+emulation CreateDelayedDigitalWire "gp21" true $wire_latency_us
+emulation CreateDelayedDigitalWire "gp22" true $wire_latency_us
+emulation CreateDelayedDigitalWire "gp7" false $wire_latency_us
+emulation CreateDelayedDigitalWire "gp20" false $wire_latency_us
+mach set "pico2"
+gp18 Connect gpio 18
+gp19 Connect gpio 19
+gp16 Connect gpio 16
+gp17 Connect gpio 17
+gp21 Connect gpio 21
+gp22 Connect gpio 22
+gp7 Connect gpio 7
+gp20 Connect gpio 20
+spi0 InputDelayNanoseconds $spi_input_delay_ns
+mach set "pico1"
+gp18 Connect gpio 18
+gp19 Connect gpio 19
+gp16 Connect gpio 16
+gp17 Connect gpio 17
+gp21 Connect gpio 21
+gp22 Connect gpio 22
+gp7 Connect gpio 7
+gp20 Connect gpio 20
 
 emulation SetGlobalQuantum $quantum
 emulation SetGlobalAdvanceImmediately true

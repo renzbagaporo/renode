@@ -137,3 +137,15 @@ uart1: UART.RP2_UART @ { sysbus 0x40038000; resets 23 }
     gpio: gpio
     index: 1
     IRQ -> nvic0@21 | nvic1@21
+
+spi0: SPI.RP2_SPI @ { sysbus 0x4003c000; resets 16 }
+    clocks: clocks
+    gpio: gpio
+    index: 0
+    IRQ -> nvic0@18 | nvic1@18
+
+spi1: SPI.RP2_SPI @ { sysbus 0x40040000; resets 17 }
+    clocks: clocks
+    gpio: gpio
+    index: 1
+    IRQ -> nvic0@19 | nvic1@19
