@@ -77,6 +77,22 @@ Load Distinct Flash Pages
     Create Binary File              ${TEMPDIR}/rp2350_xip_pages.bin  ${image}
     Execute Command                 xip LoadBinary @${TEMPDIR}/rp2350_xip_pages.bin
 
+Load Flash Code
+    [Arguments]                     ${word}
+    ${image}=                       Evaluate  struct.pack("<I", ${word})  modules=struct
+    Create Binary File              ${TEMPDIR}/rp2350_xip_code.bin  ${image}
+    Execute Command                 xip LoadBinary @${TEMPDIR}/rp2350_xip_code.bin
+
+Flash Code Should Set R0
+    [Arguments]                     ${address}  ${expected}
+    Execute Command                 cpu SetRegister 0 0
+    Execute Command                 cpu SP 0x20008000
+    Execute Command                 cpu PC ${address}
+    Execute Command                 cpu IsHalted false
+    Execute Command                 emulation RunFor "0.00001"
+    ${r0}=                          Execute Command  cpu GetRegister 0
+    Should Be Equal As Integers      ${r0.strip()}  ${expected}
+
 *** Test Cases ***
 ShouldRequirePinnedTagAndEnabledCacheForSRAM
     Create XIP Machine
@@ -199,3 +215,26 @@ ShouldCountCPUReadsAfterCountersAreCleared
     CPU Read Should Equal           0x11111111
     ${accesses}=                    Execute Command  sysbus ReadDoubleWord 0x400c8010
     Should Be True                  ${accesses.strip()} > 0
+
+ShouldExecuteReloadedFlashCode
+    Create XIP Machine
+    # movs r0, #42; b .
+    Load Flash Code                 0xe7fe202a
+    Flash Code Should Set R0        0x10000000  42
+    # movs r0, #21; b .
+    Load Flash Code                 0xe7fe2015
+    Flash Code Should Set R0        0x10000000  21
+
+ShouldNotExecuteTranslatedFlashCodeAfterReadConfigurationChange
+    Create XIP Machine
+    Load Flash Code                 0xe7fe202a
+    # A pinned line in the window keeps fetches on the bus path.
+    Execute Command                 sysbus WriteByte 0x18001007 0
+    Flash Code Should Set R0        0x10000000  42
+    # A DTR read format is not modelled, so fetches return the undriven bus.
+    Execute Command                 sysbus WriteDoubleWord 0x400d0010 0x10001000
+    Flash Code Should Set R0        0x10000000  0
+    # Leave the lockup without resetting the QMI or the cache.
+    Execute Command                 cpu Reset
+    Execute Command                 sysbus WriteDoubleWord 0x400d0010 0x1000
+    Flash Code Should Set R0        0x10000000  42
