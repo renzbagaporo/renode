@@ -211,10 +211,14 @@ xipMaintenance: MemoryControllers.RP2350_XIPMaintenance @ sysbus 0x18000000
 
 uart0: UART.RP2_UART @ { sysbus 0x40070000; resets 26 }
     clocks: clocks
+    gpio: gpio
+    index: 0
     IRQ -> nvic0@33 | riscv0@33 | nvic1@33 | riscv1@33
 
 uart1: UART.RP2_UART @ { sysbus 0x40078000; resets 27 }
     clocks: clocks
+    gpio: gpio
+    index: 1
     IRQ -> nvic0@34 | riscv0@34 | nvic1@34 | riscv1@34
 
 // Two alternative execution engines occupy the same physical PE sockets.

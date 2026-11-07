@@ -35,6 +35,29 @@ swclk Connect gpio 2
 swdio Connect gpio 3
 run Connect gpio 28
 
+# Serial and control lines connect equal GP numbers on both boards, except
+# UART0, which is crossed. Each board sees the other's edges $wire_latency_us
+# later on the sender's clock, preserving bit timing across the quantum.
+# The latency must exceed two global quanta.
+$wire_latency_us?=300
+emulation CreateDelayedDigitalWire "uart0_dut_tx" true $wire_latency_us
+emulation CreateDelayedDigitalWire "uart0_harness_tx" true $wire_latency_us
+emulation CreateDelayedDigitalWire "gp8" true $wire_latency_us
+emulation CreateDelayedDigitalWire "gp9" true $wire_latency_us
+emulation CreateDelayedDigitalWire "gp6" true $wire_latency_us
+mach set "pico2"
+uart0_dut_tx Connect gpio 0
+uart0_harness_tx Connect gpio 1
+gp8 Connect gpio 8
+gp9 Connect gpio 9
+gp6 Connect gpio 6
+mach set "pico1"
+uart0_dut_tx Connect gpio 1
+uart0_harness_tx Connect gpio 0
+gp8 Connect gpio 8
+gp9 Connect gpio 9
+gp6 Connect gpio 6
+
 emulation SetGlobalQuantum $quantum
 emulation SetGlobalAdvanceImmediately true
 emulation CreateUSBIPServer $usbip_port "pico1"
