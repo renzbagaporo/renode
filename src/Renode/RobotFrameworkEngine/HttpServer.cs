@@ -130,7 +130,17 @@ namespace Antmicro.Renode.RobotFramework
             while(!quit)
             {
                 var context = listener.GetContext();
-                xmlRpcServer.ProcessRequest(context);
+                try
+                {
+                    xmlRpcServer.ProcessRequest(context);
+                }
+                catch(Exception e)
+                {
+                    // The service reports its own failures in the HTTP status
+                    // line; a message that cannot go there fails that request only.
+                    Logger.Log(LogLevel.Error, "Robot Framework remote server request failed: {0}", e.Message);
+                    context.Response.Abort();
+                }
             }
             Logger.Log(LogLevel.Info, "Robot Framework remote servers listener thread stopped");
         }
