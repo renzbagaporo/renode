@@ -6,12 +6,16 @@ cpu0: CPU.CortexM @ sysbus
     cpuId: 0
     PerformanceInMips: 125
     InitVectorTableOffset: 0
+    // A waiting core follows the shared clock, so an interrupt that another
+    // device raises is taken within 2 us of its time.
+    WfiFollowsClock: true
 cpu1: CPU.CortexM @ sysbus
     cpuType: "cortex-m0+"
     nvic: nvic1
     cpuId: 1
     PerformanceInMips: 125
     InitVectorTableOffset: 0
+    WfiFollowsClock: true
 nvic0: IRQControllers.NVIC @ sysbus new Bus.BusPointRegistration { address: 0xe000e000; cpu: cpu0 }
     -> cpu0@0
     priorityMask: 0xc0

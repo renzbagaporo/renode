@@ -7,6 +7,9 @@ cpu0: CPU.CortexM @ sysbus
     enableTrustZone: true
     GPIOCoprocessor: sio
     InitVectorTableOffset: 0
+    // A waiting core follows the shared clock, so an interrupt that another
+    // device raises is taken within 2 us of its time.
+    WfiFollowsClock: true
 
 cpu1: CPU.CortexM @ sysbus
     cpuType: "cortex-m33-rp2350"
@@ -15,6 +18,7 @@ cpu1: CPU.CortexM @ sysbus
     enableTrustZone: true
     GPIOCoprocessor: sio
     InitVectorTableOffset: 0
+    WfiFollowsClock: true
     isCpuWaitSignalSet: true
 
 nvic0: IRQControllers.NVIC @ {
@@ -308,10 +312,12 @@ i2c1: I2C.RP2_I2C @ { sysbus 0x40098000; resets 5 }
 riscv0: CPU.RP2350_Hazard3 @ sysbus
     hartId: 0
     clocks: clocks
+    WfiFollowsClock: true
 
 riscv1: CPU.RP2350_Hazard3 @ sysbus
     hartId: 1
     clocks: clocks
+    WfiFollowsClock: true
 
 architecture: Miscellaneous.RP2350_ArchitectureSelector @ sysbus
     arm0: cpu0
