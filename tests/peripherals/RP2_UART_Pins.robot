@@ -12,6 +12,20 @@ ${PLATFORM}                         SEPARATOR=\n
 ...  ${SPACE*4}index: 1
 ...  ${SPACE*4}frequency: 125000000
 
+${RP2350_PLATFORM}                  SEPARATOR=\n
+...  gpio: GPIOPort.RP2_GPIOBank0 @ sysbus 0x40014000
+...  ${SPACE*4}rp2350: true
+...  uart0: UART.RP2_UART @ sysbus 0x40034000
+...  ${SPACE*4}gpio: gpio
+...  ${SPACE*4}index: 0
+...  ${SPACE*4}rp2350: true
+...  ${SPACE*4}frequency: 125000000
+...  uart1: UART.RP2_UART @ sysbus 0x40038000
+...  ${SPACE*4}gpio: gpio
+...  ${SPACE*4}index: 1
+...  ${SPACE*4}rp2350: true
+...  ${SPACE*4}frequency: 125000000
+
 *** Keywords ***
 Create UART Machine
     [Arguments]                     ${name}
@@ -19,10 +33,10 @@ Create UART Machine
     Execute Command                 machine LoadPlatformDescriptionFromString """${PLATFORM}"""
 
 Select UART Function
-    [Arguments]                     ${pin}
-    # IO_BANK0 GPIOn_CTRL.FUNCSEL = 2 (UART)
+    [Arguments]                     ${pin}  ${function}=2
+    # IO_BANK0 GPIOn_CTRL.FUNCSEL = 2 (UART) or 11 (RP2350 UART_AUX)
     ${offset}=                      Evaluate  0x40014004 + 8 * ${pin}
-    Execute Command                 sysbus WriteDoubleWord ${offset} 2
+    Execute Command                 sysbus WriteDoubleWord ${offset} ${function}
 
 Configure UART
     [Arguments]                     ${base}  ${ibrd}  ${fbrd}  ${lcr}=0x70
@@ -162,3 +176,29 @@ Should Overrun The Receive FIFO Between Machines
         Received Data Should Be     ${UART0}  ${index}
     END
     Receive FIFO Should Be Empty    ${UART0}
+
+Should Transfer Bytes Over RP2350 UART_AUX Pins
+    Execute Command                 mach create "board"
+    Execute Command                 machine LoadPlatformDescriptionFromString """${RP2350_PLATFORM}"""
+    # UART_AUX puts UART0 TX on its CTS pin (GPIO2) and UART1 RX on its RTS pin (GPIO7).
+    Execute Command                 emulation CreateDigitalWire "line" true
+    Execute Command                 line Connect gpio 2
+    Execute Command                 line Connect gpio 7
+    # RP2350 pads reset isolated with input disabled; release both.
+    Execute Command                 gpio SetPadConfiguration 2 0x56
+    Execute Command                 gpio SetPadConfiguration 7 0x56
+    Select UART Function            2  11
+    Select UART Function            7  11
+    Configure UART                  ${UART0}  67  52
+    Configure UART                  ${UART1}  67  52
+    Send Bytes                      ${UART0}  0x5a  0xc3
+    Execute Command                 emulation RunFor "0.0005"
+    Received Data Should Be         ${UART1}  0x5a
+    Received Data Should Be         ${UART1}  0xc3
+    Receive FIFO Should Be Empty    ${UART1}
+    # Function 2 on the same pins is CTS and RTS, which carry no data.
+    Select UART Function            2
+    Select UART Function            7
+    Send Bytes                      ${UART0}  0x81
+    Execute Command                 emulation RunFor "0.0005"
+    Receive FIFO Should Be Empty    ${UART1}

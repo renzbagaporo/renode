@@ -213,12 +213,14 @@ uart0: UART.RP2_UART @ { sysbus 0x40070000; resets 26 }
     clocks: clocks
     gpio: gpio
     index: 0
+    rp2350: true
     IRQ -> nvic0@33 | riscv0@33 | nvic1@33 | riscv1@33
 
 uart1: UART.RP2_UART @ { sysbus 0x40078000; resets 27 }
     clocks: clocks
     gpio: gpio
     index: 1
+    rp2350: true
     IRQ -> nvic0@34 | riscv0@34 | nvic1@34 | riscv1@34
 
 spi0: SPI.RP2_SPI @ { sysbus 0x40080000; resets 18 }

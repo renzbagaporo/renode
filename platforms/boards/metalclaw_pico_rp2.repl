@@ -1,0 +1,5 @@
+// Metalclaw Pico RP2 carrier: an RP2354B harness. The board's APS6404L PSRAM
+// on QMI chip select 1 (GPIO47) is not modelled; its chip select stays an
+// ordinary pulled-up GPIO.
+
+using "platforms/cpus/rp2354b.repl"

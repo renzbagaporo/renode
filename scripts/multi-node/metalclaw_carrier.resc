@@ -1,0 +1,132 @@
+# Metalclaw Pico RP2 carrier bench: an RP2354B harness ("carrier") and a
+# Raspberry Pi Pico DUT ("pico"), wired as the carrier's v1.r1 netlist.
+# Set these file variables before including this script:
+#   $harness_rom: RP2350 A2 combined boot ROM binary
+#     https://github.com/raspberrypi/pico-bootrom-rp2350/releases/download/A2/bootrom-combined.bin
+#     sha256 196c503fbb17b2ad21a1f496574786af698f9376af9a5f79e5e75293c9e12191
+#   $harness_flash: the raw 2 MiB in-package flash image of the carrier harness
+#   $dut_rom: RP2040 B2 16 KiB mask ROM binary, extracted with
+#     extract_rp2040_mask_rom.py in this directory (see metalclaw_fixture.resc)
+# The DUT's flash starts erased; load an image with `mach set "pico"` and
+# `xipMemory LoadBinary`.
+
+$usbip_port?=3240
+$quantum?="0.0001"
+# Wire latency between the boards in microseconds; it must exceed two
+# quanta. The DUT's SPI input delay is the round trip in nanoseconds.
+$wire_latency_us?=300
+$spi_input_delay_ns?=600000
+# The harness's OTP chip ID; its USB serial is this value in hex.
+$harness_chip_id?=0x00000000C0FFEE01
+
+mach create "carrier"
+machine LoadPlatformDescription @platforms/boards/metalclaw_pico_rp2.repl
+rom LoadBinary $harness_rom
+xipMemory LoadBinary $harness_flash
+otp SetChipId $harness_chip_id
+
+mach create "pico"
+machine LoadPlatformDescription @platforms/boards/raspberry_pi_pico.repl
+sysbus LoadBinary $dut_rom 0
+
+# Every Pico GP0-22 net has a 5.1 kOhm pull-up to the Pico's 3V3_OUT, so an
+# undriven net reads high and any driver wins. Each net reaches one or two
+# carrier GPIOs. GP4 and GP5 are the I2C0 bus, connected below at byte level.
+emulation CreateDelayedDigitalWire "gp0" true $wire_latency_us
+emulation CreateDelayedDigitalWire "gp1" true $wire_latency_us
+emulation CreateDelayedDigitalWire "gp2" true $wire_latency_us
+emulation CreateDelayedDigitalWire "gp3" true $wire_latency_us
+emulation CreateDelayedDigitalWire "gp6" true $wire_latency_us
+emulation CreateDelayedDigitalWire "gp7" true $wire_latency_us
+emulation CreateDelayedDigitalWire "gp8" true $wire_latency_us
+emulation CreateDelayedDigitalWire "gp9" true $wire_latency_us
+emulation CreateDelayedDigitalWire "gp10" true $wire_latency_us
+emulation CreateDelayedDigitalWire "gp11" true $wire_latency_us
+emulation CreateDelayedDigitalWire "gp12" true $wire_latency_us
+emulation CreateDelayedDigitalWire "gp13" true $wire_latency_us
+emulation CreateDelayedDigitalWire "gp14" true $wire_latency_us
+emulation CreateDelayedDigitalWire "gp15" true $wire_latency_us
+emulation CreateDelayedDigitalWire "gp16" true $wire_latency_us
+emulation CreateDelayedDigitalWire "gp17" true $wire_latency_us
+emulation CreateDelayedDigitalWire "gp18" true $wire_latency_us
+emulation CreateDelayedDigitalWire "gp19" true $wire_latency_us
+emulation CreateDelayedDigitalWire "gp20" true $wire_latency_us
+emulation CreateDelayedDigitalWire "gp21" true $wire_latency_us
+emulation CreateDelayedDigitalWire "gp22" true $wire_latency_us
+
+mach set "pico"
+gp0 Connect gpio 0
+gp1 Connect gpio 1
+gp2 Connect gpio 2
+gp3 Connect gpio 3
+gp6 Connect gpio 6
+gp7 Connect gpio 7
+gp8 Connect gpio 8
+gp9 Connect gpio 9
+gp10 Connect gpio 10
+gp11 Connect gpio 11
+gp12 Connect gpio 12
+gp13 Connect gpio 13
+gp14 Connect gpio 14
+gp15 Connect gpio 15
+gp16 Connect gpio 16
+gp17 Connect gpio 17
+gp18 Connect gpio 18
+gp19 Connect gpio 19
+gp20 Connect gpio 20
+gp21 Connect gpio 21
+gp22 Connect gpio 22
+# The DUT samples MISO (GP16) one round trip after each sampling edge.
+spi0 InputDelayNanoseconds $spi_input_delay_ns
+
+mach set "carrier"
+gp0 Connect gpio 3
+gp0 Connect gpio 4
+gp1 Connect gpio 2
+gp1 Connect gpio 5
+gp2 Connect gpio 6
+gp3 Connect gpio 0
+gp3 Connect gpio 7
+gp6 Connect gpio 14
+gp7 Connect gpio 8
+gp7 Connect gpio 15
+gp8 Connect gpio 19
+gp8 Connect gpio 20
+gp9 Connect gpio 18
+gp9 Connect gpio 21
+gp10 Connect gpio 22
+gp11 Connect gpio 16
+gp11 Connect gpio 23
+gp12 Connect gpio 27
+gp12 Connect gpio 28
+gp13 Connect gpio 26
+gp13 Connect gpio 29
+gp14 Connect gpio 30
+gp15 Connect gpio 24
+gp15 Connect gpio 31
+gp16 Connect gpio 35
+gp16 Connect gpio 36
+gp17 Connect gpio 34
+gp17 Connect gpio 37
+gp18 Connect gpio 38
+gp19 Connect gpio 32
+gp19 Connect gpio 39
+gp20 Connect gpio 40
+gp20 Connect gpio 45
+gp21 Connect gpio 41
+gp21 Connect gpio 46
+gp22 Connect gpio 33
+
+# I2C0: the DUT controller on GP4/GP5 and the harness target on GPIO12/13
+# share a byte-level bus. Each answer reaches the DUT one round trip after its
+# request, and the DUT holds the clock until it does.
+emulation CreateDelayedI2CBus "i2c_gp4_gp5" $wire_latency_us
+mach set "pico"
+i2c_gp4_gp5 Connect i2c0 4 5
+mach set "carrier"
+i2c_gp4_gp5 Connect i2c0 12 13
+
+emulation SetGlobalQuantum $quantum
+emulation SetGlobalAdvanceImmediately true
+emulation CreateUSBIPServer $usbip_port "carrier"
+host.carrier Register usb 0 Full

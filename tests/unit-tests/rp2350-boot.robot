@@ -157,6 +157,15 @@ Should LockOTPReadsIrreversiblyAndFaultGuardedAccess
     Execute Command                 sysbus WriteDoubleWord 0x40123000 2
     Read Should Equal               0x40120000  2
 
+Should Program The Chip ID As ECC Rows
+    Create Boot Machine
+    Execute Command                 otp SetChipId 0x0123456789abcdef
+    # Rows 0-3 hold the ID 16 bits each behind ECC; the ECC alias returns
+    # two rows per word, and the raw alias shows the encoded check bits.
+    Read Should Equal               0x40130000  0x89abcdef
+    Read Should Equal               0x40130004  0x01234567
+    Read Should Equal               0x40134000  0x0018cdef
+
 ShouldFenceQueuedWarmResetWhenRescueHoldsProcessors
     Create Boot Machine
     # Exercise queued reset/release across multiple synchronization boundaries.
