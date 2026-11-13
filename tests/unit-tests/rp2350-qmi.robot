@@ -87,6 +87,17 @@ Should Enter And Leave Continuous Read Through Mapped Quad Reads
     Read Should Equal               0x10000000  0x12345678
     Read Should Equal               0x10000000  0xffffffff
 
+Should Keep Quad Reads Without Continuous Mode Bits Out Of Continuous Read
+    Create QMI Machine
+    Execute Command                 sysbus WriteDoubleWord 0x30000000 0x12345678
+    # The boot ROM's EBh format: an 8-bit suffix of 00h, which never enters continuous read.
+    QMI Write                       0x14  0x00eb
+    QMI Write                       0x10  0x492a8
+    Read Should Equal               0x10000000  0x12345678
+    Read Should Equal               0x10000000  0x12345678
+    QMI Write                       0x10  0x482a8
+    Read Should Equal               0x10000000  0xffffffff
+
 Should Drive The QSPI SS Pad From QMI Chip Select 0
     Create QMI Machine
     # GPIO_QSPI_SS_CTRL.FUNCSEL = 0 (XIP) with the pad out of isolation;
