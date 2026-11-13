@@ -18,6 +18,20 @@ nvic0: IRQControllers.NVIC @ sysbus new Bus.BusPointRegistration { address: 0xe0
 nvic1: IRQControllers.NVIC @ sysbus new Bus.BusPointRegistration { address: 0xe000e000; cpu: cpu1 }
     -> cpu1@0
     priorityMask: 0xc0
+debug_port: CPU.RP2040_DebugPort @ sysbus
+    cpu0: cpu0
+    cpu1: cpu1
+
+// Each Cortex-M0+ has its own breakpoint unit; the ROM table lists it.
+bpu0: CPU.ARM_FlashPatchBreakpoint @ sysbus new Bus.BusPointRegistration { address: 0xe0002000; cpu: cpu0 }
+    cpu: cpu0
+
+bpu1: CPU.ARM_FlashPatchBreakpoint @ sysbus new Bus.BusPointRegistration { address: 0xe0002000; cpu: cpu1 }
+    cpu: cpu1
+
+romTable: CPU.CortexM_ROMTable @ sysbus 0xe00ff000
+    fpb: bpu0
+
 rom: Memory.MappedMemory @ sysbus 0
     size: 0x4000
 sram: Memory.MappedMemory @ sysbus 0x20000000

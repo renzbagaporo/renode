@@ -29,6 +29,20 @@ mach create "pico"
 machine LoadPlatformDescription @platforms/boards/raspberry_pi_pico.repl
 sysbus LoadBinary $dut_rom 0
 
+# SWD multidrop to the Pico's RP2040 and its active-low RUN, from carrier
+# GPIO17 (SWCLK), GPIO25 (SWDIO) and GPIO9 (RUN).
+emulation CreateDigitalWire "swclk" false
+emulation CreateDigitalWire "swdio" true
+emulation CreateDigitalWire "run" true
+mach set "pico"
+swclk Connect debug_port 0
+swdio Connect debug_port 1
+run Connect debug_port 2
+mach set "carrier"
+swclk Connect gpio 17
+swdio Connect gpio 25
+run Connect gpio 9
+
 # Every Pico GP0-22 net has a 5.1 kOhm pull-up to the Pico's 3V3_OUT, so an
 # undriven net reads high and any driver wins. Each net reaches one or two
 # carrier GPIOs. GP4 and GP5 are the I2C0 bus, connected below at byte level.
