@@ -209,6 +209,14 @@ xip: MemoryControllers.RP2350_XIP @ { sysbus 0x400c8000; psm 20 }
 xipMaintenance: MemoryControllers.RP2350_XIPMaintenance @ sysbus 0x18000000
     xip: xip
 
+dma: DMA.RP2040_DMA @ { sysbus 0x50000000; resets 2 }
+    clocks: clocks
+    rp2350: true
+    IRQ0 -> nvic0@10 | riscv0@10 | nvic1@10 | riscv1@10
+    IRQ1 -> nvic0@11 | riscv0@11 | nvic1@11 | riscv1@11
+    IRQ2 -> nvic0@12 | riscv0@12 | nvic1@12 | riscv1@12
+    IRQ3 -> nvic0@13 | riscv0@13 | nvic1@13 | riscv1@13
+
 uart0: UART.RP2_UART @ { sysbus 0x40070000; resets 26 }
     clocks: clocks
     gpio: gpio
