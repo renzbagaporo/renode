@@ -217,6 +217,54 @@ dma: DMA.RP2040_DMA @ { sysbus 0x50000000; resets 2 }
     IRQ2 -> nvic0@12 | riscv0@12 | nvic1@12 | riscv1@12
     IRQ3 -> nvic0@13 | riscv0@13 | nvic1@13 | riscv1@13
 
+pio0: Miscellaneous.RP2040_PIO @ { sysbus 0x50200000; resets 11 }
+    gpio: gpio
+    clocks: clocks
+    pioId: 0
+    rp2350: true
+    0 -> dma@0
+    1 -> dma@1
+    2 -> dma@2
+    3 -> dma@3
+    4 -> dma@4
+    5 -> dma@5
+    6 -> dma@6
+    7 -> dma@7
+    8 -> nvic0@15 | riscv0@15 | nvic1@15 | riscv1@15
+    9 -> nvic0@16 | riscv0@16 | nvic1@16 | riscv1@16
+
+pio1: Miscellaneous.RP2040_PIO @ { sysbus 0x50300000; resets 12 }
+    gpio: gpio
+    clocks: clocks
+    pioId: 1
+    rp2350: true
+    0 -> dma@8
+    1 -> dma@9
+    2 -> dma@10
+    3 -> dma@11
+    4 -> dma@12
+    5 -> dma@13
+    6 -> dma@14
+    7 -> dma@15
+    8 -> nvic0@17 | riscv0@17 | nvic1@17 | riscv1@17
+    9 -> nvic0@18 | riscv0@18 | nvic1@18 | riscv1@18
+
+pio2: Miscellaneous.RP2040_PIO @ { sysbus 0x50400000; resets 13 }
+    gpio: gpio
+    clocks: clocks
+    pioId: 2
+    rp2350: true
+    0 -> dma@16
+    1 -> dma@17
+    2 -> dma@18
+    3 -> dma@19
+    4 -> dma@20
+    5 -> dma@21
+    6 -> dma@22
+    7 -> dma@23
+    8 -> nvic0@19 | riscv0@19 | nvic1@19 | riscv1@19
+    9 -> nvic0@20 | riscv0@20 | nvic1@20 | riscv1@20
+
 uart0: UART.RP2_UART @ { sysbus 0x40070000; resets 26 }
     clocks: clocks
     gpio: gpio
