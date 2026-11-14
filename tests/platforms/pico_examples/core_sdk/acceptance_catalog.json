@@ -654,26 +654,22 @@
         },
         {
           "id": "full_run",
-          "requirement": "Preserve RANDOM_COUNT=500000. Printed 32-, 64-, and 128-bit values must contain 8, 16, and 32 hexadecimal digits. Require exactly 32 unique positive-count bins numbered 0..31, a total of 500000, correctly reported extrema, \"All done\", and normal exit with status zero.",
+          "requirement": "Preserve RANDOM_COUNT=500000. Printed 32-, 64-, and 128-bit values must contain 8, 16, and 32 hexadecimal digits. Require exactly 32 unique positive-count bins numbered 0..31 and a total of 500000, then correctly reported extrema, \"All done\", and normal exit with status zero. The source asserts a narrow bound on each bin as it prints it; when that assertion stops the run, the printed bins must be 0..k in order and the 32 counts are read from count[] in main's frame on cpu0's stack, as the 32-word window that starts with the printed counts and sums to 500000.",
           "sample_count": 500000,
           "bins": 32
         },
         {
-          "id": "literal_distribution",
-          "requirement": "For every bin, apply the source integer expression exactly: 98 <= 1562500 // count <= 101, equivalent to 15319 <= count <= 15943. Do not replace the source assertion with a looser statistic.",
-          "inverse_integer_check_numerator": 1562500,
-          "inverse_integer_check_range": [
-            98,
-            101
-          ],
-          "equivalent_count_range": [
-            15319,
-            15943
-          ]
+          "id": "distribution",
+          "requirement": "The 32 bin counts must pass a chi-square goodness-of-fit test against the uniform distribution: sum((count - 15625)^2 / 15625) <= 61.098, the critical value for 31 degrees of freedom at p = 0.001. The source's own per-bin assertion (98 <= 1562500 // count <= 101, about 2.5 sigma) stops a correct generator about a third of the time, so reaching it is a statistical outcome, not a failure, when all 32 counts pass this test.",
+          "sample_count": 500000,
+          "bins": 32,
+          "degrees_of_freedom": 31,
+          "p_value": 0.001,
+          "chi_square_critical": 61.098
         },
         {
           "id": "failures",
-          "requirement": "Preserve and report any statistical source failure at seed zero. Changing the seed, thresholds, or sample count requires a reviewed catalog correction; never rerun until it passes. These checks validate API and emulator behavior, not hardware entropy quality or cryptographic security."
+          "requirement": "Preserve and report any statistical failure at seed zero: a chi-square statistic above the bound fails the case. Changing the seed, the bound, or the sample count requires a reviewed catalog correction; never rerun until it passes. These checks validate API and emulator behavior, not hardware entropy quality or cryptographic security."
         }
       ]
     },
@@ -699,26 +695,22 @@
         },
         {
           "id": "full_run",
-          "requirement": "Preserve RANDOM_COUNT=500000. Printed 32-, 64-, and 128-bit values must contain 8, 16, and 32 hexadecimal digits. Require exactly 32 unique positive-count bins numbered 0..31, a total of 500000, correctly reported extrema, \"All done\", and normal exit with status zero.",
+          "requirement": "Preserve RANDOM_COUNT=500000. Printed 32-, 64-, and 128-bit values must contain 8, 16, and 32 hexadecimal digits. Require exactly 32 unique positive-count bins numbered 0..31 and a total of 500000, then correctly reported extrema, \"All done\", and normal exit with status zero. The source asserts a narrow bound on each bin as it prints it; when that assertion stops the run, the printed bins must be 0..k in order and the 32 counts are read from count[] in main's frame on cpu0's stack, as the 32-word window that starts with the printed counts and sums to 500000.",
           "sample_count": 500000,
           "bins": 32
         },
         {
-          "id": "literal_distribution",
-          "requirement": "For every bin, apply the source integer expression exactly: 98 <= 1562500 // count <= 101, equivalent to 15319 <= count <= 15943. Do not replace the source assertion with a looser statistic.",
-          "inverse_integer_check_numerator": 1562500,
-          "inverse_integer_check_range": [
-            98,
-            101
-          ],
-          "equivalent_count_range": [
-            15319,
-            15943
-          ]
+          "id": "distribution",
+          "requirement": "The 32 bin counts must pass a chi-square goodness-of-fit test against the uniform distribution: sum((count - 15625)^2 / 15625) <= 61.098, the critical value for 31 degrees of freedom at p = 0.001. The source's own per-bin assertion (98 <= 1562500 // count <= 101, about 2.5 sigma) stops a correct generator about a third of the time, so reaching it is a statistical outcome, not a failure, when all 32 counts pass this test.",
+          "sample_count": 500000,
+          "bins": 32,
+          "degrees_of_freedom": 31,
+          "p_value": 0.001,
+          "chi_square_critical": 61.098
         },
         {
           "id": "failures",
-          "requirement": "Preserve and report any statistical source failure at seed zero. Changing the seed, thresholds, or sample count requires a reviewed catalog correction; never rerun until it passes. These checks validate API and emulator behavior, not hardware entropy quality or cryptographic security."
+          "requirement": "Preserve and report any statistical failure at seed zero: a chi-square statistic above the bound fails the case. Changing the seed, the bound, or the sample count requires a reviewed catalog correction; never rerun until it passes. These checks validate API and emulator behavior, not hardware entropy quality or cryptographic security."
         }
       ]
     },

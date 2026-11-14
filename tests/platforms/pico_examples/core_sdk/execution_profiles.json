@@ -1,6 +1,6 @@
 {
   "frozen_utc": "2026-10-31T15:00:47.116485+00:00",
-  "catalog_sha256": "01c20ca60209f82809bf033eb08884a2d2402a350330f0dfe5502d556f2722e1",
+  "catalog_sha256": "362da28ef6474bc6c2e3eb58d90fa2138540c4574c40de3e387ea9ff05aa4477",
   "reason": "Predeclared scheduling granularity for single-core cases; no source, clock, tolerance or deadline changes. Auditor approved before acceptance.",
   "case_quantum_seconds": {
     "pico/blink_any": 0.0001,

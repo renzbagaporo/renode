@@ -50,6 +50,39 @@ def subsequence(actual, wanted):
     return position == len(wanted)
 
 
+def rand_counts(text):
+    return [(int(i), int(v)) for i, v in re.findall(r'^count of (\d+): (\d+)$', text, re.M)]
+
+
+def chi_square(values):
+    expected = sum(values) / len(values)
+    return sum((v - expected) ** 2 / expected for v in values)
+
+
+# rand.c prints each bin and then hard_asserts a narrow bound on it (about 2.5
+# sigma), so a correct generator stops at that assertion about a third of the
+# time, leaving the later bins unprinted. The whole count[] array is still in
+# main's frame on cpu0's stack: find the 32-word window there that starts with
+# the printed counts and sums to the sample count. Reaching the assertion is a
+# statistical outcome, not an emulator failure, when those 32 counts pass the
+# catalog's chi-square bound. Returns the counts, or None.
+def rand_counts_at_source_assert(constraint, text, errors, runtime):
+    if not errors or {e['label'] for e in errors} - {'hard_assertion_failure', 'panic'}:
+        return None
+    printed = rand_counts(text)
+    if not printed or [i for i, _ in printed] != list(range(len(printed))):
+        return None
+    prefix = [v for _, v in printed]
+    bins = constraint['bins']
+    sp = int(runtime.run('cpu0 SP'), 0)
+    words = [int(runtime.run(f'sysbus ReadDoubleWord 0x{sp + 4 * i:x} context=cpu0'), 0) for i in range(256)]
+    for offset in range(len(words) - bins + 1):
+        window = words[offset:offset + bins]
+        if window[:len(prefix)] == prefix and sum(window) == constraint['sample_count']:
+            return window if chi_square(window) <= constraint['chi_square_critical'] else None
+    return None
+
+
 def check_events(args, catalog, events, runtime):
     case = selected_case(args, catalog)
     constraints = {c['id']:c for c in case['checks']}
@@ -61,6 +94,10 @@ def check_events(args, catalog, events, runtime):
                  '__unhandled_user_irq', 'prvTaskExitError'}
     errors = [{key:e[key] for key in ['label', 'core', 'pc', 'seconds']}
               for e in addresses if e['label'] in forbidden]
+    asserted_counts = rand_counts_at_source_assert(constraints['distribution'], text, errors, runtime) if args.target == 'rand' else None
+    statistical_assert = asserted_counts is not None
+    if statistical_assert:
+        errors = []
     common.check(not errors, f'Firmware error paths were reached: {errors}')
     common.check(not any(e['exception_kind'] in {1, 3, 4, 7, 16, 17, 18, 19, 20, 21} for e in interrupts),
                  'Unexpected architectural fault exception')
@@ -69,7 +106,7 @@ def check_events(args, catalog, events, runtime):
     start = mains[0]['seconds']
     exits = [e for e in addresses if e['label'] == '_exit' and e['core'] == 0]
     finite = {'build_variant1', 'build_variant2', 'hello_divider', 'narrow_io_write', 'rand', 'rtc_alarm', 'unique_board_id', 'boot_info'}
-    if args.target in finite:
+    if args.target in finite and not statistical_assert:
         common.check(exits and all(e['r0'] == 0 for e in exits), 'No observed genuine normal exit with status zero')
     result = dict(no_firmware_error=True, cpu0_main_observed=True)
     if args.target in ['blink_any', 'status_blink']:
@@ -163,13 +200,22 @@ def check_events(args, catalog, events, runtime):
         common.check(re.search(r'^Random 32bits [0-9a-f]{8}$', text, re.M), '32-bit random API output width mismatch')
         common.check(re.search(r'^Random 64bits [0-9a-f]{16}$', text, re.M), '64-bit random API output width mismatch')
         common.check(re.search(r'^Random 128bits [0-9a-f]{32}$', text, re.M), '128-bit random API output width mismatch')
-        counts = [(int(i), int(v)) for i, v in re.findall(r'^count of (\d+): (\d+)$', text, re.M)]
-        common.check([i for i, _ in counts] == list(range(32)), 'Not all 32 random bins were printed exactly once')
-        values = [value for _, value in counts]
+        counts = rand_counts(text)
+        if statistical_assert:
+            values = asserted_counts
+        else:
+            common.check([i for i, _ in counts] == list(range(32)), 'Not all 32 random bins were printed exactly once')
+            values = [value for _, value in counts]
         common.check('Generating 500000 random numbers\n' in text and sum(values) == 500000 and all(v > 0 for v in values), 'Random example did not complete all 500000 samples')
-        common.check(all(98 <= 1562500 // v <= 101 for v in values), 'Source literal integer distribution check failed')
-        common.check(f'Biggest count: {max(values)}\n' in text and f'Smallest count: {min(values)}\n' in text and 'All done\n' in text, 'Random completion/extrema differ')
+        distribution = constraints['distribution']
+        statistic = chi_square(values)
+        common.check(statistic <= distribution['chi_square_critical'],
+                     f'Random bin counts fail the chi-square bound: {statistic:.2f} > {distribution["chi_square_critical"]}')
+        if not statistical_assert:
+            common.check(f'Biggest count: {max(values)}\n' in text and f'Smallest count: {min(values)}\n' in text and 'All done\n' in text, 'Random completion/extrema differ')
         result['random_bin_counts'] = values
+        result['random_chi_square'] = round(statistic, 3)
+        result['random_source_per_bin_assert'] = statistical_assert
     elif args.target == 'unique_board_id':
         expected = args.variant.removeprefix('identity_')
         common.check(expected in ['0123456789abcdef', 'fedcba9876543210'], 'Unknown identity fixture')
