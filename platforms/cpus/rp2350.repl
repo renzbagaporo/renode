@@ -78,6 +78,7 @@ clocks: Miscellaneous.RP2350_Clocks @ { sysbus 0x40010000; psm 5 }
     pllUsb: pll_usb
     nvic0: nvic0
     nvic1: nvic1
+    IRQ -> nvic0@30 | riscv0@30 | nvic1@30 | riscv1@30
 
 // Model CLOCKS as the reset stage for the system-level tick generator.
 ticks: Miscellaneous.RP2350_Ticks @ { sysbus 0x40108000; psm 5 }

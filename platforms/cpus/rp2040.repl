@@ -63,6 +63,7 @@ clocks: Miscellaneous.RP2040_Clocks @ { sysbus 0x40008000; psm 2 }
     nvic0: nvic0
     nvic1: nvic1
     sio: sio
+    IRQ -> nvic0@17 | nvic1@17
 timer: Timers.RP2_Timer @ { sysbus 0x40054000; resets 21 }
     clocked: true
     0 -> nvic0@0 | nvic1@0
