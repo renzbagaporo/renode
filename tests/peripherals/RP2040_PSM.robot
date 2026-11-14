@@ -25,9 +25,13 @@ ${PLATFORM}                         SEPARATOR=\n
 ...  ${SPACE*4}core1: cpu1
 ...  ${SPACE*4}nvic0: nvic0
 ...  ${SPACE*4}nvic1: nvic1
+...  debug_port: CPU.RP2040TestDebugPort @ sysbus
+...  ${SPACE*4}cpu0: cpu0
+...  ${SPACE*4}cpu1: cpu1
 
 *** Keywords ***
 Create Machine
+    Execute Command                 include @${CURDIR}/RP2040TestDebugPort.cs
     Execute Command                 mach create
     Execute Command                 machine LoadPlatformDescriptionFromString """${PLATFORM}"""
     Execute Command                 sysbus WriteDoubleWord 0 0x20001000
@@ -58,6 +62,18 @@ Core One Should Remain In Reset
     Should Be Equal As Integers      ${after.strip()}  ${before.strip()}
     ${counter}=                     Execute Command  cpu1 GetRegister "r2"
     Should Be Equal As Integers      ${counter.strip()}  0
+
+Both Cores Should Be Held In Reset
+    ${r0}=                          Execute Command  cpu0 GetRegister "r0"
+    Should Be Equal As Integers      ${r0.strip()}  0
+    FOR  ${core}  IN  cpu0  cpu1
+        ${before}=                  Execute Command  ${core} ExecutedInstructions
+        Execute Command             emulation RunFor "0.00001"
+        ${after}=                   Execute Command  ${core} ExecutedInstructions
+        Should Be Equal As Integers  ${after.strip()}  ${before.strip()}
+        ${marker}=                  Execute Command  ${core} GetRegister "r3"
+        Should Be Equal As Integers  ${marker.strip()}  0
+    END
 
 Core One Should Boot From Reset Vector
     Execute Command                 emulation RunFor "0.00001"
@@ -104,6 +120,32 @@ Should Reset Both Cores On A Debugger SYSRESETREQ
     Should Be Equal As Integers      ${r0.strip()}  0
     Should Be Equal As Integers      ${marker.strip()}  0x5a
     Read Should Equal               0xe000e100  0  cpu0
+
+Should Hold Both Cores In A Rescue Reset Requested From Outside The CPU Threads
+    Create Machine
+    Execute Command                 emulation RunFor "0.00001"
+    Execute Command                 cpu0 SetRegister "r0" 0x12345678
+    Execute Command                 debug_port Rescue true
+    Execute Command                 emulation RunFor "0.00001"
+    Both Cores Should Be Held In Reset
+    Execute Command                 debug_port Rescue false
+    Execute Command                 emulation RunFor "0.00001"
+    ${marker}=                      Execute Command  cpu0 GetRegister "r3"
+    ${counter}=                     Execute Command  cpu0 GetRegister "r2"
+    Should Be Equal As Integers      ${marker.strip()}  0x5a
+    Should Be True                  int("${counter.strip()}", 0) > 0
+
+Should Hold Both Cores While RUN Is Low
+    Create Machine
+    Execute Command                 emulation RunFor "0.00001"
+    Execute Command                 cpu0 SetRegister "r0" 0x12345678
+    Execute Command                 debug_port OnGPIO 2 false
+    Execute Command                 emulation RunFor "0.00001"
+    Both Cores Should Be Held In Reset
+    Execute Command                 debug_port OnGPIO 2 true
+    Execute Command                 emulation RunFor "0.00001"
+    ${marker}=                      Execute Command  cpu0 GetRegister "r3"
+    Should Be Equal As Integers      ${marker.strip()}  0x5a
 
 Should Restart Core One On A Second Reset
     Create Machine
