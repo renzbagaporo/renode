@@ -277,6 +277,18 @@ pwm: Timers.RP2_PWM @ { sysbus 0x400a8000; resets 16 }
     rp2350: true
     IRQ -> nvic0@8 | riscv0@8 | nvic1@8 | riscv1@8
     IRQ1 -> nvic0@9 | riscv0@9 | nvic1@9 | riscv1@9
+    0 -> dma@96
+    1 -> dma@97
+    2 -> dma@98
+    3 -> dma@99
+    4 -> dma@100
+    5 -> dma@101
+    6 -> dma@102
+    7 -> dma@103
+    8 -> dma@104
+    9 -> dma@105
+    10 -> dma@106
+    11 -> dma@107
 
 busctrl: Miscellaneous.RP2040_BUSCTRL @ { sysbus 0x40068000; resets 1 }
     rp2350: true

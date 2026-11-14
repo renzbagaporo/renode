@@ -155,6 +155,14 @@ pwm: Timers.RP2_PWM @ { sysbus 0x40050000; resets 14 }
     clocks: clocks
     gpio: gpio
     IRQ -> nvic0@4 | nvic1@4
+    0 -> dma@88
+    1 -> dma@89
+    2 -> dma@90
+    3 -> dma@91
+    4 -> dma@92
+    5 -> dma@93
+    6 -> dma@94
+    7 -> dma@95
 
 uart0: UART.RP2_UART @ { sysbus 0x40034000; resets 22 }
     clocks: clocks
