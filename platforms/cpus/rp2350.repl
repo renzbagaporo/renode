@@ -270,6 +270,16 @@ pio2: Miscellaneous.RP2040_PIO @ { sysbus 0x50400000; resets 13 }
     8 -> nvic0@19 | riscv0@19 | nvic1@19 | riscv1@19
     9 -> nvic0@20 | riscv0@20 | nvic1@20 | riscv1@20
 
+pwm: Timers.RP2_PWM @ { sysbus 0x400a8000; resets 16 }
+    clocks: clocks
+    gpio: gpio
+    rp2350: true
+    IRQ -> nvic0@8 | riscv0@8 | nvic1@8 | riscv1@8
+    IRQ1 -> nvic0@9 | riscv0@9 | nvic1@9 | riscv1@9
+
+busctrl: Miscellaneous.RP2040_BUSCTRL @ { sysbus 0x40068000; resets 1 }
+    rp2350: true
+
 uart0: UART.RP2_UART @ { sysbus 0x40070000; resets 26 }
     clocks: clocks
     gpio: gpio

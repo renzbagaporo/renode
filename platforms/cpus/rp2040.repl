@@ -145,6 +145,11 @@ rtc: Timers.RP2040_RTC @ { sysbus 0x4005c000; resets 15 }
     clocks: clocks
     IRQ -> nvic0@25 | nvic1@25
 
+pwm: Timers.RP2_PWM @ { sysbus 0x40050000; resets 14 }
+    clocks: clocks
+    gpio: gpio
+    IRQ -> nvic0@4 | nvic1@4
+
 uart0: UART.RP2_UART @ { sysbus 0x40034000; resets 22 }
     clocks: clocks
     gpio: gpio
