@@ -144,10 +144,11 @@ Should Initialize DCP State With INIT
     Issue Instruction               0xfe106430
     Read Register Should Equal      R6  0
 
-Should Fault On Unsupported Arithmetic
+Should Fault On An Undefined Operation
     Create DCP Machine
     Execute Command                 sysbus WriteDoubleWord 0xe000ed88 0x300 context=cpu
-    Issue Instruction               0xee000401
+    # CDP p4, #3: no DCP operation uses opc1 3.
+    Issue Instruction               0xee300401
     Should Have Usage Fault         0x10000
 
 Should Reject CP5 From Non Secure Code
