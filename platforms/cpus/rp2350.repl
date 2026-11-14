@@ -90,6 +90,15 @@ sha256: Miscellaneous.RP2350_SHA256 @ { sysbus 0x400f8000; resets 17 }
     clocks: clocks
     DREQ -> dma@54
 
+// The output stream is recorded with `hstx RecordOutput @file`, not driven
+// onto GPIO 12-19.
+hstx: Miscellaneous.RP2350_HSTX @ { sysbus 0x400c0000; resets 3 }
+    clocks: clocks
+    DREQ -> dma@52
+
+hstx_fifo: Miscellaneous.RP2350_HSTXFifo @ sysbus 0x50600000
+    hstx: hstx
+
 trng: Miscellaneous.RP2350_TRNG @ { sysbus 0x400f0000; resets 25 }
     clocks: clocks
     IRQ -> nvic0@39 | riscv0@39 | nvic1@39 | riscv1@39
