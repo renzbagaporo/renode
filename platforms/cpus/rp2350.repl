@@ -88,6 +88,7 @@ ticks: Miscellaneous.RP2350_Ticks @ { sysbus 0x40108000; psm 5 }
 
 sha256: Miscellaneous.RP2350_SHA256 @ { sysbus 0x400f8000; resets 17 }
     clocks: clocks
+    DREQ -> dma@54
 
 trng: Miscellaneous.RP2350_TRNG @ { sysbus 0x400f0000; resets 25 }
     clocks: clocks
