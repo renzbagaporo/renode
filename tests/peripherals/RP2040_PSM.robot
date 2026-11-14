@@ -12,8 +12,10 @@ ${PLATFORM}                         SEPARATOR=\n
 ...  ${SPACE*4}InitVectorTableOffset: 0
 ...  nvic0: IRQControllers.NVIC @ sysbus new Bus.BusPointRegistration { address: 0xe000e000; cpu: cpu0 }
 ...  ${SPACE*4}-> cpu0@0
+...  ${SPACE*4}SystemResetRequest -> psm@1
 ...  nvic1: IRQControllers.NVIC @ sysbus new Bus.BusPointRegistration { address: 0xe000e000; cpu: cpu1 }
 ...  ${SPACE*4}-> cpu1@0
+...  ${SPACE*4}SystemResetRequest -> psm@2
 ...  rom: Memory.MappedMemory @ sysbus 0
 ...  ${SPACE*4}size: 0x1000
 ...  ram: Memory.MappedMemory @ sysbus 0x20000000
@@ -88,6 +90,20 @@ Should Hold Core One In Reset Until Released
     Read Should Equal               0xe000e100  0  cpu1
     Execute Command                 sysbus WriteDoubleWord 0x40013004 0x10000 context=cpu0
     Core One Should Boot From Reset Vector
+
+Should Reset Both Cores On A Debugger SYSRESETREQ
+    Create Machine
+    Execute Command                 emulation RunFor "0.00001"
+    Execute Command                 cpu0 SetRegister "r0" 0x12345678
+    Execute Command                 sysbus WriteDoubleWord 0xe000e100 1 context=cpu0
+    # A debugger's AIRCR write arrives from outside the CPU threads.
+    Execute Command                 sysbus WriteDoubleWord 0xe000ed0c 0x05fa0004 context=cpu0
+    Execute Command                 emulation RunFor "0.00001"
+    ${r0}=                          Execute Command  cpu0 GetRegister "r0"
+    ${marker}=                      Execute Command  cpu0 GetRegister "r3"
+    Should Be Equal As Integers      ${r0.strip()}  0
+    Should Be Equal As Integers      ${marker.strip()}  0x5a
+    Read Should Equal               0xe000e100  0  cpu0
 
 Should Restart Core One On A Second Reset
     Create Machine

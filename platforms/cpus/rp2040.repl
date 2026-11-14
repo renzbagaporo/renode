@@ -48,6 +48,12 @@ psm: Miscellaneous.RP2040_PSM @ sysbus 0x40010000
     core1: cpu1
     nvic0: nvic0
     nvic1: nvic1
+
+nvic0:
+    SystemResetRequest -> psm@1
+
+nvic1:
+    SystemResetRequest -> psm@2
 resets: Miscellaneous.RP2_Resets @ { sysbus 0x4000c000; psm 3 }
 rosc: Miscellaneous.RP2040_ROSC @ { sysbus 0x40060000; psm 0 }
 xosc: Miscellaneous.RP2_XOSC @ { sysbus 0x40024000; psm 1 }
