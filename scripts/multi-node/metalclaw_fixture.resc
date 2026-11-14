@@ -43,11 +43,13 @@ run Connect gpio 28
 # Serial and control lines connect equal GP numbers on both boards, except
 # UART0, which is crossed. Each board sees the other's edges $wire_latency_us
 # later on the sender's clock, preserving bit timing across the quantum.
-emulation CreateDelayedDigitalWire "uart0_dut_tx" true $wire_latency_us
-emulation CreateDelayedDigitalWire "uart0_harness_tx" true $wire_latency_us
-emulation CreateDelayedDigitalWire "gp8" true $wire_latency_us
-emulation CreateDelayedDigitalWire "gp9" true $wire_latency_us
-emulation CreateDelayedDigitalWire "gp6" true $wire_latency_us
+# Fixture 1 has no line pull-ups: a line nothing drives takes its level from
+# the pad pulls on both boards, such as the DUT's reset-default pull-downs.
+emulation CreateDelayedDigitalWire "uart0_dut_tx" false $wire_latency_us
+emulation CreateDelayedDigitalWire "uart0_harness_tx" false $wire_latency_us
+emulation CreateDelayedDigitalWire "gp8" false $wire_latency_us
+emulation CreateDelayedDigitalWire "gp9" false $wire_latency_us
+emulation CreateDelayedDigitalWire "gp6" false $wire_latency_us
 mach set "pico2"
 uart0_dut_tx Connect gpio 0
 uart0_harness_tx Connect gpio 1
@@ -68,9 +70,9 @@ gp6 Connect gpio 6
 emulation CreateDelayedDigitalWire "gp18" false $wire_latency_us
 emulation CreateDelayedDigitalWire "gp19" false $wire_latency_us
 emulation CreateDelayedDigitalWire "gp16" false $wire_latency_us
-emulation CreateDelayedDigitalWire "gp17" true $wire_latency_us
-emulation CreateDelayedDigitalWire "gp21" true $wire_latency_us
-emulation CreateDelayedDigitalWire "gp22" true $wire_latency_us
+emulation CreateDelayedDigitalWire "gp17" false $wire_latency_us
+emulation CreateDelayedDigitalWire "gp21" false $wire_latency_us
+emulation CreateDelayedDigitalWire "gp22" false $wire_latency_us
 emulation CreateDelayedDigitalWire "gp7" false $wire_latency_us
 emulation CreateDelayedDigitalWire "gp10" false $wire_latency_us
 emulation CreateDelayedDigitalWire "gp20" false $wire_latency_us
