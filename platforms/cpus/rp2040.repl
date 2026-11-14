@@ -149,33 +149,45 @@ uart0: UART.RP2_UART @ { sysbus 0x40034000; resets 22 }
     gpio: gpio
     index: 0
     IRQ -> nvic0@20 | nvic1@20
+    TxDMA -> dma@20
+    RxDMA -> dma@21
 
 uart1: UART.RP2_UART @ { sysbus 0x40038000; resets 23 }
     clocks: clocks
     gpio: gpio
     index: 1
     IRQ -> nvic0@21 | nvic1@21
+    TxDMA -> dma@22
+    RxDMA -> dma@23
 
 spi0: SPI.RP2_SPI @ { sysbus 0x4003c000; resets 16 }
     clocks: clocks
     gpio: gpio
     index: 0
     IRQ -> nvic0@18 | nvic1@18
+    TxDMA -> dma@16
+    RxDMA -> dma@17
 
 spi1: SPI.RP2_SPI @ { sysbus 0x40040000; resets 17 }
     clocks: clocks
     gpio: gpio
     index: 1
     IRQ -> nvic0@19 | nvic1@19
+    TxDMA -> dma@18
+    RxDMA -> dma@19
 
 i2c0: I2C.RP2_I2C @ { sysbus 0x40044000; resets 3 }
     clocks: clocks
     gpio: gpio
     index: 0
     IRQ -> nvic0@23 | nvic1@23
+    TxDMA -> dma@32
+    RxDMA -> dma@33
 
 i2c1: I2C.RP2_I2C @ { sysbus 0x40048000; resets 4 }
     clocks: clocks
     gpio: gpio
     index: 1
     IRQ -> nvic0@24 | nvic1@24
+    TxDMA -> dma@34
+    RxDMA -> dma@35
