@@ -331,6 +331,11 @@ i2c1: I2C.RP2_I2C @ { sysbus 0x40098000; resets 5 }
     TxDMA -> dma@46
     RxDMA -> dma@47
 
+adc: Analog.RP2_ADC @ { sysbus 0x400a0000; resets 0 }
+    rp2350: true
+    IRQ -> nvic0@35 | riscv0@35 | nvic1@35 | riscv1@35
+    DREQ -> dma@48
+
 // Two alternative execution engines occupy the same physical PE sockets.
 // Their hart IDs remain 0/1; SystemBus assigns distinct engine slots.
 riscv0: CPU.RP2350_Hazard3 @ sysbus
