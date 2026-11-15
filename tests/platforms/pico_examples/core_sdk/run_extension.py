@@ -62,7 +62,10 @@ def main():
     ap.add_argument('--function', action='append', default=[])
     ap.add_argument('--peripheral', action='append', default=[])
     ap.add_argument('--steps', type=Path, help='Predeclared observer/physical-stimulus phases for diagnostic use')
+    ap.add_argument('--quantum', type=float, help='Global quantum in seconds for a diagnostic run (acceptance takes it from the profiles)')
     args = ap.parse_args()
+    if args.quantum is not None and args.catalog:
+        raise ValueError('Acceptance takes the quantum from the frozen execution profiles')
     for name in ['repository', 'runtime', 'elf', 'rom', 'output', 'scratch', 'dotnet']:
         setattr(args, name, getattr(args, name).resolve())
     args.output.mkdir(parents=True, exist_ok=True)

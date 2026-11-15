@@ -220,6 +220,10 @@ usb: USB.RP2_USB @ { sysbus 0x50110000; resets 28 }
     IRQ -> nvic0@14 | riscv0@14 | nvic1@14 | riscv1@14
 
 xip: MemoryControllers.RP2350_XIP @ { sysbus 0x400c8000; psm 20 }
+    StreamDMA -> dma@49
+
+xipAux: MemoryControllers.RP2_XIPAux @ sysbus 0x50500000
+    xip: xip
 
 xipMaintenance: MemoryControllers.RP2350_XIPMaintenance @ sysbus 0x18000000
     xip: xip

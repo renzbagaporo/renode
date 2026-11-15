@@ -391,7 +391,7 @@ def boot(runtime, args, record):
     runtime.run(f'sysbus LoadBinary @{rom_input} 0' if args.board == 'pico' else f'rom LoadBinary @{args.rom}')
     runtime.run(f'xipMemory LoadBinary @{flash}')
     runtime.run(f'sysbus LoadSymbolsFrom @{args.elf}')
-    quantum = float(getattr(args, 'quantum', 0.0001))
+    quantum = float(getattr(args, 'quantum', None) or 0.0001)
     record['requested_quantum_seconds'] = quantum
     runtime.run(f'emulation SetGlobalQuantum "{quantum:.9f}"')
     runtime.run('emulation SetGlobalAdvanceImmediately true')
