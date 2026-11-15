@@ -12,6 +12,8 @@
 # Pico 2 flash starts erased and is programmed through the SWD probe.
 
 $usbip_port?=3240
+# The DUT's own USB/IP server.
+$dut_usbip_port?=3250
 $quantum?="0.0001"
 # Wire latency between the boards in microseconds; it must exceed two
 # quanta. The DUT's SPI input delay is the round trip in nanoseconds.
@@ -143,8 +145,11 @@ emulation SetGlobalQuantum $quantum
 emulation SetGlobalAdvanceImmediately true
 emulation CreateUSBIPServer $usbip_port "pico1"
 host.pico1 Register usb 0 Full
-# The DUT's own USB device is USB/IP device 1 (bus ID 1-1) on the same
-# server, as its USB connector reaches the rig host on the bench.
+# The DUT's own USB device, whose connector reaches the rig host on the
+# bench, is bus ID 1-1 on a USB/IP server of its own on $dut_usbip_port: a
+# USB/IP server serves one client at a time, and the rig holds the
+# harness's import for the whole session.
+emulation CreateUSBIPServer $dut_usbip_port "dut"
 mach set "pico2"
-host.pico1 Register usb 1 Full
+host.dut Register usb 1 Full
 mach set "pico1"
