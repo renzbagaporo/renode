@@ -14,6 +14,25 @@ xip: MemoryControllers.RP2040_XIP @ { sysbus 0x14000000; psm 12 }
 xipAux: MemoryControllers.RP2_XIPAux @ sysbus 0x50400000
     xip: xip
 
-xipMemory: Memory.RP2040_XIPMemory @ { sysbus 0x10000000; sysbus 0x11000000; sysbus 0x12000000; sysbus 0x13000000 }
+// XIP aliases over the same NOR: cached allocating (0x10), cached
+// non-allocating (0x11), uncached allocating (0x12) and uncached
+// non-allocating (0x13). xipMemory owns and loads the NOR contents.
+xipMemory: Memory.RP2040_XIPMemory @ sysbus 0x10000000
     flash: flash
     xip: xip
+
+xipNoAlloc: Memory.RP2040_XIPMemory @ sysbus 0x11000000
+    flash: flash
+    xip: xip
+    allocate: false
+
+xipNoCache: Memory.RP2040_XIPMemory @ sysbus 0x12000000
+    flash: flash
+    xip: xip
+    cached: false
+
+xipNoCacheNoAlloc: Memory.RP2040_XIPMemory @ sysbus 0x13000000
+    flash: flash
+    xip: xip
+    cached: false
+    allocate: false
