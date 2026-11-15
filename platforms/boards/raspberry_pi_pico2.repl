@@ -69,3 +69,8 @@ xipUntranslatedReserved: Memory.RP2350_XIPMemory @ sysbus 0x1e000000
     useCache: false
     untranslated: true
     windowOffset: 0x2000000
+
+// UART0 also reaches QSPI SD2 (TX) and SD3 (RX) as UART_AUX, for the boot
+// ROM's UART bootloader.
+uart0:
+    Qspi: qspi

@@ -1,0 +1,45 @@
+# Two Pico 2 boards for pico-examples bootloaders/uart: "host" runs uart_boot
+# from its flash (uart_boot plus uart_binary in its 128 KiB partition) and
+# boots "target" over the boot ROM's UART bootloader. The target is held in
+# BOOTSEL (QSPI SS low) with QSPI SD1 high, which selects UART boot on SD2
+# (TX) and SD3 (RX). Host GP4 (UART1 TX) -> target SD3, target SD2 -> host
+# GP5 (UART1 RX), host GP3 -> target RUN.
+# Set these file variables before including this script:
+#   $rom: RP2350 A2 combined boot ROM binary (see metalclaw_fixture.resc)
+#   $host_flash: the host's NOR: uart_boot.uf2 with uart_binary.uf2 placed in
+#     its 128 KiB partition (tests/platforms/pico_examples/core_sdk uf2_flash)
+$seconds?="3"
+# The host allows 500 us for each reply, so the wires need a latency well
+# under that; it must exceed two quanta.
+$quantum?="0.000002"
+$latency?=5
+emulation SetSeed 0
+mach create "host"
+machine LoadPlatformDescription @platforms/boards/raspberry_pi_pico2.repl
+rom LoadBinary $rom
+xipMemory LoadBinary $host_flash
+showAnalyzer sysbus.uart0
+mach create "target"
+machine LoadPlatformDescription @platforms/boards/raspberry_pi_pico2.repl
+rom LoadBinary $rom
+showAnalyzer sysbus.uart0
+emulation CreateDelayedDigitalWire "boot_tx" true $latency
+emulation CreateDelayedDigitalWire "boot_rx" true $latency
+emulation CreateDigitalWire "run" true
+mach set "host"
+boot_tx Connect gpio 4
+boot_rx Connect gpio 5
+run Connect gpio 3
+mach set "target"
+boot_tx Connect qspi 7
+boot_rx Connect qspi 6
+run Connect debug_port 2
+qspi OnGPIO 3 false
+qspi OnGPIO 5 true
+emulation SetGlobalQuantum $quantum
+emulation SetGlobalAdvanceImmediately true
+mach set "host"
+machine Reset
+mach set "target"
+machine Reset
+emulation RunFor $seconds
