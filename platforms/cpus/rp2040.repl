@@ -150,9 +150,10 @@ busctrl: Miscellaneous.RP2040_BUSCTRL @ { sysbus 0x40030000; resets 1 }
     core1: cpu1
     dma: dma
 
+// An RTC alarm also restarts a dormant oscillator, like DORMANT_WAKE.
 rtc: Timers.RP2040_RTC @ { sysbus 0x4005c000; resets 15 }
     clocks: clocks
-    IRQ -> nvic0@25 | nvic1@25
+    IRQ -> nvic0@25 | nvic1@25 | xosc@0 | rosc@0
 
 pwm: Timers.RP2_PWM @ { sysbus 0x40050000; resets 14 }
     clocks: clocks
