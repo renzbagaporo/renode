@@ -112,6 +112,7 @@ powman: Miscellaneous.RP2350_POWMAN @ sysbus 0x40100000
     architectureSelector: architecture
     xosc: xosc
     rosc: rosc
+    gpio: gpio
     TimerIRQ -> nvic0@45 | riscv0@45 | nvic1@45 | riscv1@45
     core0: cpu0
     core1: cpu1
@@ -201,6 +202,7 @@ gpio: GPIOPort.RP2_GPIOBank0 @ { sysbus 0x40028000; resets 6 }
     accessControl: accessctrl
     Core0IRQ -> nvic0@21 | riscv0@21
     Core1IRQ -> nvic1@21 | riscv1@21
+    DormantWakeIRQ -> xosc@0 | rosc@0
     Core0NonSecureIRQ -> nvic0@22 | riscv0@22
     Core1NonSecureIRQ -> nvic1@22 | riscv1@22
 

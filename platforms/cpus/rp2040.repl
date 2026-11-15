@@ -84,6 +84,7 @@ gpio: GPIOPort.RP2_GPIOBank0 @ { sysbus 0x40014000; resets 5 }
     sio: sio
     Core0IRQ -> nvic0@13
     Core1IRQ -> nvic1@13
+    DormantWakeIRQ -> xosc@0 | rosc@0
 pads: GPIOPort.RP2_PadsBank0 @ { sysbus 0x4001c000; resets 8 }
     gpio: gpio
 
