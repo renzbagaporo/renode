@@ -110,6 +110,9 @@ debug_port: CPU.RP2350_DebugPort @ sysbus
 
 powman: Miscellaneous.RP2350_POWMAN @ sysbus 0x40100000
     architectureSelector: architecture
+    xosc: xosc
+    rosc: rosc
+    TimerIRQ -> nvic0@45 | riscv0@45 | nvic1@45 | riscv1@45
     core0: cpu0
     core1: cpu1
     nvic0: nvic0
@@ -365,12 +368,10 @@ adc: Analog.RP2_ADC @ { sysbus 0x400a0000; resets 0 }
 // Their hart IDs remain 0/1; SystemBus assigns distinct engine slots.
 riscv0: CPU.RP2350_Hazard3 @ sysbus
     hartId: 0
-    clocks: clocks
     WfiFollowsClock: true
 
 riscv1: CPU.RP2350_Hazard3 @ sysbus
     hartId: 1
-    clocks: clocks
     WfiFollowsClock: true
 
 architecture: Miscellaneous.RP2350_ArchitectureSelector @ sysbus

@@ -5,7 +5,7 @@ Create Power Machine
     Execute Command                 sysbus WriteDoubleWord 0x40023000 0x01800000
     Execute Command                 cpu0 IsHalted true
     Execute Command                 cpu1 IsHalted true
-    ${image}=                       Evaluate  bytes.fromhex('0080002001010000') + bytes(248) + bytes.fromhex('fee7')
+    ${image}=                       Evaluate  bytes.fromhex('0080002001010000') + bytes(248) + bytes.fromhex('30bffde7')
     ${rom_image}=                   Allocate Temporary File
     Evaluate                        open(r'${rom_image}', 'wb').write($image)
     Execute Command                 rom LoadBinary @${rom_image}
@@ -86,7 +86,7 @@ ShouldLoseBootRAMAndPinnedCacheWhenXIPDomainPowersDown
     Execute Command                 sysbus WriteDoubleWord 0x13ffc000 0x12345678
     Execute Command                 sysbus WriteDoubleWord 0x400e0000 0xabcdef01
     Execute Command                 sysbus WriteDoubleWord 0x40100038 0x5afe00c0
-    Execute Command                 emulation RunFor "0.000001"
+    Execute Command                 emulation RunFor "0.001"
     Read Should Equal               0x40100038  0xcc
     Run Keyword And Expect Error    *Bus access failed*  Execute Command  sysbus ReadDoubleWord 0x13ffc000
     Run Keyword And Expect Error    *Bus access failed*  Execute Command  sysbus ReadDoubleWord 0x400e0000
