@@ -130,7 +130,7 @@ UF2_ABSOLUTE_FAMILY = 0xe48bff57
 
 
 def uf2_flash(uf2s, board):
-    """The NOR contents UF2 files program in order, over erased flash. Each
+    """The whole NOR as UF2 files program it in order, over erased flash. Each
     entry is PATH or PATH@OFFSET: OFFSET moves the blocks of any family but
     "absolute", as a download into a partition starting there does. Blocks
     outside the board NOR, such as picotool's absolute-family block at the end
@@ -152,7 +152,8 @@ def uf2_flash(uf2s, board):
             blocks.append((address - 0x10000000, data[offset + 32:offset + 32 + length]))
     if not blocks:
         raise ValueError('No UF2 blocks inside board NOR')
-    payload = bytearray(b'\xff' * max(start + len(block) for start, block in blocks))
+    # The whole NOR starts erased, as on a device UF2 files are copied to.
+    payload = bytearray(b'\xff' * size)
     for start, block in blocks:
         payload[start:start + len(block)] = block
     return payload
