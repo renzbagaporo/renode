@@ -126,6 +126,38 @@ def extract_flash(elf, board):
     return payload, segments
 
 
+UF2_ABSOLUTE_FAMILY = 0xe48bff57
+
+
+def uf2_flash(uf2s, board):
+    """The NOR contents UF2 files program in order, over erased flash. Each
+    entry is PATH or PATH@OFFSET: OFFSET moves the blocks of any family but
+    "absolute", as a download into a partition starting there does. Blocks
+    outside the board NOR, such as picotool's absolute-family block at the end
+    of the 16 MiB window, are skipped."""
+    size = 0x200000 if board == 'pico' else 0x400000
+    blocks = []
+    for entry in uf2s:
+        path, _, shift = str(entry).partition('@')
+        shift = int(shift, 0) if shift else 0
+        data = Path(path).read_bytes()
+        for offset in range(0, len(data) - 511, 512):
+            magic0, magic1, flags, address, length, _, _, family = struct.unpack_from('<8I', data, offset)
+            if magic0 != 0x0a324655 or magic1 != 0x9e5d5157 or struct.unpack_from('<I', data, offset + 508)[0] != 0x0ab16f30:
+                raise ValueError('Invalid UF2 block')
+            if not (flags & 0x2000 and family == UF2_ABSOLUTE_FAMILY):
+                address += shift
+            if flags & 1 or length > 476 or not 0x10000000 <= address <= 0x10000000 + size - length:
+                continue
+            blocks.append((address - 0x10000000, data[offset + 32:offset + 32 + length]))
+    if not blocks:
+        raise ValueError('No UF2 blocks inside board NOR')
+    payload = bytearray(b'\xff' * max(start + len(block) for start, block in blocks))
+    for start, block in blocks:
+        payload[start:start + len(block)] = block
+    return payload
+
+
 class Runtime:
     def __init__(self, args, record):
         self.args, self.record, self.proc, self.log = args, record, None, None
@@ -316,15 +348,22 @@ def boot(runtime, args, record):
 
     args supplies board, repository, elf, rom, scratch and output Path objects.
     For a flash image no ELF bytes are written to SRAM and no architectural
-    register is patched. An image that has no NOR segments (a no_flash build)
+    register is patched. With args.uf2 (a list) the NOR holds those UF2s'
+    contents instead of the ELF's segments, and the ELF only supplies symbols, as for a
+    signed, encrypted or packaged image whose ELF describes the code it
+    unpacks. An image that has no NOR segments (a no_flash build)
     is loaded the way a debugger does on hardware: after reset the erased NOR
     stays erased, the ELF's segments are written to SRAM, and core 0 starts at
     the ELF entry; core 1 takes its own reset path into the ROM.
     Return the original ELF symbols for additional observer-only address hooks.
     """
     args.scratch.mkdir(parents=True, exist_ok=True)
-    ram = ram_image(args.elf, args.board)
-    if ram:
+    uf2 = getattr(args, 'uf2', None)
+    ram = not uf2 and ram_image(args.elf, args.board)
+    if uf2:
+        payload, segments = uf2_flash(uf2, args.board), []
+        record['loader'] = 'official_rom_coldboot_from_uf2'
+    elif ram:
         payload, segments = b'\xff' * 0x1000, []
         record['loader'] = 'debugger_ram_load'
     else:
@@ -357,7 +396,7 @@ def boot(runtime, args, record):
             raise ValueError('Expected one mask ROM segment')
         rom_input = args.scratch / 'rp2040_mask_rom.bin'
         rom_input.write_bytes(candidates[0])
-    for path in [flash, args.elf, args.rom, rom_input, observer_copy, Path(__file__).resolve()]:
+    for path in [flash, args.elf, args.rom, rom_input, observer_copy, Path(__file__).resolve()] + [Path(str(u).partition('@')[0]) for u in uf2 or []]:
         record['inputs'][str(path)] = dict(bytes=path.stat().st_size, sha256=sha(path))
     runtime.run('emulation SetSeed 0')
     runtime.run('mach create "pico"')

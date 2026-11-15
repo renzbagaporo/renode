@@ -1,0 +1,2828 @@
+{
+"BOOTKEY0_0": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 128,
+"seq_length": 16
+},
+"BOOTKEY0_1": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 129,
+"seq_length": 16
+},
+"BOOTKEY0_10": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 138,
+"seq_length": 16
+},
+"BOOTKEY0_11": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 139,
+"seq_length": 16
+},
+"BOOTKEY0_12": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 140,
+"seq_length": 16
+},
+"BOOTKEY0_13": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 141,
+"seq_length": 16
+},
+"BOOTKEY0_14": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 142,
+"seq_length": 16
+},
+"BOOTKEY0_15": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 143,
+"seq_length": 16
+},
+"BOOTKEY0_2": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 130,
+"seq_length": 16
+},
+"BOOTKEY0_3": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 131,
+"seq_length": 16
+},
+"BOOTKEY0_4": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 132,
+"seq_length": 16
+},
+"BOOTKEY0_5": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 133,
+"seq_length": 16
+},
+"BOOTKEY0_6": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 134,
+"seq_length": 16
+},
+"BOOTKEY0_7": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 135,
+"seq_length": 16
+},
+"BOOTKEY0_8": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 136,
+"seq_length": 16
+},
+"BOOTKEY0_9": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 137,
+"seq_length": 16
+},
+"BOOTKEY1_0": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 144,
+"seq_length": 16
+},
+"BOOTKEY1_1": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 145,
+"seq_length": 16
+},
+"BOOTKEY1_10": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 154,
+"seq_length": 16
+},
+"BOOTKEY1_11": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 155,
+"seq_length": 16
+},
+"BOOTKEY1_12": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 156,
+"seq_length": 16
+},
+"BOOTKEY1_13": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 157,
+"seq_length": 16
+},
+"BOOTKEY1_14": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 158,
+"seq_length": 16
+},
+"BOOTKEY1_15": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 159,
+"seq_length": 16
+},
+"BOOTKEY1_2": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 146,
+"seq_length": 16
+},
+"BOOTKEY1_3": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 147,
+"seq_length": 16
+},
+"BOOTKEY1_4": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 148,
+"seq_length": 16
+},
+"BOOTKEY1_5": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 149,
+"seq_length": 16
+},
+"BOOTKEY1_6": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 150,
+"seq_length": 16
+},
+"BOOTKEY1_7": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 151,
+"seq_length": 16
+},
+"BOOTKEY1_8": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 152,
+"seq_length": 16
+},
+"BOOTKEY1_9": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 153,
+"seq_length": 16
+},
+"BOOTKEY2_0": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 160,
+"seq_length": 16
+},
+"BOOTKEY2_1": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 161,
+"seq_length": 16
+},
+"BOOTKEY2_10": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 170,
+"seq_length": 16
+},
+"BOOTKEY2_11": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 171,
+"seq_length": 16
+},
+"BOOTKEY2_12": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 172,
+"seq_length": 16
+},
+"BOOTKEY2_13": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 173,
+"seq_length": 16
+},
+"BOOTKEY2_14": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 174,
+"seq_length": 16
+},
+"BOOTKEY2_15": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 175,
+"seq_length": 16
+},
+"BOOTKEY2_2": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 162,
+"seq_length": 16
+},
+"BOOTKEY2_3": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 163,
+"seq_length": 16
+},
+"BOOTKEY2_4": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 164,
+"seq_length": 16
+},
+"BOOTKEY2_5": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 165,
+"seq_length": 16
+},
+"BOOTKEY2_6": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 166,
+"seq_length": 16
+},
+"BOOTKEY2_7": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 167,
+"seq_length": 16
+},
+"BOOTKEY2_8": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 168,
+"seq_length": 16
+},
+"BOOTKEY2_9": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 169,
+"seq_length": 16
+},
+"BOOTKEY3_0": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 176,
+"seq_length": 16
+},
+"BOOTKEY3_1": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 177,
+"seq_length": 16
+},
+"BOOTKEY3_10": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 186,
+"seq_length": 16
+},
+"BOOTKEY3_11": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 187,
+"seq_length": 16
+},
+"BOOTKEY3_12": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 188,
+"seq_length": 16
+},
+"BOOTKEY3_13": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 189,
+"seq_length": 16
+},
+"BOOTKEY3_14": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 190,
+"seq_length": 16
+},
+"BOOTKEY3_15": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 191,
+"seq_length": 16
+},
+"BOOTKEY3_2": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 178,
+"seq_length": 16
+},
+"BOOTKEY3_3": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 179,
+"seq_length": 16
+},
+"BOOTKEY3_4": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 180,
+"seq_length": 16
+},
+"BOOTKEY3_5": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 181,
+"seq_length": 16
+},
+"BOOTKEY3_6": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 182,
+"seq_length": 16
+},
+"BOOTKEY3_7": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 183,
+"seq_length": 16
+},
+"BOOTKEY3_8": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 184,
+"seq_length": 16
+},
+"BOOTKEY3_9": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 185,
+"seq_length": 16
+},
+"BOOTSEL_LED_CFG": {
+"ecc": true,
+"fields": {
+"ACTIVELOW": 256,
+"PIN": 63
+},
+"redundancy": 1,
+"row": 86,
+"seq_length": 0
+},
+"BOOTSEL_PLL_CFG": {
+"ecc": true,
+"fields": {
+"FBDIV": 511,
+"POSTDIV1": 3584,
+"POSTDIV2": 28672,
+"REFDIV": 32768
+},
+"redundancy": 1,
+"row": 87,
+"seq_length": 0
+},
+"BOOTSEL_XOSC_CFG": {
+"ecc": true,
+"fields": {
+"RANGE": 49152,
+"STARTUP": 16383
+},
+"redundancy": 1,
+"row": 88,
+"seq_length": 0
+},
+"BOOT_FLAGS0": {
+"ecc": false,
+"fields": {
+"DISABLE_AUTO_SWITCH_ARCH": 256,
+"DISABLE_BOOTSEL_EXEC2": 1,
+"DISABLE_BOOTSEL_UART_BOOT": 524288,
+"DISABLE_BOOTSEL_USB_MSD_IFC": 131072,
+"DISABLE_BOOTSEL_USB_PICOBOOT_IFC": 262144,
+"DISABLE_FLASH_BOOT": 4096,
+"DISABLE_OTP_BOOT": 8192,
+"DISABLE_POWER_SCRATCH": 32768,
+"DISABLE_SRAM_WINDOW_BOOT": 2097152,
+"DISABLE_WATCHDOG_SCRATCH": 65536,
+"DISABLE_XIP_ACCESS_ON_SRAM_ENTRY": 1048576,
+"ENABLE_BOOTSEL_LED": 2,
+"ENABLE_BOOTSEL_NON_DEFAULT_PLL_XOSC_CFG": 4,
+"ENABLE_OTP_BOOT": 16384,
+"FAST_SIGCHECK_ROSC_DIV": 16,
+"FLASH_DEVINFO_ENABLE": 32,
+"FLASH_IO_VOLTAGE_1V8": 8,
+"HASHED_PARTITION_TABLE": 1024,
+"OVERRIDE_FLASH_PARTITION_SLOT_SIZE": 64,
+"ROLLBACK_REQUIRED": 2048,
+"SECURE_PARTITION_TABLE": 512,
+"SINGLE_FLASH_BINARY": 128
+},
+"redundancy": 3,
+"row": 72,
+"seq_length": 0
+},
+"BOOT_FLAGS1": {
+"ecc": false,
+"fields": {
+"DOUBLE_TAP": 524288,
+"DOUBLE_TAP_DELAY": 458752,
+"KEY_INVALID": 3840,
+"KEY_VALID": 15
+},
+"redundancy": 3,
+"row": 75,
+"seq_length": 0
+},
+"CHIPID0": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 0,
+"seq_length": 4
+},
+"CHIPID1": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 1,
+"seq_length": 4
+},
+"CHIPID2": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 2,
+"seq_length": 4
+},
+"CHIPID3": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 3,
+"seq_length": 4
+},
+"CRIT0": {
+"ecc": false,
+"fields": {
+"ARM_DISABLE": 1,
+"RISCV_DISABLE": 2
+},
+"redundancy": 8,
+"row": 56,
+"seq_length": 0
+},
+"CRIT1": {
+"ecc": false,
+"fields": {
+"BOOT_ARCH": 8,
+"DEBUG_DISABLE": 4,
+"GLITCH_DETECTOR_ENABLE": 16,
+"GLITCH_DETECTOR_SENS": 96,
+"SECURE_BOOT_ENABLE": 1,
+"SECURE_DEBUG_DISABLE": 2
+},
+"redundancy": 8,
+"row": 64,
+"seq_length": 0
+},
+"DEFAULT_BOOT_VERSION0": {
+"ecc": false,
+"fields": {},
+"redundancy": 3,
+"row": 78,
+"seq_length": 2
+},
+"DEFAULT_BOOT_VERSION1": {
+"ecc": false,
+"fields": {},
+"redundancy": 3,
+"row": 81,
+"seq_length": 2
+},
+"FLASH_DEVINFO": {
+"ecc": true,
+"fields": {
+"CS0_SIZE": 3840,
+"CS1_GPIO": 63,
+"CS1_SIZE": 61440,
+"D8H_ERASE_SUPPORTED": 128
+},
+"redundancy": 1,
+"row": 84,
+"seq_length": 0
+},
+"FLASH_PARTITION_SLOT_SIZE": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 85,
+"seq_length": 0
+},
+"INFO_CRC0": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 54,
+"seq_length": 2
+},
+"INFO_CRC1": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 55,
+"seq_length": 2
+},
+"KEY1_0": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 3912,
+"seq_length": 8
+},
+"KEY1_1": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 3913,
+"seq_length": 8
+},
+"KEY1_2": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 3914,
+"seq_length": 8
+},
+"KEY1_3": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 3915,
+"seq_length": 8
+},
+"KEY1_4": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 3916,
+"seq_length": 8
+},
+"KEY1_5": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 3917,
+"seq_length": 8
+},
+"KEY1_6": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 3918,
+"seq_length": 8
+},
+"KEY1_7": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 3919,
+"seq_length": 8
+},
+"KEY1_VALID": {
+"ecc": false,
+"fields": {
+"VALID": 1,
+"VALID_R1": 256,
+"VALID_R2": 65536
+},
+"redundancy": 1,
+"row": 3961,
+"seq_length": 0
+},
+"KEY2_0": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 3920,
+"seq_length": 8
+},
+"KEY2_1": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 3921,
+"seq_length": 8
+},
+"KEY2_2": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 3922,
+"seq_length": 8
+},
+"KEY2_3": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 3923,
+"seq_length": 8
+},
+"KEY2_4": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 3924,
+"seq_length": 8
+},
+"KEY2_5": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 3925,
+"seq_length": 8
+},
+"KEY2_6": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 3926,
+"seq_length": 8
+},
+"KEY2_7": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 3927,
+"seq_length": 8
+},
+"KEY2_VALID": {
+"ecc": false,
+"fields": {
+"VALID": 1,
+"VALID_R1": 256,
+"VALID_R2": 65536
+},
+"redundancy": 1,
+"row": 3962,
+"seq_length": 0
+},
+"KEY3_0": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 3928,
+"seq_length": 8
+},
+"KEY3_1": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 3929,
+"seq_length": 8
+},
+"KEY3_2": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 3930,
+"seq_length": 8
+},
+"KEY3_3": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 3931,
+"seq_length": 8
+},
+"KEY3_4": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 3932,
+"seq_length": 8
+},
+"KEY3_5": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 3933,
+"seq_length": 8
+},
+"KEY3_6": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 3934,
+"seq_length": 8
+},
+"KEY3_7": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 3935,
+"seq_length": 8
+},
+"KEY3_VALID": {
+"ecc": false,
+"fields": {
+"VALID": 1,
+"VALID_R1": 256,
+"VALID_R2": 65536
+},
+"redundancy": 1,
+"row": 3963,
+"seq_length": 0
+},
+"KEY4_0": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 3936,
+"seq_length": 8
+},
+"KEY4_1": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 3937,
+"seq_length": 8
+},
+"KEY4_2": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 3938,
+"seq_length": 8
+},
+"KEY4_3": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 3939,
+"seq_length": 8
+},
+"KEY4_4": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 3940,
+"seq_length": 8
+},
+"KEY4_5": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 3941,
+"seq_length": 8
+},
+"KEY4_6": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 3942,
+"seq_length": 8
+},
+"KEY4_7": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 3943,
+"seq_length": 8
+},
+"KEY4_VALID": {
+"ecc": false,
+"fields": {
+"VALID": 1,
+"VALID_R1": 256,
+"VALID_R2": 65536
+},
+"redundancy": 1,
+"row": 3964,
+"seq_length": 0
+},
+"KEY5_0": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 3944,
+"seq_length": 8
+},
+"KEY5_1": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 3945,
+"seq_length": 8
+},
+"KEY5_2": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 3946,
+"seq_length": 8
+},
+"KEY5_3": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 3947,
+"seq_length": 8
+},
+"KEY5_4": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 3948,
+"seq_length": 8
+},
+"KEY5_5": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 3949,
+"seq_length": 8
+},
+"KEY5_6": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 3950,
+"seq_length": 8
+},
+"KEY5_7": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 3951,
+"seq_length": 8
+},
+"KEY5_VALID": {
+"ecc": false,
+"fields": {
+"VALID": 1,
+"VALID_R1": 256,
+"VALID_R2": 65536
+},
+"redundancy": 1,
+"row": 3965,
+"seq_length": 0
+},
+"KEY6_0": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 3952,
+"seq_length": 8
+},
+"KEY6_1": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 3953,
+"seq_length": 8
+},
+"KEY6_2": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 3954,
+"seq_length": 8
+},
+"KEY6_3": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 3955,
+"seq_length": 8
+},
+"KEY6_4": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 3956,
+"seq_length": 8
+},
+"KEY6_5": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 3957,
+"seq_length": 8
+},
+"KEY6_6": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 3958,
+"seq_length": 8
+},
+"KEY6_7": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 3959,
+"seq_length": 8
+},
+"KEY6_VALID": {
+"ecc": false,
+"fields": {
+"VALID": 1,
+"VALID_R1": 256,
+"VALID_R2": 65536
+},
+"redundancy": 1,
+"row": 3966,
+"seq_length": 0
+},
+"LPOSC_CALIB": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 17,
+"seq_length": 0
+},
+"NUM_GPIOS": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 24,
+"seq_length": 0
+},
+"OTPBOOT_DST0": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 96,
+"seq_length": 2
+},
+"OTPBOOT_DST1": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 97,
+"seq_length": 2
+},
+"OTPBOOT_LEN": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 95,
+"seq_length": 0
+},
+"OTPBOOT_SRC": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 94,
+"seq_length": 0
+},
+"PAGE0_LOCK0": {
+"ecc": false,
+"fields": {
+"KEY_R": 56,
+"KEY_W": 7,
+"NO_KEY_STATE": 64,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 3968,
+"seq_length": 0
+},
+"PAGE0_LOCK1": {
+"ecc": false,
+"fields": {
+"LOCK_BL": 48,
+"LOCK_NS": 12,
+"LOCK_S": 3,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 3969,
+"seq_length": 0
+},
+"PAGE10_LOCK0": {
+"ecc": false,
+"fields": {
+"KEY_R": 56,
+"KEY_W": 7,
+"NO_KEY_STATE": 64,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 3988,
+"seq_length": 0
+},
+"PAGE10_LOCK1": {
+"ecc": false,
+"fields": {
+"LOCK_BL": 48,
+"LOCK_NS": 12,
+"LOCK_S": 3,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 3989,
+"seq_length": 0
+},
+"PAGE11_LOCK0": {
+"ecc": false,
+"fields": {
+"KEY_R": 56,
+"KEY_W": 7,
+"NO_KEY_STATE": 64,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 3990,
+"seq_length": 0
+},
+"PAGE11_LOCK1": {
+"ecc": false,
+"fields": {
+"LOCK_BL": 48,
+"LOCK_NS": 12,
+"LOCK_S": 3,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 3991,
+"seq_length": 0
+},
+"PAGE12_LOCK0": {
+"ecc": false,
+"fields": {
+"KEY_R": 56,
+"KEY_W": 7,
+"NO_KEY_STATE": 64,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 3992,
+"seq_length": 0
+},
+"PAGE12_LOCK1": {
+"ecc": false,
+"fields": {
+"LOCK_BL": 48,
+"LOCK_NS": 12,
+"LOCK_S": 3,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 3993,
+"seq_length": 0
+},
+"PAGE13_LOCK0": {
+"ecc": false,
+"fields": {
+"KEY_R": 56,
+"KEY_W": 7,
+"NO_KEY_STATE": 64,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 3994,
+"seq_length": 0
+},
+"PAGE13_LOCK1": {
+"ecc": false,
+"fields": {
+"LOCK_BL": 48,
+"LOCK_NS": 12,
+"LOCK_S": 3,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 3995,
+"seq_length": 0
+},
+"PAGE14_LOCK0": {
+"ecc": false,
+"fields": {
+"KEY_R": 56,
+"KEY_W": 7,
+"NO_KEY_STATE": 64,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 3996,
+"seq_length": 0
+},
+"PAGE14_LOCK1": {
+"ecc": false,
+"fields": {
+"LOCK_BL": 48,
+"LOCK_NS": 12,
+"LOCK_S": 3,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 3997,
+"seq_length": 0
+},
+"PAGE15_LOCK0": {
+"ecc": false,
+"fields": {
+"KEY_R": 56,
+"KEY_W": 7,
+"NO_KEY_STATE": 64,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 3998,
+"seq_length": 0
+},
+"PAGE15_LOCK1": {
+"ecc": false,
+"fields": {
+"LOCK_BL": 48,
+"LOCK_NS": 12,
+"LOCK_S": 3,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 3999,
+"seq_length": 0
+},
+"PAGE16_LOCK0": {
+"ecc": false,
+"fields": {
+"KEY_R": 56,
+"KEY_W": 7,
+"NO_KEY_STATE": 64,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4000,
+"seq_length": 0
+},
+"PAGE16_LOCK1": {
+"ecc": false,
+"fields": {
+"LOCK_BL": 48,
+"LOCK_NS": 12,
+"LOCK_S": 3,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4001,
+"seq_length": 0
+},
+"PAGE17_LOCK0": {
+"ecc": false,
+"fields": {
+"KEY_R": 56,
+"KEY_W": 7,
+"NO_KEY_STATE": 64,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4002,
+"seq_length": 0
+},
+"PAGE17_LOCK1": {
+"ecc": false,
+"fields": {
+"LOCK_BL": 48,
+"LOCK_NS": 12,
+"LOCK_S": 3,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4003,
+"seq_length": 0
+},
+"PAGE18_LOCK0": {
+"ecc": false,
+"fields": {
+"KEY_R": 56,
+"KEY_W": 7,
+"NO_KEY_STATE": 64,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4004,
+"seq_length": 0
+},
+"PAGE18_LOCK1": {
+"ecc": false,
+"fields": {
+"LOCK_BL": 48,
+"LOCK_NS": 12,
+"LOCK_S": 3,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4005,
+"seq_length": 0
+},
+"PAGE19_LOCK0": {
+"ecc": false,
+"fields": {
+"KEY_R": 56,
+"KEY_W": 7,
+"NO_KEY_STATE": 64,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4006,
+"seq_length": 0
+},
+"PAGE19_LOCK1": {
+"ecc": false,
+"fields": {
+"LOCK_BL": 48,
+"LOCK_NS": 12,
+"LOCK_S": 3,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4007,
+"seq_length": 0
+},
+"PAGE1_LOCK0": {
+"ecc": false,
+"fields": {
+"KEY_R": 56,
+"KEY_W": 7,
+"NO_KEY_STATE": 64,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 3970,
+"seq_length": 0
+},
+"PAGE1_LOCK1": {
+"ecc": false,
+"fields": {
+"LOCK_BL": 48,
+"LOCK_NS": 12,
+"LOCK_S": 3,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 3971,
+"seq_length": 0
+},
+"PAGE20_LOCK0": {
+"ecc": false,
+"fields": {
+"KEY_R": 56,
+"KEY_W": 7,
+"NO_KEY_STATE": 64,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4008,
+"seq_length": 0
+},
+"PAGE20_LOCK1": {
+"ecc": false,
+"fields": {
+"LOCK_BL": 48,
+"LOCK_NS": 12,
+"LOCK_S": 3,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4009,
+"seq_length": 0
+},
+"PAGE21_LOCK0": {
+"ecc": false,
+"fields": {
+"KEY_R": 56,
+"KEY_W": 7,
+"NO_KEY_STATE": 64,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4010,
+"seq_length": 0
+},
+"PAGE21_LOCK1": {
+"ecc": false,
+"fields": {
+"LOCK_BL": 48,
+"LOCK_NS": 12,
+"LOCK_S": 3,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4011,
+"seq_length": 0
+},
+"PAGE22_LOCK0": {
+"ecc": false,
+"fields": {
+"KEY_R": 56,
+"KEY_W": 7,
+"NO_KEY_STATE": 64,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4012,
+"seq_length": 0
+},
+"PAGE22_LOCK1": {
+"ecc": false,
+"fields": {
+"LOCK_BL": 48,
+"LOCK_NS": 12,
+"LOCK_S": 3,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4013,
+"seq_length": 0
+},
+"PAGE23_LOCK0": {
+"ecc": false,
+"fields": {
+"KEY_R": 56,
+"KEY_W": 7,
+"NO_KEY_STATE": 64,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4014,
+"seq_length": 0
+},
+"PAGE23_LOCK1": {
+"ecc": false,
+"fields": {
+"LOCK_BL": 48,
+"LOCK_NS": 12,
+"LOCK_S": 3,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4015,
+"seq_length": 0
+},
+"PAGE24_LOCK0": {
+"ecc": false,
+"fields": {
+"KEY_R": 56,
+"KEY_W": 7,
+"NO_KEY_STATE": 64,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4016,
+"seq_length": 0
+},
+"PAGE24_LOCK1": {
+"ecc": false,
+"fields": {
+"LOCK_BL": 48,
+"LOCK_NS": 12,
+"LOCK_S": 3,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4017,
+"seq_length": 0
+},
+"PAGE25_LOCK0": {
+"ecc": false,
+"fields": {
+"KEY_R": 56,
+"KEY_W": 7,
+"NO_KEY_STATE": 64,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4018,
+"seq_length": 0
+},
+"PAGE25_LOCK1": {
+"ecc": false,
+"fields": {
+"LOCK_BL": 48,
+"LOCK_NS": 12,
+"LOCK_S": 3,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4019,
+"seq_length": 0
+},
+"PAGE26_LOCK0": {
+"ecc": false,
+"fields": {
+"KEY_R": 56,
+"KEY_W": 7,
+"NO_KEY_STATE": 64,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4020,
+"seq_length": 0
+},
+"PAGE26_LOCK1": {
+"ecc": false,
+"fields": {
+"LOCK_BL": 48,
+"LOCK_NS": 12,
+"LOCK_S": 3,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4021,
+"seq_length": 0
+},
+"PAGE27_LOCK0": {
+"ecc": false,
+"fields": {
+"KEY_R": 56,
+"KEY_W": 7,
+"NO_KEY_STATE": 64,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4022,
+"seq_length": 0
+},
+"PAGE27_LOCK1": {
+"ecc": false,
+"fields": {
+"LOCK_BL": 48,
+"LOCK_NS": 12,
+"LOCK_S": 3,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4023,
+"seq_length": 0
+},
+"PAGE28_LOCK0": {
+"ecc": false,
+"fields": {
+"KEY_R": 56,
+"KEY_W": 7,
+"NO_KEY_STATE": 64,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4024,
+"seq_length": 0
+},
+"PAGE28_LOCK1": {
+"ecc": false,
+"fields": {
+"LOCK_BL": 48,
+"LOCK_NS": 12,
+"LOCK_S": 3,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4025,
+"seq_length": 0
+},
+"PAGE29_LOCK0": {
+"ecc": false,
+"fields": {
+"KEY_R": 56,
+"KEY_W": 7,
+"NO_KEY_STATE": 64,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4026,
+"seq_length": 0
+},
+"PAGE29_LOCK1": {
+"ecc": false,
+"fields": {
+"LOCK_BL": 48,
+"LOCK_NS": 12,
+"LOCK_S": 3,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4027,
+"seq_length": 0
+},
+"PAGE2_LOCK0": {
+"ecc": false,
+"fields": {
+"KEY_R": 56,
+"KEY_W": 7,
+"NO_KEY_STATE": 64,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 3972,
+"seq_length": 0
+},
+"PAGE2_LOCK1": {
+"ecc": false,
+"fields": {
+"LOCK_BL": 48,
+"LOCK_NS": 12,
+"LOCK_S": 3,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 3973,
+"seq_length": 0
+},
+"PAGE30_LOCK0": {
+"ecc": false,
+"fields": {
+"KEY_R": 56,
+"KEY_W": 7,
+"NO_KEY_STATE": 64,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4028,
+"seq_length": 0
+},
+"PAGE30_LOCK1": {
+"ecc": false,
+"fields": {
+"LOCK_BL": 48,
+"LOCK_NS": 12,
+"LOCK_S": 3,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4029,
+"seq_length": 0
+},
+"PAGE31_LOCK0": {
+"ecc": false,
+"fields": {
+"KEY_R": 56,
+"KEY_W": 7,
+"NO_KEY_STATE": 64,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4030,
+"seq_length": 0
+},
+"PAGE31_LOCK1": {
+"ecc": false,
+"fields": {
+"LOCK_BL": 48,
+"LOCK_NS": 12,
+"LOCK_S": 3,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4031,
+"seq_length": 0
+},
+"PAGE32_LOCK0": {
+"ecc": false,
+"fields": {
+"KEY_R": 56,
+"KEY_W": 7,
+"NO_KEY_STATE": 64,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4032,
+"seq_length": 0
+},
+"PAGE32_LOCK1": {
+"ecc": false,
+"fields": {
+"LOCK_BL": 48,
+"LOCK_NS": 12,
+"LOCK_S": 3,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4033,
+"seq_length": 0
+},
+"PAGE33_LOCK0": {
+"ecc": false,
+"fields": {
+"KEY_R": 56,
+"KEY_W": 7,
+"NO_KEY_STATE": 64,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4034,
+"seq_length": 0
+},
+"PAGE33_LOCK1": {
+"ecc": false,
+"fields": {
+"LOCK_BL": 48,
+"LOCK_NS": 12,
+"LOCK_S": 3,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4035,
+"seq_length": 0
+},
+"PAGE34_LOCK0": {
+"ecc": false,
+"fields": {
+"KEY_R": 56,
+"KEY_W": 7,
+"NO_KEY_STATE": 64,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4036,
+"seq_length": 0
+},
+"PAGE34_LOCK1": {
+"ecc": false,
+"fields": {
+"LOCK_BL": 48,
+"LOCK_NS": 12,
+"LOCK_S": 3,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4037,
+"seq_length": 0
+},
+"PAGE35_LOCK0": {
+"ecc": false,
+"fields": {
+"KEY_R": 56,
+"KEY_W": 7,
+"NO_KEY_STATE": 64,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4038,
+"seq_length": 0
+},
+"PAGE35_LOCK1": {
+"ecc": false,
+"fields": {
+"LOCK_BL": 48,
+"LOCK_NS": 12,
+"LOCK_S": 3,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4039,
+"seq_length": 0
+},
+"PAGE36_LOCK0": {
+"ecc": false,
+"fields": {
+"KEY_R": 56,
+"KEY_W": 7,
+"NO_KEY_STATE": 64,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4040,
+"seq_length": 0
+},
+"PAGE36_LOCK1": {
+"ecc": false,
+"fields": {
+"LOCK_BL": 48,
+"LOCK_NS": 12,
+"LOCK_S": 3,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4041,
+"seq_length": 0
+},
+"PAGE37_LOCK0": {
+"ecc": false,
+"fields": {
+"KEY_R": 56,
+"KEY_W": 7,
+"NO_KEY_STATE": 64,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4042,
+"seq_length": 0
+},
+"PAGE37_LOCK1": {
+"ecc": false,
+"fields": {
+"LOCK_BL": 48,
+"LOCK_NS": 12,
+"LOCK_S": 3,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4043,
+"seq_length": 0
+},
+"PAGE38_LOCK0": {
+"ecc": false,
+"fields": {
+"KEY_R": 56,
+"KEY_W": 7,
+"NO_KEY_STATE": 64,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4044,
+"seq_length": 0
+},
+"PAGE38_LOCK1": {
+"ecc": false,
+"fields": {
+"LOCK_BL": 48,
+"LOCK_NS": 12,
+"LOCK_S": 3,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4045,
+"seq_length": 0
+},
+"PAGE39_LOCK0": {
+"ecc": false,
+"fields": {
+"KEY_R": 56,
+"KEY_W": 7,
+"NO_KEY_STATE": 64,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4046,
+"seq_length": 0
+},
+"PAGE39_LOCK1": {
+"ecc": false,
+"fields": {
+"LOCK_BL": 48,
+"LOCK_NS": 12,
+"LOCK_S": 3,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4047,
+"seq_length": 0
+},
+"PAGE3_LOCK0": {
+"ecc": false,
+"fields": {
+"KEY_R": 56,
+"KEY_W": 7,
+"NO_KEY_STATE": 64,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 3974,
+"seq_length": 0
+},
+"PAGE3_LOCK1": {
+"ecc": false,
+"fields": {
+"LOCK_BL": 48,
+"LOCK_NS": 12,
+"LOCK_S": 3,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 3975,
+"seq_length": 0
+},
+"PAGE40_LOCK0": {
+"ecc": false,
+"fields": {
+"KEY_R": 56,
+"KEY_W": 7,
+"NO_KEY_STATE": 64,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4048,
+"seq_length": 0
+},
+"PAGE40_LOCK1": {
+"ecc": false,
+"fields": {
+"LOCK_BL": 48,
+"LOCK_NS": 12,
+"LOCK_S": 3,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4049,
+"seq_length": 0
+},
+"PAGE41_LOCK0": {
+"ecc": false,
+"fields": {
+"KEY_R": 56,
+"KEY_W": 7,
+"NO_KEY_STATE": 64,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4050,
+"seq_length": 0
+},
+"PAGE41_LOCK1": {
+"ecc": false,
+"fields": {
+"LOCK_BL": 48,
+"LOCK_NS": 12,
+"LOCK_S": 3,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4051,
+"seq_length": 0
+},
+"PAGE42_LOCK0": {
+"ecc": false,
+"fields": {
+"KEY_R": 56,
+"KEY_W": 7,
+"NO_KEY_STATE": 64,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4052,
+"seq_length": 0
+},
+"PAGE42_LOCK1": {
+"ecc": false,
+"fields": {
+"LOCK_BL": 48,
+"LOCK_NS": 12,
+"LOCK_S": 3,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4053,
+"seq_length": 0
+},
+"PAGE43_LOCK0": {
+"ecc": false,
+"fields": {
+"KEY_R": 56,
+"KEY_W": 7,
+"NO_KEY_STATE": 64,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4054,
+"seq_length": 0
+},
+"PAGE43_LOCK1": {
+"ecc": false,
+"fields": {
+"LOCK_BL": 48,
+"LOCK_NS": 12,
+"LOCK_S": 3,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4055,
+"seq_length": 0
+},
+"PAGE44_LOCK0": {
+"ecc": false,
+"fields": {
+"KEY_R": 56,
+"KEY_W": 7,
+"NO_KEY_STATE": 64,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4056,
+"seq_length": 0
+},
+"PAGE44_LOCK1": {
+"ecc": false,
+"fields": {
+"LOCK_BL": 48,
+"LOCK_NS": 12,
+"LOCK_S": 3,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4057,
+"seq_length": 0
+},
+"PAGE45_LOCK0": {
+"ecc": false,
+"fields": {
+"KEY_R": 56,
+"KEY_W": 7,
+"NO_KEY_STATE": 64,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4058,
+"seq_length": 0
+},
+"PAGE45_LOCK1": {
+"ecc": false,
+"fields": {
+"LOCK_BL": 48,
+"LOCK_NS": 12,
+"LOCK_S": 3,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4059,
+"seq_length": 0
+},
+"PAGE46_LOCK0": {
+"ecc": false,
+"fields": {
+"KEY_R": 56,
+"KEY_W": 7,
+"NO_KEY_STATE": 64,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4060,
+"seq_length": 0
+},
+"PAGE46_LOCK1": {
+"ecc": false,
+"fields": {
+"LOCK_BL": 48,
+"LOCK_NS": 12,
+"LOCK_S": 3,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4061,
+"seq_length": 0
+},
+"PAGE47_LOCK0": {
+"ecc": false,
+"fields": {
+"KEY_R": 56,
+"KEY_W": 7,
+"NO_KEY_STATE": 64,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4062,
+"seq_length": 0
+},
+"PAGE47_LOCK1": {
+"ecc": false,
+"fields": {
+"LOCK_BL": 48,
+"LOCK_NS": 12,
+"LOCK_S": 3,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4063,
+"seq_length": 0
+},
+"PAGE48_LOCK0": {
+"ecc": false,
+"fields": {
+"KEY_R": 56,
+"KEY_W": 7,
+"NO_KEY_STATE": 64,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4064,
+"seq_length": 0
+},
+"PAGE48_LOCK1": {
+"ecc": false,
+"fields": {
+"LOCK_BL": 48,
+"LOCK_NS": 12,
+"LOCK_S": 3,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4065,
+"seq_length": 0
+},
+"PAGE49_LOCK0": {
+"ecc": false,
+"fields": {
+"KEY_R": 56,
+"KEY_W": 7,
+"NO_KEY_STATE": 64,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4066,
+"seq_length": 0
+},
+"PAGE49_LOCK1": {
+"ecc": false,
+"fields": {
+"LOCK_BL": 48,
+"LOCK_NS": 12,
+"LOCK_S": 3,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4067,
+"seq_length": 0
+},
+"PAGE4_LOCK0": {
+"ecc": false,
+"fields": {
+"KEY_R": 56,
+"KEY_W": 7,
+"NO_KEY_STATE": 64,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 3976,
+"seq_length": 0
+},
+"PAGE4_LOCK1": {
+"ecc": false,
+"fields": {
+"LOCK_BL": 48,
+"LOCK_NS": 12,
+"LOCK_S": 3,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 3977,
+"seq_length": 0
+},
+"PAGE50_LOCK0": {
+"ecc": false,
+"fields": {
+"KEY_R": 56,
+"KEY_W": 7,
+"NO_KEY_STATE": 64,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4068,
+"seq_length": 0
+},
+"PAGE50_LOCK1": {
+"ecc": false,
+"fields": {
+"LOCK_BL": 48,
+"LOCK_NS": 12,
+"LOCK_S": 3,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4069,
+"seq_length": 0
+},
+"PAGE51_LOCK0": {
+"ecc": false,
+"fields": {
+"KEY_R": 56,
+"KEY_W": 7,
+"NO_KEY_STATE": 64,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4070,
+"seq_length": 0
+},
+"PAGE51_LOCK1": {
+"ecc": false,
+"fields": {
+"LOCK_BL": 48,
+"LOCK_NS": 12,
+"LOCK_S": 3,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4071,
+"seq_length": 0
+},
+"PAGE52_LOCK0": {
+"ecc": false,
+"fields": {
+"KEY_R": 56,
+"KEY_W": 7,
+"NO_KEY_STATE": 64,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4072,
+"seq_length": 0
+},
+"PAGE52_LOCK1": {
+"ecc": false,
+"fields": {
+"LOCK_BL": 48,
+"LOCK_NS": 12,
+"LOCK_S": 3,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4073,
+"seq_length": 0
+},
+"PAGE53_LOCK0": {
+"ecc": false,
+"fields": {
+"KEY_R": 56,
+"KEY_W": 7,
+"NO_KEY_STATE": 64,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4074,
+"seq_length": 0
+},
+"PAGE53_LOCK1": {
+"ecc": false,
+"fields": {
+"LOCK_BL": 48,
+"LOCK_NS": 12,
+"LOCK_S": 3,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4075,
+"seq_length": 0
+},
+"PAGE54_LOCK0": {
+"ecc": false,
+"fields": {
+"KEY_R": 56,
+"KEY_W": 7,
+"NO_KEY_STATE": 64,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4076,
+"seq_length": 0
+},
+"PAGE54_LOCK1": {
+"ecc": false,
+"fields": {
+"LOCK_BL": 48,
+"LOCK_NS": 12,
+"LOCK_S": 3,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4077,
+"seq_length": 0
+},
+"PAGE55_LOCK0": {
+"ecc": false,
+"fields": {
+"KEY_R": 56,
+"KEY_W": 7,
+"NO_KEY_STATE": 64,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4078,
+"seq_length": 0
+},
+"PAGE55_LOCK1": {
+"ecc": false,
+"fields": {
+"LOCK_BL": 48,
+"LOCK_NS": 12,
+"LOCK_S": 3,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4079,
+"seq_length": 0
+},
+"PAGE56_LOCK0": {
+"ecc": false,
+"fields": {
+"KEY_R": 56,
+"KEY_W": 7,
+"NO_KEY_STATE": 64,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4080,
+"seq_length": 0
+},
+"PAGE56_LOCK1": {
+"ecc": false,
+"fields": {
+"LOCK_BL": 48,
+"LOCK_NS": 12,
+"LOCK_S": 3,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4081,
+"seq_length": 0
+},
+"PAGE57_LOCK0": {
+"ecc": false,
+"fields": {
+"KEY_R": 56,
+"KEY_W": 7,
+"NO_KEY_STATE": 64,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4082,
+"seq_length": 0
+},
+"PAGE57_LOCK1": {
+"ecc": false,
+"fields": {
+"LOCK_BL": 48,
+"LOCK_NS": 12,
+"LOCK_S": 3,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4083,
+"seq_length": 0
+},
+"PAGE58_LOCK0": {
+"ecc": false,
+"fields": {
+"KEY_R": 56,
+"KEY_W": 7,
+"NO_KEY_STATE": 64,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4084,
+"seq_length": 0
+},
+"PAGE58_LOCK1": {
+"ecc": false,
+"fields": {
+"LOCK_BL": 48,
+"LOCK_NS": 12,
+"LOCK_S": 3,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4085,
+"seq_length": 0
+},
+"PAGE59_LOCK0": {
+"ecc": false,
+"fields": {
+"KEY_R": 56,
+"KEY_W": 7,
+"NO_KEY_STATE": 64,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4086,
+"seq_length": 0
+},
+"PAGE59_LOCK1": {
+"ecc": false,
+"fields": {
+"LOCK_BL": 48,
+"LOCK_NS": 12,
+"LOCK_S": 3,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4087,
+"seq_length": 0
+},
+"PAGE5_LOCK0": {
+"ecc": false,
+"fields": {
+"KEY_R": 56,
+"KEY_W": 7,
+"NO_KEY_STATE": 64,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 3978,
+"seq_length": 0
+},
+"PAGE5_LOCK1": {
+"ecc": false,
+"fields": {
+"LOCK_BL": 48,
+"LOCK_NS": 12,
+"LOCK_S": 3,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 3979,
+"seq_length": 0
+},
+"PAGE60_LOCK0": {
+"ecc": false,
+"fields": {
+"KEY_R": 56,
+"KEY_W": 7,
+"NO_KEY_STATE": 64,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4088,
+"seq_length": 0
+},
+"PAGE60_LOCK1": {
+"ecc": false,
+"fields": {
+"LOCK_BL": 48,
+"LOCK_NS": 12,
+"LOCK_S": 3,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4089,
+"seq_length": 0
+},
+"PAGE61_LOCK0": {
+"ecc": false,
+"fields": {
+"KEY_R": 56,
+"KEY_W": 7,
+"NO_KEY_STATE": 64,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4090,
+"seq_length": 0
+},
+"PAGE61_LOCK1": {
+"ecc": false,
+"fields": {
+"LOCK_BL": 48,
+"LOCK_NS": 12,
+"LOCK_S": 3,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4091,
+"seq_length": 0
+},
+"PAGE62_LOCK0": {
+"ecc": false,
+"fields": {
+"KEY_R": 56,
+"KEY_W": 7,
+"NO_KEY_STATE": 64,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4092,
+"seq_length": 0
+},
+"PAGE62_LOCK1": {
+"ecc": false,
+"fields": {
+"LOCK_BL": 48,
+"LOCK_NS": 12,
+"LOCK_S": 3,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4093,
+"seq_length": 0
+},
+"PAGE63_LOCK0": {
+"ecc": false,
+"fields": {
+"KEY_R": 56,
+"KEY_W": 7,
+"NO_KEY_STATE": 64,
+"R1": 65280,
+"R2": 16711680,
+"RMA": 128
+},
+"redundancy": 1,
+"row": 4094,
+"seq_length": 0
+},
+"PAGE63_LOCK1": {
+"ecc": false,
+"fields": {
+"LOCK_BL": 48,
+"LOCK_NS": 12,
+"LOCK_S": 3,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 4095,
+"seq_length": 0
+},
+"PAGE6_LOCK0": {
+"ecc": false,
+"fields": {
+"KEY_R": 56,
+"KEY_W": 7,
+"NO_KEY_STATE": 64,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 3980,
+"seq_length": 0
+},
+"PAGE6_LOCK1": {
+"ecc": false,
+"fields": {
+"LOCK_BL": 48,
+"LOCK_NS": 12,
+"LOCK_S": 3,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 3981,
+"seq_length": 0
+},
+"PAGE7_LOCK0": {
+"ecc": false,
+"fields": {
+"KEY_R": 56,
+"KEY_W": 7,
+"NO_KEY_STATE": 64,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 3982,
+"seq_length": 0
+},
+"PAGE7_LOCK1": {
+"ecc": false,
+"fields": {
+"LOCK_BL": 48,
+"LOCK_NS": 12,
+"LOCK_S": 3,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 3983,
+"seq_length": 0
+},
+"PAGE8_LOCK0": {
+"ecc": false,
+"fields": {
+"KEY_R": 56,
+"KEY_W": 7,
+"NO_KEY_STATE": 64,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 3984,
+"seq_length": 0
+},
+"PAGE8_LOCK1": {
+"ecc": false,
+"fields": {
+"LOCK_BL": 48,
+"LOCK_NS": 12,
+"LOCK_S": 3,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 3985,
+"seq_length": 0
+},
+"PAGE9_LOCK0": {
+"ecc": false,
+"fields": {
+"KEY_R": 56,
+"KEY_W": 7,
+"NO_KEY_STATE": 64,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 3986,
+"seq_length": 0
+},
+"PAGE9_LOCK1": {
+"ecc": false,
+"fields": {
+"LOCK_BL": 48,
+"LOCK_NS": 12,
+"LOCK_S": 3,
+"R1": 65280,
+"R2": 16711680
+},
+"redundancy": 1,
+"row": 3987,
+"seq_length": 0
+},
+"RANDID0": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 4,
+"seq_length": 8
+},
+"RANDID1": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 5,
+"seq_length": 8
+},
+"RANDID2": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 6,
+"seq_length": 8
+},
+"RANDID3": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 7,
+"seq_length": 8
+},
+"RANDID4": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 8,
+"seq_length": 8
+},
+"RANDID5": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 9,
+"seq_length": 8
+},
+"RANDID6": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 10,
+"seq_length": 8
+},
+"RANDID7": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 11,
+"seq_length": 8
+},
+"ROSC_CALIB": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 16,
+"seq_length": 0
+},
+"USB_BOOT_FLAGS": {
+"ecc": false,
+"fields": {
+"DP_DM_SWAP": 8388608,
+"WHITE_LABEL_ADDR_VALID": 4194304,
+"WL_INDEX_HTM_REDIRECT_NAME_STRDEF_VALID": 8192,
+"WL_INDEX_HTM_REDIRECT_URL_STRDEF_VALID": 4096,
+"WL_INFO_UF2_TXT_BOARD_ID_STRDEF_VALID": 32768,
+"WL_INFO_UF2_TXT_MODEL_STRDEF_VALID": 16384,
+"WL_SCSI_INQUIRY_PRODUCT_STRDEF_VALID": 1024,
+"WL_SCSI_INQUIRY_VENDOR_STRDEF_VALID": 512,
+"WL_SCSI_INQUIRY_VERSION_STRDEF_VALID": 2048,
+"WL_USB_CONFIG_ATTRIBUTES_MAX_POWER_VALUES_VALID": 128,
+"WL_USB_DEVICE_LANG_ID_VALUE_VALID": 8,
+"WL_USB_DEVICE_MANUFACTURER_STRDEF_VALID": 16,
+"WL_USB_DEVICE_PID_VALUE_VALID": 2,
+"WL_USB_DEVICE_PRODUCT_STRDEF_VALID": 32,
+"WL_USB_DEVICE_SERIAL_NUMBER_STRDEF_VALID": 64,
+"WL_USB_DEVICE_SERIAL_NUMBER_VALUE_VALID": 4,
+"WL_USB_DEVICE_VID_VALUE_VALID": 1,
+"WL_VOLUME_LABEL_STRDEF_VALID": 256
+},
+"redundancy": 3,
+"row": 89,
+"seq_length": 0
+},
+"USB_WHITE_LABEL_ADDR": {
+"ecc": true,
+"fields": {},
+"redundancy": 1,
+"row": 92,
+"seq_length": 0
+}
+}
