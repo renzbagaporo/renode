@@ -18,6 +18,15 @@ $quantum?="0.0001"
 # Both are defined before any machine is selected, so every machine sees them.
 $wire_latency_us?=300
 $spi_input_delay_ns?=600000
+# Jumpers between DUT pins are made on the bench by the harness relaying
+# between two of its pins over these wires. Where the wire latency cannot
+# carry a relay (the open-drain I2C pair at 100 kHz), an emulator-only
+# stand-in is a zero-latency wire inside the DUT machine, created after
+# this script, e.g. for GP4-GP6:
+#   emulation CreateDigitalWire "jumper_gp4_gp6" false
+#   mach set "pico2"
+#   jumper_gp4_gp6 Connect gpio 4
+#   jumper_gp4_gp6 Connect gpio 6
 # I2C0 on GP4/GP5 is a byte-level bus between the DUT controller and the
 # harness target (metalclaw_fixture_i2c0_bus.resc), or two plain pin-level
 # wires (metalclaw_fixture_i2c0_wires.resc) for sessions that use the pins

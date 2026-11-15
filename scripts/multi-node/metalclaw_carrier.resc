@@ -16,6 +16,15 @@ $quantum?="0.0001"
 # quanta. The DUT's SPI input delay is the round trip in nanoseconds.
 $wire_latency_us?=300
 $spi_input_delay_ns?=600000
+# Jumpers between DUT pins are made on the bench by the harness relaying
+# between two of its pins over these wires. Where the wire latency cannot
+# carry a relay (the open-drain I2C pair at 100 kHz), an emulator-only
+# stand-in is a zero-latency wire inside the DUT machine, created after
+# this script, e.g. for GP4-GP6:
+#   emulation CreateDigitalWire "jumper_gp4_gp6" false
+#   mach set "pico"
+#   jumper_gp4_gp6 Connect gpio 4
+#   jumper_gp4_gp6 Connect gpio 6
 # I2C0 between DUT GP4/GP5 and harness GPIO12/13 is a byte-level bus
 # (metalclaw_carrier_i2c0_bus.resc), or two plain pin-level wires
 # (metalclaw_carrier_i2c0_wires.resc) for sessions that use the pins as GPIO,
@@ -137,6 +146,26 @@ gp21 Connect gpio 46
 gp22 Connect gpio 33
 
 include $i2c0_wiring
+
+# Harness GPIO42-44 reach Pico GP26-28 (ADC0-2) through identical two-stage
+# RC filters: 330 Ohm, 10 nF to GND, 2.2 kOhm, 1.5 nF to GND at the Pico pin
+# (R30/C7/R26/C6, R31/C8/R24/C5, R32/C9/R23/C4), with no pull-ups. The
+# harness makes analog levels with PWM; each ADC conversion reads the filter
+# output, ripple included. The wires end at the filters, not the Pico pads.
+mach set "pico"
+machine LoadPlatformDescriptionFromString "adc_filter0: Analog.RCLowPassFilter @ adc 0 { r1Ohms: 330; c1Nanofarads: 10; r2Ohms: 2200; c2Nanofarads: 1.5 }"
+machine LoadPlatformDescriptionFromString "adc_filter1: Analog.RCLowPassFilter @ adc 1 { r1Ohms: 330; c1Nanofarads: 10; r2Ohms: 2200; c2Nanofarads: 1.5 }"
+machine LoadPlatformDescriptionFromString "adc_filter2: Analog.RCLowPassFilter @ adc 2 { r1Ohms: 330; c1Nanofarads: 10; r2Ohms: 2200; c2Nanofarads: 1.5 }"
+emulation CreateDelayedDigitalWire "gp26" false $wire_latency_us
+emulation CreateDelayedDigitalWire "gp27" false $wire_latency_us
+emulation CreateDelayedDigitalWire "gp28" false $wire_latency_us
+gp26 Connect sysbus.adc.adc_filter0 0
+gp27 Connect sysbus.adc.adc_filter1 0
+gp28 Connect sysbus.adc.adc_filter2 0
+mach set "carrier"
+gp26 Connect gpio 42
+gp27 Connect gpio 43
+gp28 Connect gpio 44
 
 emulation SetGlobalQuantum $quantum
 emulation SetGlobalAdvanceImmediately true
