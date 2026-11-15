@@ -18,6 +18,11 @@ $quantum?="0.0001"
 # Both are defined before any machine is selected, so every machine sees them.
 $wire_latency_us?=300
 $spi_input_delay_ns?=600000
+# I2C0 on GP4/GP5 is a byte-level bus between the DUT controller and the
+# harness target (metalclaw_fixture_i2c0_bus.resc), or two plain pin-level
+# wires (metalclaw_fixture_i2c0_wires.resc) for sessions that use the pins
+# as GPIO, PIO or jumpers. Sessions choose one; they cannot share the pins.
+$i2c0_wiring?=@scripts/multi-node/metalclaw_fixture_i2c0_bus.resc
 
 mach create "pico1"
 machine LoadPlatformDescription @platforms/boards/raspberry_pi_pico.repl
@@ -63,6 +68,31 @@ gp8 Connect gpio 8
 gp9 Connect gpio 9
 gp6 Connect gpio 6
 
+# GP11-GP15, GP26 and GP27 run 1:1 between the boards.
+emulation CreateDelayedDigitalWire "gp11" false $wire_latency_us
+emulation CreateDelayedDigitalWire "gp12" false $wire_latency_us
+emulation CreateDelayedDigitalWire "gp13" false $wire_latency_us
+emulation CreateDelayedDigitalWire "gp14" false $wire_latency_us
+emulation CreateDelayedDigitalWire "gp15" false $wire_latency_us
+emulation CreateDelayedDigitalWire "gp26" false $wire_latency_us
+emulation CreateDelayedDigitalWire "gp27" false $wire_latency_us
+mach set "pico2"
+gp11 Connect gpio 11
+gp12 Connect gpio 12
+gp13 Connect gpio 13
+gp14 Connect gpio 14
+gp15 Connect gpio 15
+gp26 Connect gpio 26
+gp27 Connect gpio 27
+mach set "pico1"
+gp11 Connect gpio 11
+gp12 Connect gpio 12
+gp13 Connect gpio 13
+gp14 Connect gpio 14
+gp15 Connect gpio 15
+gp26 Connect gpio 26
+gp27 Connect gpio 27
+
 # SPI0 and the radio lines: SCK 18, MOSI 19 and the DUT's GPIO chip selects
 # 17, 21 and 22 run to the harness; MISO 16, BUSY 7 or 10 and DIO1 20 return.
 # Fixture 1 connects GP6 to GP22 straight through, so both BUSY pins are wired.
@@ -98,14 +128,7 @@ gp7 Connect gpio 7
 gp10 Connect gpio 10
 gp20 Connect gpio 20
 
-# I2C0 on SDA 4 and SCL 5: the DUT controller and the harness target share
-# a byte-level bus. Each answer reaches the DUT one round trip after its
-# request, and the DUT holds the clock until it does.
-emulation CreateDelayedI2CBus "i2c_gp4_gp5" $wire_latency_us
-mach set "pico2"
-i2c_gp4_gp5 Connect i2c0 4 5
-mach set "pico1"
-i2c_gp4_gp5 Connect i2c0 4 5
+include $i2c0_wiring
 
 emulation SetGlobalQuantum $quantum
 emulation SetGlobalAdvanceImmediately true

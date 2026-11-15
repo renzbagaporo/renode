@@ -1,0 +1,12 @@
+# Included by metalclaw_fixture.resc when $i2c0_wiring names this file.
+# GP4 and GP5 run 1:1 between the boards as plain pin-level wires. The
+# fixture has no pull-ups: an open-drain line takes its high level from the
+# pad pull-ups the firmware enables.
+emulation CreateDelayedDigitalWire "gp4" false $wire_latency_us
+emulation CreateDelayedDigitalWire "gp5" false $wire_latency_us
+mach set "pico2"
+gp4 Connect gpio 4
+gp5 Connect gpio 5
+mach set "pico1"
+gp4 Connect gpio 4
+gp5 Connect gpio 5

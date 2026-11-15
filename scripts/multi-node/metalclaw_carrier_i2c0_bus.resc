@@ -1,0 +1,9 @@
+# Included by metalclaw_carrier.resc (the default $i2c0_wiring).
+# I2C0: the DUT controller on GP4/GP5 and the harness target on GPIO12/13
+# share a byte-level bus. Each answer reaches the DUT one round trip after its
+# request, and the DUT holds the clock until it does.
+emulation CreateDelayedI2CBus "i2c_gp4_gp5" $wire_latency_us
+mach set "pico"
+i2c_gp4_gp5 Connect i2c0 4 5
+mach set "carrier"
+i2c_gp4_gp5 Connect i2c0 12 13

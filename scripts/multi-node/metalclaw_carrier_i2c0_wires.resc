@@ -1,0 +1,11 @@
+# Included by metalclaw_carrier.resc when $i2c0_wiring names this file.
+# DUT GP4/GP5 and harness GPIO12/13 as plain pin-level wires, with the
+# 5.1 kOhm pull-ups of the other GP nets.
+emulation CreateDelayedDigitalWire "gp4" true $wire_latency_us
+emulation CreateDelayedDigitalWire "gp5" true $wire_latency_us
+mach set "pico"
+gp4 Connect gpio 4
+gp5 Connect gpio 5
+mach set "carrier"
+gp4 Connect gpio 12
+gp5 Connect gpio 13

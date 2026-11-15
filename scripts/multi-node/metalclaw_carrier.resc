@@ -16,6 +16,11 @@ $quantum?="0.0001"
 # quanta. The DUT's SPI input delay is the round trip in nanoseconds.
 $wire_latency_us?=300
 $spi_input_delay_ns?=600000
+# I2C0 between DUT GP4/GP5 and harness GPIO12/13 is a byte-level bus
+# (metalclaw_carrier_i2c0_bus.resc), or two plain pin-level wires
+# (metalclaw_carrier_i2c0_wires.resc) for sessions that use the pins as GPIO,
+# PIO or jumpers. Sessions choose one; they cannot share the pins.
+$i2c0_wiring?=@scripts/multi-node/metalclaw_carrier_i2c0_bus.resc
 # The harness's OTP chip ID; its USB serial is this value in hex.
 $harness_chip_id?=0x00000000C0FFEE01
 
@@ -45,7 +50,7 @@ run Connect gpio 9
 
 # Every Pico GP0-22 net has a 5.1 kOhm pull-up to the Pico's 3V3_OUT, so an
 # undriven net reads high and any driver wins. Each net reaches one or two
-# carrier GPIOs. GP4 and GP5 are the I2C0 bus, connected below at byte level.
+# carrier GPIOs. GP4 and GP5 are connected below as $i2c0_wiring selects.
 emulation CreateDelayedDigitalWire "gp0" true $wire_latency_us
 emulation CreateDelayedDigitalWire "gp1" true $wire_latency_us
 emulation CreateDelayedDigitalWire "gp2" true $wire_latency_us
@@ -131,14 +136,7 @@ gp21 Connect gpio 41
 gp21 Connect gpio 46
 gp22 Connect gpio 33
 
-# I2C0: the DUT controller on GP4/GP5 and the harness target on GPIO12/13
-# share a byte-level bus. Each answer reaches the DUT one round trip after its
-# request, and the DUT holds the clock until it does.
-emulation CreateDelayedI2CBus "i2c_gp4_gp5" $wire_latency_us
-mach set "pico"
-i2c_gp4_gp5 Connect i2c0 4 5
-mach set "carrier"
-i2c_gp4_gp5 Connect i2c0 12 13
+include $i2c0_wiring
 
 emulation SetGlobalQuantum $quantum
 emulation SetGlobalAdvanceImmediately true
