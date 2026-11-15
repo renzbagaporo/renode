@@ -171,3 +171,8 @@ emulation SetGlobalQuantum $quantum
 emulation SetGlobalAdvanceImmediately true
 emulation CreateUSBIPServer $usbip_port "carrier"
 host.carrier Register usb 0 Full
+# The DUT's own USB device is USB/IP device 1 (bus ID 1-1) on the same
+# server, as its USB connector reaches the rig host on the bench.
+mach set "pico"
+host.carrier Register usb 1 Full
+mach set "carrier"
