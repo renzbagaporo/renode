@@ -9,6 +9,10 @@ flash: SPI.WinbondW25QFlash @ ssi 0
 xip: MemoryControllers.RP2040_XIP @ { sysbus 0x14000000; psm 12 }
     ssi: ssi
     flash: flash
+    StreamDMA -> dma@37
+
+xipAux: MemoryControllers.RP2040_XIPAux @ sysbus 0x50400000
+    xip: xip
 
 xipMemory: Memory.RP2040_XIPMemory @ { sysbus 0x10000000; sysbus 0x11000000; sysbus 0x12000000; sysbus 0x13000000 }
     flash: flash

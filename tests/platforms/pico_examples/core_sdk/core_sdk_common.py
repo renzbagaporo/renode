@@ -84,6 +84,18 @@ def check(condition, message):
         raise AssertionError(message)
 
 
+def ram_image(elf, board):
+    """True for an ELF whose file-backed PT_LOAD segments all lie outside the
+    board NOR, such as a no_flash or copy-to-RAM-only build."""
+    data = elf.read_bytes()
+    size = 0x200000 if board == 'pico' else 0x400000
+    phoff = struct.unpack_from('<I', data, 28)[0]
+    phsize, phcount = struct.unpack_from('<HH', data, 42)
+    loads = [struct.unpack_from('<8I', data, phoff + i * phsize) for i in range(phcount)]
+    loads = [l for l in loads if l[0] == 1 and l[4] != 0]
+    return bool(loads) and all(not 0x10000000 <= l[3] < 0x10000000 + size for l in loads)
+
+
 def extract_flash(elf, board):
     data = elf.read_bytes()
     if len(data) < 52 or data[:6] != b'\x7fELF\x01\x01':
@@ -303,14 +315,23 @@ def boot(runtime, args, record):
     """Load ELF NOR segments, boot the real mask ROM, and install observations.
 
     args supplies board, repository, elf, rom, scratch and output Path objects.
-    No ELF bytes are written to SRAM and no architectural register is patched.
+    For a flash image no ELF bytes are written to SRAM and no architectural
+    register is patched. An image that has no NOR segments (a no_flash build)
+    is loaded the way a debugger does on hardware: after reset the erased NOR
+    stays erased, the ELF's segments are written to SRAM, and core 0 starts at
+    the ELF entry; core 1 takes its own reset path into the ROM.
     Return the original ELF symbols for additional observer-only address hooks.
     """
     args.scratch.mkdir(parents=True, exist_ok=True)
-    payload, segments = extract_flash(args.elf, args.board)
+    ram = ram_image(args.elf, args.board)
+    if ram:
+        payload, segments = b'\xff' * 0x1000, []
+        record['loader'] = 'debugger_ram_load'
+    else:
+        payload, segments = extract_flash(args.elf, args.board)
+        record['loader'] = 'official_rom_coldboot_from_nor'
     flash = args.scratch / 'initial_nor_payload.bin'
     flash.write_bytes(payload)
-    record['loader'] = 'official_rom_coldboot_from_nor'
     record['seed'] = 0
     record['elf_nor_segments'] = segments
     record.setdefault('inputs', {})
@@ -381,6 +402,18 @@ def boot(runtime, args, record):
     record['actual_quantum_seconds'] = actual_quantum
     check(abs(actual_quantum - quantum) < 1e-12, 'Actual master scheduling quantum differs from requested profile')
     runtime.run('machine Reset')
+    if ram:
+        # As probe-rs runs a RAM image: write the segments, point VTOR and SP
+        # at the image's vector table, and start at the ELF entry.
+        runtime.run(f'sysbus LoadELF @{args.elf}')
+        vectors = symbols(args.elf).get('__vectors')
+        check(vectors is not None, 'RAM image without a __vectors table')
+        entry = struct.unpack_from('<I', args.elf.read_bytes(), 24)[0]
+        stack = int(runtime.run(f'sysbus ReadDoubleWord 0x{vectors:x}'), 0)
+        runtime.run(f'cpu0 VectorTableOffset 0x{vectors:x}')
+        runtime.run(f'cpu0 SP 0x{stack:x}')
+        runtime.run(f'cpu0 PC 0x{entry & ~1:x}')
+        record['ram_load'] = dict(entry=f'0x{entry:x}', vectors=f'0x{vectors:x}', stack=f'0x{stack:x}')
     runtime.run('observer ObserveGPIO gpio 25')
     runtime.run('observer ObserveUART uart0')
     for cpu in ['cpu0', 'cpu1']:

@@ -130,6 +130,8 @@ usb: USB.RP2_USB @ { sysbus 0x50110000; resets 24 }
 
 ssi: SPI.RP2040_SSI @ { sysbus 0x18000000; psm 12 }
     IRQ -> nvic0@6 | nvic1@6
+    TxDMA -> dma@38
+    RxDMA -> dma@39
 
 qspi: GPIOPort.RP2040_QSPI @ { sysbus 0x40018000; resets 6 }
     sio: sio
