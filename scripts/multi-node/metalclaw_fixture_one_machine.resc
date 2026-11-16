@@ -1,0 +1,102 @@
+# One-machine Metalclaw fixture 1: the harness Pico (h_, RP2040) and the
+# DUT Pico 2 (d_, RP2350) are two chips in machine "bench"
+# (metalclaw_fixture_one_machine.repl, made by gen_rp2_chip_repl.py),
+# joined by zero-latency wires.
+# Variables as metalclaw_fixture.resc takes them; $dut_rom is the RP2350 A2
+# combined boot ROM. Pico 2 flash starts erased; the rig loads the DUT image
+# with d_xipMemory LoadBinary or programs it through the SWD probe.
+$usbip_port?=3240
+$dut_usbip_port?=3250
+$quantum?="0.0001"
+$dual_platform?=@platforms/boards/metalclaw_fixture_one_machine.repl
+mach create "bench"
+machine LoadPlatformDescription $dual_platform
+sysbus LoadBinary $harness_rom 0 sysbus.h_cluster.h_cpu0
+h_xipMemory LoadBinary $harness_flash
+d_rom LoadBinary $dut_rom
+# SWCLK, SWDIO and active-low RUN use harness GPIOs 2, 3 and 28.
+emulation CreateDigitalWire "swclk" false
+emulation CreateDigitalWire "swdio" true
+emulation CreateDigitalWire "run" true
+swclk Connect d_debug_port 0
+swdio Connect d_debug_port 1
+run Connect d_debug_port 2
+swclk Connect h_gpio 2
+swdio Connect h_gpio 3
+run Connect h_gpio 28
+# UART0 is crossed; every other line connects equal GP numbers.
+emulation CreateDigitalWire "uart0_dut_tx" false
+emulation CreateDigitalWire "uart0_harness_tx" false
+uart0_dut_tx Connect d_gpio 0
+uart0_harness_tx Connect d_gpio 1
+uart0_dut_tx Connect h_gpio 1
+uart0_harness_tx Connect h_gpio 0
+emulation CreateDigitalWire "gp4" false
+gp4 Connect d_gpio 4
+gp4 Connect h_gpio 4
+emulation CreateDigitalWire "gp5" false
+gp5 Connect d_gpio 5
+gp5 Connect h_gpio 5
+emulation CreateDigitalWire "gp6" false
+gp6 Connect d_gpio 6
+gp6 Connect h_gpio 6
+emulation CreateDigitalWire "gp7" false
+gp7 Connect d_gpio 7
+gp7 Connect h_gpio 7
+emulation CreateDigitalWire "gp8" false
+gp8 Connect d_gpio 8
+gp8 Connect h_gpio 8
+emulation CreateDigitalWire "gp9" false
+gp9 Connect d_gpio 9
+gp9 Connect h_gpio 9
+emulation CreateDigitalWire "gp10" false
+gp10 Connect d_gpio 10
+gp10 Connect h_gpio 10
+emulation CreateDigitalWire "gp11" false
+gp11 Connect d_gpio 11
+gp11 Connect h_gpio 11
+emulation CreateDigitalWire "gp12" false
+gp12 Connect d_gpio 12
+gp12 Connect h_gpio 12
+emulation CreateDigitalWire "gp13" false
+gp13 Connect d_gpio 13
+gp13 Connect h_gpio 13
+emulation CreateDigitalWire "gp14" false
+gp14 Connect d_gpio 14
+gp14 Connect h_gpio 14
+emulation CreateDigitalWire "gp15" false
+gp15 Connect d_gpio 15
+gp15 Connect h_gpio 15
+emulation CreateDigitalWire "gp16" false
+gp16 Connect d_gpio 16
+gp16 Connect h_gpio 16
+emulation CreateDigitalWire "gp17" false
+gp17 Connect d_gpio 17
+gp17 Connect h_gpio 17
+emulation CreateDigitalWire "gp18" false
+gp18 Connect d_gpio 18
+gp18 Connect h_gpio 18
+emulation CreateDigitalWire "gp19" false
+gp19 Connect d_gpio 19
+gp19 Connect h_gpio 19
+emulation CreateDigitalWire "gp20" false
+gp20 Connect d_gpio 20
+gp20 Connect h_gpio 20
+emulation CreateDigitalWire "gp21" false
+gp21 Connect d_gpio 21
+gp21 Connect h_gpio 21
+emulation CreateDigitalWire "gp22" false
+gp22 Connect d_gpio 22
+gp22 Connect h_gpio 22
+emulation CreateDigitalWire "gp26" false
+gp26 Connect d_gpio 26
+gp26 Connect h_gpio 26
+emulation CreateDigitalWire "gp27" false
+gp27 Connect d_gpio 27
+gp27 Connect h_gpio 27
+emulation SetGlobalQuantum $quantum
+emulation SetGlobalAdvanceImmediately true
+emulation CreateUSBIPServer $usbip_port "pico1"
+host.pico1 Register h_usb 0 Full
+emulation CreateUSBIPServer $dut_usbip_port "dut"
+host.dut Register d_usb 1 Full
