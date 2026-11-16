@@ -362,6 +362,7 @@ i2c1: I2C.RP2_I2C @ { sysbus 0x40098000; resets 5 }
     RxDMA -> dma@47
 
 adc: Analog.RP2_ADC @ { sysbus 0x400a0000; resets 0 }
+    gpio: gpio
     rp2350: true
     IRQ -> nvic0@35 | riscv0@35 | nvic1@35 | riscv1@35
     DREQ -> dma@48
