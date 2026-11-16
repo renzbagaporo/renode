@@ -7,7 +7,9 @@
 # d_xipMemory LoadBinary.
 $usbip_port?=3240
 $dut_usbip_port?=3250
-$quantum?="0.0001"
+# Both chips share one machine clock: a 10 us quantum keeps a busy core from
+# running far ahead of a device another chip feeds.
+$quantum?="0.00001"
 $dual_platform?=@platforms/boards/metalclaw_fixture_one_machine_pico.repl
 mach create "bench"
 machine LoadPlatformDescription $dual_platform

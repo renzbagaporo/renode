@@ -17,7 +17,7 @@
 $usbip_port?=3240
 # The DUT's own USB/IP server.
 $dut_usbip_port?=3250
-$quantum?="0.0001"
+$quantum?="0.00001"
 $dual_platform?=@platforms/boards/metalclaw_fixture_one_machine.repl
 
 mach create "bench"

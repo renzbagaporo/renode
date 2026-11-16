@@ -38,8 +38,14 @@ def convert(lines):
             continue
         if current is None:
             if re.match(r'\$(wire_latency_us|spi_input_delay_ns|i2c0_wiring)\?=', s): continue
+            if re.match(r'\$quantum\?=', s):
+                # Both chips' cores share one machine's clock: a 10 us quantum,
+                # one byte at 1 MHz, keeps a busy core from running far ahead
+                # of a device another chip's core feeds.
+                out.append('$quantum?="0.00001"')
+                out.append(f'$dual_platform?=@{platform}')
+                continue
             out.append(s)
-            if re.match(r'\$quantum\?=', s): out.append(f'$dual_platform?=@{platform}')
             continue
         p = current
         if re.match(r'\s*machine LoadPlatformDescription @', s): continue
