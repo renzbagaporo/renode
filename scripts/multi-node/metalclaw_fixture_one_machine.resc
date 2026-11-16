@@ -18,7 +18,10 @@ $usbip_port?=3240
 # The DUT's own USB/IP server.
 $dut_usbip_port?=3250
 $quantum?="0.00001"
+# The I2C0 bus latency; it must exceed two quanta.
+$i2c_latency_us?=30
 $dual_platform?=@platforms/boards/metalclaw_fixture_one_machine.repl
+$i2c0_wiring?=@scripts/multi-node/metalclaw_fixture_one_machine_i2c0_bus.resc
 
 mach create "bench"
 machine LoadPlatformDescription $dual_platform
@@ -105,12 +108,7 @@ gp7 Connect h_gpio 7
 gp10 Connect h_gpio 10
 gp20 Connect h_gpio 20
 
-emulation CreateDigitalWire "gp4" false
-emulation CreateDigitalWire "gp5" false
-gp4 Connect d_gpio 4
-gp5 Connect d_gpio 5
-gp4 Connect h_gpio 4
-gp5 Connect h_gpio 5
+include $i2c0_wiring
 
 emulation SetGlobalQuantum $quantum
 emulation SetGlobalAdvanceImmediately true

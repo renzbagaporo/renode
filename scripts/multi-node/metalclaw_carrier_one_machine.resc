@@ -9,14 +9,17 @@
 #     sha256 196c503fbb17b2ad21a1f496574786af698f9376af9a5f79e5e75293c9e12191
 #   $harness_flash: the raw 2 MiB in-package flash image of the carrier harness
 #   $dut_rom: RP2040 B2 16 KiB mask ROM binary, extracted with
-#     extract_rp2040_mask_rom.py in this directory (see metalclaw_fixture.resc)
+#     extract_rp2040_mask_rom.py in this directory (see metalclaw_carrier_one_machine.resc)
 # The DUT's flash starts erased; load an image with `d_xipMemory LoadBinary`.
 
 $usbip_port?=3240
 # The DUT's own USB/IP server.
 $dut_usbip_port?=3250
 $quantum?="0.00001"
+# The I2C0 bus latency; it must exceed two quanta.
+$i2c_latency_us?=30
 $dual_platform?=@platforms/boards/metalclaw_carrier_one_machine.repl
+$i2c0_wiring?=@scripts/multi-node/metalclaw_carrier_one_machine_i2c0_bus.resc
 # The harness's OTP chip ID; its USB serial is this value in hex.
 $harness_chip_id?=0x00000000C0FFEE01
 
@@ -42,7 +45,7 @@ run Connect h_gpio 9
 
 # Every Pico GP0-22 net has a 5.1 kOhm pull-up to the Pico's 3V3_OUT, so an
 # undriven net reads high and any driver wins. Each net reaches one or two
-# carrier GPIOs. GP4 and GP5 are plain pin-level wires below.
+# carrier GPIOs. GP4 and GP5 are connected below as $i2c0_wiring selects.
 emulation CreateDigitalWire "gp0" true
 emulation CreateDigitalWire "gp1" true
 emulation CreateDigitalWire "gp2" true
@@ -124,14 +127,7 @@ gp21 Connect h_gpio 41
 gp21 Connect h_gpio 46
 gp22 Connect h_gpio 33
 
-emulation CreateDigitalWire "gp4" true
-emulation CreateDigitalWire "gp5" true
-gp4 Connect d_gpio 4
-gp5 Connect d_gpio 5
-gp4 Connect h_gpio 11
-gp4 Connect h_gpio 12
-gp5 Connect h_gpio 10
-gp5 Connect h_gpio 13
+include $i2c0_wiring
 
 # Harness GPIO42-44 reach Pico GP26-28 (ADC0-2) through identical two-stage
 # RC filters: 330 Ohm, 10 nF to GND, 2.2 kOhm, 1.5 nF to GND at the Pico pin
