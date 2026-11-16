@@ -1,9 +1,0 @@
-# Included by metalclaw_fixture.resc (the default $i2c0_wiring).
-# I2C0 on SDA 4 and SCL 5: the DUT controller and the harness target share
-# a byte-level bus. Each answer reaches the DUT one round trip after its
-# request, and the DUT holds the clock until it does.
-emulation CreateDelayedI2CBus "i2c_gp4_gp5" $wire_latency_us
-mach set "pico2"
-i2c_gp4_gp5 Connect i2c0 4 5
-mach set "pico1"
-i2c_gp4_gp5 Connect i2c0 4 5

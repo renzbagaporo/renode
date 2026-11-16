@@ -5,7 +5,7 @@
 # (TX) and SD3 (RX). Host GP4 (UART1 TX) -> target SD3, target SD2 -> host
 # GP5 (UART1 RX), host GP3 -> target RUN.
 # Set these file variables before including this script:
-#   $rom: RP2350 A2 combined boot ROM binary (see metalclaw_fixture.resc)
+#   $rom: RP2350 A2 combined boot ROM binary (see metalclaw_fixture_one_machine.resc)
 #   $host_flash: the host's NOR: uart_boot.uf2 with uart_binary.uf2 placed in
 #     its 128 KiB partition (tests/platforms/pico_examples/core_sdk uf2_flash)
 $seconds?="3"

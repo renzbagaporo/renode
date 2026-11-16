@@ -2,7 +2,7 @@
 # and the DUT Pico (d_) are two RP2040s in machine "bench"
 # (metalclaw_fixture_one_machine_pico.repl, made by gen_rp2_chip_repl.py),
 # joined by zero-latency wires.
-# Variables as metalclaw_fixture.resc takes them; $dut_rom is the RP2040 B2
+# Variables as metalclaw_fixture_one_machine.resc takes them; $dut_rom is the RP2040 B2
 # ROM binary like $harness_rom. The rig loads the DUT image with
 # d_xipMemory LoadBinary.
 $usbip_port?=3240
