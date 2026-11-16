@@ -56,6 +56,7 @@ nvic1:
     SystemResetRequest -> psm@2
 resets: Miscellaneous.RP2_Resets @ { sysbus 0x4000c000; psm 3 }
 rosc: Miscellaneous.RP2040_ROSC @ { sysbus 0x40060000; psm 0 }
+vreg_and_chip_reset: Miscellaneous.RP2040_VregAndChipReset @ sysbus 0x40064000
 xosc: Miscellaneous.RP2_XOSC @ { sysbus 0x40024000; psm 1 }
 pll_sys: Miscellaneous.RP2_PLL @ { sysbus 0x40028000; resets 12 }
     xosc: xosc

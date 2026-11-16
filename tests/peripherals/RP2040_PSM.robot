@@ -25,6 +25,7 @@ ${PLATFORM}                         SEPARATOR=\n
 ...  ${SPACE*4}core1: cpu1
 ...  ${SPACE*4}nvic0: nvic0
 ...  ${SPACE*4}nvic1: nvic1
+...  chip_reset: Miscellaneous.RP2040_VregAndChipReset @ sysbus 0x40064000
 ...  debug_port: CPU.RP2040TestDebugPort @ sysbus
 ...  ${SPACE*4}cpu0: cpu0
 ...  ${SPACE*4}cpu1: cpu1
@@ -134,6 +135,34 @@ Should Hold Both Cores In A Rescue Reset Requested From Outside The CPU Threads
     ${counter}=                     Execute Command  cpu0 GetRegister "r2"
     Should Be Equal As Integers      ${marker.strip()}  0x5a
     Should Be True                  int("${counter.strip()}", 0) > 0
+
+Should Record Each Chip Reset Cause In CHIP_RESET
+    Create Machine
+    Read Should Equal               0x40064008  0x100
+    Execute Command                 debug_port Rescue true
+    Execute Command                 emulation RunFor "0.00001"
+    Execute Command                 debug_port Rescue false
+    Execute Command                 emulation RunFor "0.00001"
+    # HAD_PSM_RESTART and PSM_RESTART_FLAG, which the boot ROM writes back to clear.
+    Read Should Equal               0x40064008  0x1100000
+    Execute Command                 sysbus WriteDoubleWord 0x40064008 0x1100000 context=cpu0
+    Read Should Equal               0x40064008  0x100000
+    Execute Command                 debug_port Rescue true
+    Execute Command                 emulation RunFor "0.00001"
+    Execute Command                 debug_port Rescue false
+    Execute Command                 debug_port OnGPIO 2 false
+    Execute Command                 emulation RunFor "0.00001"
+    Execute Command                 debug_port OnGPIO 2 true
+    Execute Command                 emulation RunFor "0.00001"
+    # RUN leaves an unacknowledged restart flag set.
+    Read Should Equal               0x40064008  0x1010000
+    Execute Command                 sysbus WriteDoubleWord 0x40066008 0x1000000 context=cpu0
+    Read Should Equal               0x40064008  0x10000
+    Execute Command                 sysbus WriteDoubleWord 0xe000ed0c 0x05fa0004 context=cpu0
+    Execute Command                 emulation RunFor "0.00001"
+    Read Should Equal               0x40064008  0x10000
+    Execute Command                 machine Reset
+    Read Should Equal               0x40064008  0x100
 
 Should Hold Both Cores While RUN Is Low
     Create Machine
