@@ -39,6 +39,16 @@ h_cpu1: CPU.CortexM @ h_cluster
     WfiFollowsClock: true
     isCpuWaitSignalSet: true
 
+// The RISC-V cores join h_cluster before anything registers for the
+// cluster, so each registration reaches them as well as the Arm cores.
+h_riscv0: CPU.RP2350_Hazard3 @ h_cluster
+    hartId: 0
+    WfiFollowsClock: true
+
+h_riscv1: CPU.RP2350_Hazard3 @ h_cluster
+    hartId: 1
+    WfiFollowsClock: true
+
 h_nvic0: IRQControllers.NVIC @ {
     sysbus new Bus.BusPointRegistration { address: 0xe000e000; cpu: h_cpu0 };
     sysbus new Bus.BusMultiRegistration { address: 0xe002e000; size: 0x1000; region: "NonSecure"; cpu: h_cpu0 }
@@ -387,14 +397,6 @@ h_adc: Analog.RP2_ADC @ { sysbus new Bus.BusPointRegistration { address: 0x400a0
     DREQ -> h_dma@48
 
 
-
-h_riscv0: CPU.RP2350_Hazard3 @ h_cluster
-    hartId: 0
-    WfiFollowsClock: true
-
-h_riscv1: CPU.RP2350_Hazard3 @ h_cluster
-    hartId: 1
-    WfiFollowsClock: true
 
 h_architecture: Miscellaneous.RP2350_ArchitectureSelector @ sysbus
     arm0: h_cpu0
