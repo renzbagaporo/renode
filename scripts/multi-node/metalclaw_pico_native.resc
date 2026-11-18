@@ -1,0 +1,33 @@
+# A Raspberry Pi Pico DUT whose bench is Metalclaw running natively
+# (MicroPython's unix port with the metalclaw module), not an emulated
+# harness chip. The DUT's buses reach that process through
+# Miscellaneous.MetalclawNativeBridge over the Unix socket in
+# $METALCLAW_BRIDGE, which the native process listens on.
+# Set these file variables before including this script:
+#   $dut_rom: RP2040 B2 16 KiB mask ROM binary (see metalclaw_carrier_one_machine.resc)
+# The DUT's flash starts erased; load an image as a flat binary from
+# 0x10000000 (arm-none-eabi-objcopy -O binary) with `xipMemory LoadBinary`,
+# then `start`. `machine Reset` restarts it with the flash kept.
+
+$quantum?="0.00001"
+# The DUT's console (UART0, GP0/GP1) as raw bytes on 127.0.0.1:$console_port.
+$console_port?=3260
+# The bridged I2C buses' latency; it must exceed two quanta.
+$i2c_latency_us?=30
+
+mach create "dut"
+machine LoadPlatformDescription @platforms/boards/raspberry_pi_pico.repl
+sysbus LoadBinary $dut_rom 0 sysbus.cpu0
+
+# I2C0 on GP4 (SDA) and GP5 (SCL), as the carrier wires it: the native
+# process answers as every target on that bus. This bridge also ticks the
+# native clock every millisecond of the DUT's virtual time.
+machine LoadPlatformDescriptionFromString "native_i2c0: Miscellaneous.MetalclawNativeBridge @ sysbus { bus: 0; tickMicroseconds: 1000; gpio: gpio }"
+emulation CreateDelayedI2CBus "native_i2c0_bus" $i2c_latency_us
+native_i2c0_bus Connect i2c0 4 5
+native_i2c0_bus Connect native_i2c0 4 5
+
+emulation CreateServerSocketTerminal $console_port "dut_console" false
+connector Connect uart0 dut_console
+
+emulation SetGlobalQuantum $quantum
