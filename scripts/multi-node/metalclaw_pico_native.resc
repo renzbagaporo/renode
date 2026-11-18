@@ -38,6 +38,11 @@ native_i2c1_bus Connect native_i2c1 6 7
 # process as it starts; GP17's edges reach it in order with the frames.
 machine LoadPlatformDescriptionFromString "native_spi0: Miscellaneous.MetalclawNativeBridge @ sysbus { bus: 0; gpio: gpio; spi: spi0; spiSck: 18; spiMosi: 19; spiMiso: 16; spiCs: 17 }"
 
+# UART1, whose lines the native process serves as a part's (UART0 is the
+# console below). Its bytes carry the pins UART1 is routed to then; GP8/GP9
+# name it in the hello.
+machine LoadPlatformDescriptionFromString "native_uart1: Miscellaneous.MetalclawNativeBridge @ sysbus { bus: 1; gpio: gpio; uart: uart1; uartTx: 8; uartRx: 9 }"
+
 emulation CreateServerSocketTerminal $console_port "dut_console" false
 connector Connect uart0 dut_console
 
