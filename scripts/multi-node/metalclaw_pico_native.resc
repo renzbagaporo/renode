@@ -27,6 +27,11 @@ emulation CreateDelayedI2CBus "native_i2c0_bus" $i2c_latency_us
 native_i2c0_bus Connect i2c0 4 5
 native_i2c0_bus Connect native_i2c0 4 5
 
+# SPI0 on the Pico SDK's default pins: GP16 MISO, GP17 chip select (driven
+# as a GPIO), GP18 SCK, GP19 MOSI. Each frame is answered by the native
+# process as it starts; GP17's edges reach it in order with the frames.
+machine LoadPlatformDescriptionFromString "native_spi0: Miscellaneous.MetalclawNativeBridge @ sysbus { bus: 0; gpio: gpio; spi: spi0; spiSck: 18; spiMosi: 19; spiMiso: 16; spiCs: 17 }"
+
 emulation CreateServerSocketTerminal $console_port "dut_console" false
 connector Connect uart0 dut_console
 
