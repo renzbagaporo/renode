@@ -1,0 +1,29 @@
+# A Metalclaw Pico RP2 (RP2354B) harness on its own, for engine tests: no
+# DUT, and the harness's pins reach a native stimulus process through
+# Miscellaneous.MetalclawNativeBridge over the Unix socket in
+# $METALCLAW_BRIDGE, which the stimulus listens on. The bridge is pin-only:
+# its hello names no buses, it ticks every millisecond, reports the levels
+# the harness drives on watched pins and applies gpio, pull and spi_clock
+# actions (see the bridge's protocol notes). The harness's USB is exported
+# over USB/IP as on the carrier bench, so the rig reaches its REPL unchanged.
+# Set these file variables before including this script:
+#   $harness_rom: RP2350 A2 combined boot ROM binary (see metalclaw_carrier_one_machine.resc)
+#   $harness_flash: the raw 2 MiB in-package flash image of the harness
+
+$usbip_port?=3240
+$quantum?="0.00001"
+# The harness's OTP chip ID; its USB serial is this value in hex.
+$harness_chip_id?=0x00000000C0FFEE01
+
+mach create "harness"
+machine LoadPlatformDescription @platforms/boards/metalclaw_pico_rp2.repl
+rom LoadBinary $harness_rom
+xipMemory LoadBinary $harness_flash
+otp SetChipId $harness_chip_id
+
+machine LoadPlatformDescriptionFromString "native_pins: Miscellaneous.MetalclawNativeBridge @ sysbus { tickMicroseconds: 1000; gpio: gpio }"
+
+emulation SetGlobalQuantum $quantum
+emulation SetGlobalAdvanceImmediately true
+emulation CreateUSBIPServer $usbip_port "carrier"
+host.carrier Register usb 0 Full

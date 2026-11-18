@@ -1,0 +1,27 @@
+# A Metalclaw rpi_pi_pico (RP2040) harness on its own, for engine tests: no
+# DUT, and the harness's pins reach a native stimulus process through
+# Miscellaneous.MetalclawNativeBridge over the Unix socket in
+# $METALCLAW_BRIDGE, which the stimulus listens on. The bridge is pin-only:
+# its hello names no buses, it ticks every millisecond, reports the levels
+# the harness drives on watched pins and applies gpio, pull and spi_clock
+# actions (see the bridge's protocol notes). The harness's USB is exported
+# over USB/IP as on the benches, so the rig reaches its REPL unchanged.
+# Set these file variables before including this script:
+#   $harness_rom: RP2040 B2 16 KiB mask ROM binary (see metalclaw_fixture_one_machine.resc)
+#   $harness_flash: raw flash payload extracted from the harness UF2 with
+#     extract_pico1_uf2.py in this directory
+
+$usbip_port?=3240
+$quantum?="0.00001"
+
+mach create "harness"
+machine LoadPlatformDescription @platforms/boards/raspberry_pi_pico.repl
+sysbus LoadBinary $harness_rom 0 sysbus.cpu0
+xipMemory LoadBinary $harness_flash
+
+machine LoadPlatformDescriptionFromString "native_pins: Miscellaneous.MetalclawNativeBridge @ sysbus { tickMicroseconds: 1000; gpio: gpio }"
+
+emulation SetGlobalQuantum $quantum
+emulation SetGlobalAdvanceImmediately true
+emulation CreateUSBIPServer $usbip_port "pico1"
+host.pico1 Register usb 0 Full
