@@ -33,6 +33,11 @@ emulation CreateDelayedI2CBus "native_i2c1_bus" $i2c_latency_us
 native_i2c1_bus Connect i2c1 6 7
 native_i2c1_bus Connect native_i2c1 6 7
 
+# A bus a program drives on GP2 (SDA) and GP3 (SCL) itself, as pico-examples'
+# PIO I2C does: the bridge decodes it from the DUT's drive on the pins and
+# answers as the targets, as bus 2.
+machine LoadPlatformDescriptionFromString "native_pin_i2c: Miscellaneous.MetalclawNativeBridge @ sysbus { bus: 2; gpio: gpio; pinSda: 2; pinScl: 3 }"
+
 # SPI0 on the Pico SDK's default pins: GP16 MISO, GP17 chip select (driven
 # as a GPIO), GP18 SCK, GP19 MOSI. Each frame is answered by the native
 # process as it starts; GP17's edges reach it in order with the frames.
