@@ -21,4 +21,13 @@ rom LoadBinary $dut_rom
 
 include @scripts/multi-node/metalclaw_native_bridges.resc
 
+# A program spinning on the timer (busy_wait_us) or on a UART's flags
+# (Zephyr's pl011_poll_out) lets its time run on instead of reading the
+# register thousands of times per character or microsecond, never past the
+# next count, its next synchronization point or the next clock event.
+timer0 SkipPollingTime true
+timer1 SkipPollingTime true
+uart0 SkipPollingTime true
+uart1 SkipPollingTime true
+
 emulation SetGlobalQuantum $quantum

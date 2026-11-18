@@ -348,6 +348,7 @@
 - tests/peripherals/RP2350_GPIO.robot
 - tests/unit-tests/cortex-m-fpb.robot
 - tests/unit-tests/cortex-m-readonly-memory.robot
+- tests/unit-tests/rp2040-poll-skip.robot
 - tests/unit-tests/rp2350-power.robot
 - tests/unit-tests/rp2350-xip.robot
 - tests/unit-tests/rp2350-debug-master.robot
