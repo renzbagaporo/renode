@@ -19,39 +19,6 @@ mach create "dut"
 machine LoadPlatformDescription @platforms/boards/raspberry_pi_pico.repl
 sysbus LoadBinary $dut_rom 0 sysbus.cpu0
 
-# I2C0 on GP4 (SDA) and GP5 (SCL), as the carrier wires it: the native
-# process answers as every target on that bus. This bridge also ticks the
-# native clock every millisecond of the DUT's virtual time.
-machine LoadPlatformDescriptionFromString "native_i2c0: Miscellaneous.MetalclawNativeBridge @ sysbus { bus: 0; tickMicroseconds: 1000; gpio: gpio }"
-emulation CreateDelayedI2CBus "native_i2c0_bus" $i2c_latency_us
-native_i2c0_bus Connect i2c0 4 5
-native_i2c0_bus Connect native_i2c0 4 5
-
-# I2C1 on GP6 (SDA) and GP7 (SCL), its own bus to the native process.
-machine LoadPlatformDescriptionFromString "native_i2c1: Miscellaneous.MetalclawNativeBridge @ sysbus { bus: 1; gpio: gpio }"
-emulation CreateDelayedI2CBus "native_i2c1_bus" $i2c_latency_us
-native_i2c1_bus Connect i2c1 6 7
-native_i2c1_bus Connect native_i2c1 6 7
-
-# A bus a program drives on GP2 (SDA) and GP3 (SCL) itself, as pico-examples'
-# PIO I2C does: the bridge decodes it from the DUT's drive on the pins and
-# answers as the targets, as bus 2.
-machine LoadPlatformDescriptionFromString "native_pin_i2c: Miscellaneous.MetalclawNativeBridge @ sysbus { bus: 2; gpio: gpio; pinSda: 2; pinScl: 3 }"
-
-# SPI0 on the Pico SDK's default pins: GP16 MISO, GP17 chip select (driven
-# as a GPIO), GP18 SCK, GP19 MOSI. Each frame is answered by the native
-# process as it starts; GP17's edges reach it in order with the frames.
-machine LoadPlatformDescriptionFromString "native_spi0: Miscellaneous.MetalclawNativeBridge @ sysbus { bus: 0; gpio: gpio; spi: spi0; spiSck: 18; spiMosi: 19; spiMiso: 16; spiCs: 17 }"
-
-# UART1, whose lines the native process serves as a part's (UART0 is the
-# console below). Its bytes carry the pins UART1 is routed to then; GP8/GP9
-# name it in the hello.
-machine LoadPlatformDescriptionFromString "native_uart1: Miscellaneous.MetalclawNativeBridge @ sysbus { bus: 1; gpio: gpio; uart: uart1; uartTx: 8; uartRx: 9 }"
-
-emulation CreateServerSocketTerminal $console_port "dut_console" false
-connector Connect uart0 dut_console
-# What the console types reaches the DUT at UART0's line rate, as from a
-# real terminal, so a program reading with the FIFO off loses nothing.
-uart0 PaceExternalCharacters true
+include @scripts/multi-node/metalclaw_native_bridges.resc
 
 emulation SetGlobalQuantum $quantum

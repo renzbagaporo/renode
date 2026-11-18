@@ -1,0 +1,24 @@
+# A Raspberry Pi Pico 2 (RP2350A) DUT whose bench is Metalclaw running natively
+# (MicroPython's unix port with the metalclaw module), not an emulated
+# harness chip. The DUT's buses reach that process through
+# Miscellaneous.MetalclawNativeBridge over the Unix socket in
+# $METALCLAW_BRIDGE, which the native process listens on.
+# Set these file variables before including this script:
+#   $dut_rom: RP2350 A2 combined boot ROM binary (see metalclaw_fixture_one_machine.resc)
+# The DUT's flash starts erased; load an image as a flat binary from
+# 0x10000000 (arm-none-eabi-objcopy -O binary) with `xipMemory LoadBinary`,
+# then `start`. `machine Reset` restarts it with the flash kept.
+
+$quantum?="0.00001"
+# The DUT's console (UART0, GP0/GP1) as raw bytes on 127.0.0.1:$console_port.
+$console_port?=3260
+# The bridged I2C buses' latency; it must exceed two quanta.
+$i2c_latency_us?=30
+
+mach create "dut"
+machine LoadPlatformDescription @platforms/boards/raspberry_pi_pico2.repl
+rom LoadBinary $dut_rom
+
+include @scripts/multi-node/metalclaw_native_bridges.resc
+
+emulation SetGlobalQuantum $quantum
