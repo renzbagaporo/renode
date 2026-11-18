@@ -50,5 +50,8 @@ machine LoadPlatformDescriptionFromString "native_uart1: Miscellaneous.Metalclaw
 
 emulation CreateServerSocketTerminal $console_port "dut_console" false
 connector Connect uart0 dut_console
+# What the console types reaches the DUT at UART0's line rate, as from a
+# real terminal, so a program reading with the FIFO off loses nothing.
+uart0 PaceExternalCharacters true
 
 emulation SetGlobalQuantum $quantum
