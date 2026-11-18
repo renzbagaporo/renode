@@ -108,11 +108,13 @@ Should Hold Core One In Reset Until Released
     Execute Command                 sysbus WriteDoubleWord 0x40013004 0x10000 context=cpu0
     Core One Should Boot From Reset Vector
 
-Should Reset Both Cores On A Debugger SYSRESETREQ
+Should Reset Only The Requesting Core On SYSRESETREQ
     Create Machine
     Execute Command                 emulation RunFor "0.00001"
     Execute Command                 cpu0 SetRegister "r0" 0x12345678
+    Execute Command                 cpu1 SetRegister "r0" 0x5678
     Execute Command                 sysbus WriteDoubleWord 0xe000e100 1 context=cpu0
+    Execute Command                 sysbus WriteDoubleWord 0xe000e100 2 context=cpu1
     # A debugger's AIRCR write arrives from outside the CPU threads.
     Execute Command                 sysbus WriteDoubleWord 0xe000ed0c 0x05fa0004 context=cpu0
     Execute Command                 emulation RunFor "0.00001"
@@ -121,6 +123,11 @@ Should Reset Both Cores On A Debugger SYSRESETREQ
     Should Be Equal As Integers      ${r0.strip()}  0
     Should Be Equal As Integers      ${marker.strip()}  0x5a
     Read Should Equal               0xe000e100  0  cpu0
+    # RP2040 datasheet 2.4.2: the NVIC resets only its own core.
+    ${core1_r0}=                    Execute Command  cpu1 GetRegister "r0"
+    Should Be Equal As Integers      ${core1_r0.strip()}  0x5678
+    Read Should Equal               0xe000e100  2  cpu1
+    Read Should Equal               0x40064008  0x100
 
 Should Hold Both Cores In A Rescue Reset Requested From Outside The CPU Threads
     Create Machine
