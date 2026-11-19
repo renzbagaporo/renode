@@ -23,6 +23,8 @@ Run Timer Poll Loop
 
 Run Timer Wait Loop
     [Arguments]                     ${name}  ${skip}
+    # Each run alone in the emulation, so no other machine's rounds bound its skips.
+    Reset Emulation
     Execute Command                 mach create "${name}"
     Execute Command                 machine LoadPlatformDescription @platforms/boards/raspberry_pi_pico.repl
     Execute Command                 cpu1 IsHalted true
