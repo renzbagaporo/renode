@@ -28,6 +28,11 @@ machine LoadPlatformDescriptionFromString "native_pin_i2c: Miscellaneous.Metalcl
 # process as it starts; GP17's edges reach it in order with the frames.
 machine LoadPlatformDescriptionFromString "native_spi0: Miscellaneous.MetalclawNativeBridge @ sysbus { bus: 0; gpio: gpio; spi: spi0; spiSck: 18; spiMosi: 19; spiMiso: 16; spiCs: 17 }"
 
+# A program clocking the same pins itself (pico-examples' PIO SPI flash):
+# while a PIO or SIO drives GP18, the bridge decodes mode 0 bytes from the
+# DUT's drive and answers on GP16, as bus 2.
+machine LoadPlatformDescriptionFromString "native_pin_spi: Miscellaneous.MetalclawNativeBridge @ sysbus { bus: 2; gpio: gpio; pinSck: 18; pinMosi: 19; pinMiso: 16; pinCs: 17 }"
+
 # UART1, whose lines the native process serves as a part's (UART0 is the
 # console below). Its bytes carry the pins UART1 is routed to then; GP8/GP9
 # name it in the hello.
